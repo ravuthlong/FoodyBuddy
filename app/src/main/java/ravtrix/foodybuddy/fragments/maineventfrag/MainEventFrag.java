@@ -43,17 +43,17 @@ public class MainEventFrag extends Fragment {
      * Fill the models of Event Model array list
      */
     private void setModels() {
-        EventModel eventModel1 = new EventModel("", "Lucky Charm", "Jan 02, 2017", "Jan 30, 2017", "Who wants to try this new place",
-                "3222 Broadway", "3 miles", 5);
+        EventModel eventModel1 = new EventModel("http://images6.fanpop.com/image/photos/39200000/taylor-swift-icons-demmah-39210598-250-250.png", "Lucky Charm Restaurant", "Jan 02, 2017", "Jan 30, 2017", "Who wants to try this new place",
+                "3222 Broadway", "1 miles", 0);
 
-        EventModel eventModel2 = new EventModel("", "Lucky Charm", "Jan 02, 2017", "Jan 30, 2017", "Who wants to try this new place",
-                "3222 Broadway", "3 miles", 5);
+        EventModel eventModel2 = new EventModel("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "Red Lobster Curry Style", "Jan 02, 2017", "Jan 30, 2017", "I heard they serve really good Indian authentic food. I suddenly feel like being a curry.",
+                "3242 Lucky", "3 miles", 5);
 
-        EventModel eventModel3 = new EventModel("", "Lucky Charm", "Jan 02, 2017", "Jan 30, 2017", "Who wants to try this new place",
-                "3222 Broadway", "3 miles", 5);
+        EventModel eventModel3 = new EventModel("http://purrfectcatbreeds.com/wp-content/uploads/2014/06/small-cat-breeds.jpg", "Pho Me", "Jan 02, 2017", "Jan 30, 2017", "Pho me Pho you. Who cares? I need Pho right now. ",
+                "213 Moron", "13 miles", 1);
 
-        EventModel eventModel4 = new EventModel("", "Lucky Charm", "Jan 02, 2017", "Jan 30, 2017", "Who wants to try this new place",
-                "3222 Broadway", "3 miles", 5);
+        EventModel eventModel4 = new EventModel("http://a1.mzstatic.com/us/r30/Purple4/v4/eb/36/69/eb366995-c26d-85be-16e3-44cbb1adff9a/icon350x350.png", "All You Can Eat Foo Foo", "Jan 02, 2017", "Jan 30, 2017", "I'm trying to gain 10 pounds before my wedding. The baby bump is coming soon too!",
+                "11112 Hell street", "31 miles", 2);
 
         this.eventModels = new ArrayList<>();
         this.eventModels.add(eventModel1);

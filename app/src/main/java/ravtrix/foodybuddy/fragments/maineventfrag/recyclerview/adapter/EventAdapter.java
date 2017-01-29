@@ -81,7 +81,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder2.numComment.setText(Integer.toString(currentItem.getNumComment()));
 
                 Picasso.with(context)
-                        .load("http://gurucul.com/wp-content/uploads/2015/01/default-user-icon-profile.png")
+                        .load(currentItem.getProfileImage())
                         .centerCrop()
                         .fit()
                         .into(viewHolder2.profileImage);
