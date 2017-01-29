@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:id="@+id/item_eventfirst_relativePost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/item_eventfirst_linear1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/item_eventfirst_profileImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/item_eventfirst_linear2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/item_eventfirst_linear1"
+            android:layout_alignBottom="@+id/item_eventfirst_linear1"
+            android:layout_alignTop="@+id/item_eventfirst_linear1"
+            android:layout_marginStart="10dp">
+            <EditText
+                android:id="@+id/item_eventfirst_etDescription"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+                android:ems="10"
+                android:background="@android:color/transparent"
+                android:hint="Where are you eating next?" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/frag_eventmain_lineview"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/item_eventfirst_relativePost"
+        android:layout_marginTop="5dp" />
+
+</RelativeLayout>

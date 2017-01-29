@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="10dp"
+    android:id="@+id/item_event_relativeAll">
+
+    <RelativeLayout
+        android:id="@+id/relative1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_event_profileImage"
+            android:layout_alignParentStart="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <LinearLayout
+            android:id="@+id/linearlayout2"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/item_event_profileImage">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/item_event_tvRestaurantName"
+                    android:text="The Eastside Restaurant"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/toolbar"
+                    android:layout_marginStart="5dp"
+                    android:textSize="17sp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/item_event_tvPostTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/linearlayout2"
+                    android:text="Jan 09, 2017"
+                    android:layout_weight="1"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/item_event_tvAddress"
+                    android:text="1327 Broadway Street"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp" />
+
+                <TextView
+                    android:id="@+id/item_event_tvDistance"
+                    android:text="3 miles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_gravity="end" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/item_event_eventTime"
+                android:text="Sunday 10AM"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/relative1">
+
+        <TextView
+            android:id="@+id/item_event_tvDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Heard they use fresh seafood and the chef is eye cake. Anyone want to try this out? You know you do. *wink*">
+        </TextView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp">
+
+        <LinearLayout
+            android:id="@+id/item_event_layoutComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/button"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+            <ImageView
+                android:id="@+id/item_event_imgbComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_chat_bubble_outline_black_24dp" />
+            <TextView
+                android:id="@+id/item_event_tvCommentNum"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_event_layoutJoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:layout_toEndOf="@+id/item_event_layoutComment"
+            android:layout_alignBottom="@+id/item_event_layoutComment"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp">
+            <TextView
+                android:id="@+id/item_event_tvJoin"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="Join"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_event_layoutMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingRight="10dp"
+            android:layout_alignParentEnd="true"
+            android:paddingLeft="10dp">
+            <ImageView
+                android:id="@+id/item_event_imageButtonMore"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_more_horiz_black_24dp" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

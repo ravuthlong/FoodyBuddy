@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout
+<android.support.v4.widget.DrawerLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main_drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="end">
 
     <include
-        android:id="@+id/toolbar_main"
-        layout="@layout/frag_toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent" >
-    </include>
+        layout="@layout/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-</android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.NavigationView
+        android:id="@+id/acitivty_main_nav_view"
+        android:layout_gravity="end"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:itemTextColor="@color/colorAccent"
+        app:menu="@menu/activity_main_drawer"
+        android:layout_weight="10"
+        android:background="@color/navDrawer"/>
+</android.support.v4.widget.DrawerLayout>

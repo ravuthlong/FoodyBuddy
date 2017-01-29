@@ -6,7 +6,7 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "ravtrix.foodybuddy"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -40,4 +40,9 @@ dependencies {
     // Retrofit HTTP Client
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+
+    compile 'com.intuit.sdp:sdp-android:1.0.4'
+    compile 'com.intuit.ssp:ssp-android:1.0.4'
+
 }
