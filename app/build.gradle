@@ -51,5 +51,7 @@ dependencies {
     //circle indicator viewpager profile page
     compile 'me.relex:circleindicator:1.2.2@aar'
 
+    // constaint layout
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+
 }
