@@ -17,14 +17,16 @@
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
+
+        </activity>
+        <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.CreateEventActivity" />
-        <activity android:name=".activities.findresturant.FindRestaurant"></activity>
+        <activity android:name=".activities.RegisterActivity"></activity>
     </application>
 
 </manifest>
