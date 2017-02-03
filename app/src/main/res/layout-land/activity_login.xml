@@ -26,8 +26,10 @@
         android:inputType="textPersonName"
         android:ems="10"
         android:id="@+id/etEmail"
-        tools:layout_editor_absoluteY="49dp"
-        tools:layout_editor_absoluteX="16dp" />
+        android:layout_marginStart="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
 
     <TextView
         android:text="Password"
@@ -52,7 +54,7 @@
 
     <Button
         android:text="Login"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/bLogin"
         android:layout_marginTop="16dp"
@@ -62,7 +64,7 @@
 
     <Button
         android:text="Register"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/bRegister"
         android:layout_marginTop="16dp"
