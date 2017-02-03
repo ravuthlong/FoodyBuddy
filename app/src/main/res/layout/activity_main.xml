@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<android.support.v4.widget.DrawerLayout xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main_drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,11 +16,57 @@
 
     <android.support.design.widget.NavigationView
         android:id="@+id/acitivty_main_nav_view"
+        android:fitsSystemWindows="false"
         android:layout_gravity="end"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:itemTextColor="@color/colorAccent"
-        app:menu="@menu/activity_main_drawer"
-        android:layout_weight="10"
-        android:background="@color/navDrawer"/>
+        android:background="@color/navDrawer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="right"
+                android:layout_margin="10dp">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_edit"
+                    android:id="@+id/imageView3" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/imageView3"
+                    android:textColor="@color/white"
+                    android:text="Edit Events"
+                    android:layout_alignParentEnd="false"
+                    android:layout_alignParentBottom="false"
+                    android:gravity="bottom"
+                    android:id="@+id/activity_main_tvEdit" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="UPCOMING EVENTS"
+                android:textSize="@dimen/_17ssp"
+                android:textColor="@color/white"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="15dp"
+                android:id="@+id/activity_main_tvUpcoming" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/activity_main_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

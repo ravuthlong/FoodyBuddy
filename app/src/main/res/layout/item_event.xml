@@ -16,18 +16,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_event_profileImage"
-            android:layout_alignParentStart="true"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
-
         <LinearLayout
             android:id="@+id/linearlayout2"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_centerVertical="false"
             android:layout_toEndOf="@+id/item_event_profileImage">
 
             <LinearLayout
@@ -85,6 +79,13 @@
 
         </LinearLayout>
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_event_profileImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentStart="false" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -105,11 +106,45 @@
 
     <RelativeLayout
         android:id="@+id/relative3"
+        android:layout_below="@id/relative2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/relative2"
+        android:gravity="center">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_event_otherUser1"
+            android:layout_width="35dp"
+            android:layout_height="35dp"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_event_otherUser2"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_toEndOf="@id/item_event_otherUser1"
+            android:layout_marginStart="-10dp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_event_otherUser3"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_toEndOf="@id/item_event_otherUser2"
+            android:layout_marginStart="-10dp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_event_otherUser4"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_toEndOf="@id/item_event_otherUser3"
+            android:layout_marginStart="-10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative3"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="7dp">
 
         <LinearLayout
             android:id="@+id/item_event_layoutComment"
@@ -133,25 +168,23 @@
                 android:gravity="center" />
         </LinearLayout>
 
+
         <LinearLayout
-            android:id="@+id/item_event_layoutJoin"
+            android:id="@+id/item_event_layoutDrive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:layout_toEndOf="@+id/item_event_layoutComment"
-            android:layout_alignBottom="@+id/item_event_layoutComment"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp">
-            <TextView
-                android:id="@+id/item_event_tvJoin"
-                android:layout_width="wrap_content"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:layout_toLeftOf="@+id/item_event_layoutMore"
+            android:layout_marginEnd="5dp">
+            <ImageView
+                android:id="@+id/item_event_imageButtonDrive"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Join"/>
+                app:srcCompat="@drawable/ic_car" />
         </LinearLayout>
 
         <LinearLayout
@@ -169,6 +202,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:srcCompat="@drawable/ic_more_horiz_black_24dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_event_layoutJoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_join"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="35dp"
+            android:paddingEnd="35dp"
+            android:layout_alignBottom="@+id/item_event_layoutComment"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/item_event_tvJoin"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="JOIN"
+                android:textColor="@color/white" />
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

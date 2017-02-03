@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <RelativeLayout
@@ -21,23 +22,33 @@
         </LinearLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/item_eventfirst_linear2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@+id/item_eventfirst_linear1"
             android:layout_alignBottom="@+id/item_eventfirst_linear1"
             android:layout_alignTop="@+id/item_eventfirst_linear1"
-            android:layout_marginStart="10dp">
-            <EditText
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+            <TextView
                 android:id="@+id/item_eventfirst_etDescription"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textPersonName"
-                android:ems="10"
-                android:background="@android:color/transparent"
-                android:hint="Where are you eating next?" />
-        </LinearLayout>
+                android:textSize="@dimen/_13ssp"
+                android:text="Where are you eating next?"
+                android:layout_toStartOf="@+id/imageView"
+                android:gravity="center" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_restaurant"
+                android:id="@+id/imageView"
+                android:visibility="visible"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
     </RelativeLayout>
 
     <View

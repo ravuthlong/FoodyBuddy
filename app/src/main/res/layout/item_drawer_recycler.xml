@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="false"
+
+    android:padding="10dp"
+    android:id="@+id/item_drawer_mainLinear">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/item_drawer_tvRestaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lucky Charm"
+            android:textColor="@color/toolbar"
+            android:textSize="@dimen/_17ssp"/>
+
+        <TextView
+            android:id="@+id/item_drawer_tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4 more days"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_12ssp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
+    <TextView
+        android:text="12232 Yakima Circle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12ssp"
+        android:id="@+id/item_drawer_tvAddress" />
+
+</LinearLayout>

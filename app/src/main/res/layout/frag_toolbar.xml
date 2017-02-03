@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     android:id="@+id/main_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -13,5 +13,5 @@
         android:background="@color/toolbar">
 
     </android.support.v7.widget.Toolbar>
-</LinearLayout>
+</FrameLayout>
 

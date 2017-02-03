@@ -1,11 +1,15 @@
 package ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +20,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.activities.CreateEventActivity;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.EventModel;
 import ravtrix.foodybuddy.utils.Helpers;
 
@@ -80,17 +85,60 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder2.address.setText(currentItem.getAddress());
                 viewHolder2.numComment.setText(Integer.toString(currentItem.getNumComment()));
 
-                Picasso.with(context)
-                        .load(currentItem.getProfileImage())
-                        .centerCrop()
-                        .fit()
-                        .into(viewHolder2.profileImage);
+                if (!currentItem.getProfileImage().isEmpty()) {
+                    Picasso.with(context)
+                            .load(currentItem.getProfileImage())
+                            .centerCrop()
+                            .fit()
+                            .into(viewHolder2.profileImage);
+                } else {
+                    viewHolder2.profileImage.setVisibility(View.GONE);
+                }
+                if (!currentItem.getUserImage1().isEmpty()) {
+                    Picasso.with(context)
+                            .load(currentItem.getUserImage1())
+                            .centerCrop()
+                            .fit()
+                            .into(viewHolder2.otherUser1);
+                } else {
+                    viewHolder2.otherUser1.setVisibility(View.GONE);
+                }
+                if (!currentItem.getUserImage2().isEmpty()) {
+
+                    Picasso.with(context)
+                            .load(currentItem.getUserImage2())
+                            .centerCrop()
+                            .fit()
+                            .into(viewHolder2.otherUser2);
+                } else {
+                    viewHolder2.otherUser2.setVisibility(View.GONE);
+                }
+                if (!currentItem.getUserImage3().isEmpty()) {
+
+                    Picasso.with(context)
+                            .load(currentItem.getUserImage3())
+                            .centerCrop()
+                            .fit()
+                            .into(viewHolder2.otherUser3);
+                } else {
+                    viewHolder2.otherUser3.setVisibility(View.GONE);
+                }
+                if (!currentItem.getUserImage4().isEmpty()) {
+
+                    Picasso.with(context)
+                            .load(currentItem.getUserImage4())
+                            .centerCrop()
+                            .fit()
+                            .into(viewHolder2.otherUser4);
+                } else {
+                    viewHolder2.otherUser4.setVisibility(View.GONE);
+                }
+
                 break;
             default:
                 break;
         }
     }
-
 
     @Override
     public int getItemViewType(int position) {
@@ -114,17 +162,26 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private class ViewHolder1 extends RecyclerView.ViewHolder {
 
         private CircleImageView profileImage;
-        private EditText etDescription;
-        private RelativeLayout relativeLayout;
+        private TextView etDescription;
+        private RelativeLayout relativeLayoutNewPost;
 
         ViewHolder1(View itemView) {
             super(itemView);
 
             profileImage = (CircleImageView) itemView.findViewById(R.id.item_eventfirst_profileImage);
-            etDescription = (EditText) itemView.findViewById(R.id.item_eventfirst_etDescription);
-            relativeLayout = (RelativeLayout) itemView.findViewById(R.id.item_eventfirst_relativePost);
+            etDescription = (TextView) itemView.findViewById(R.id.item_eventfirst_etDescription);
+            relativeLayoutNewPost = (RelativeLayout) itemView.findViewById(R.id.item_eventfirst_relativePost);
 
-            Helpers.overrideFonts(context, relativeLayout);
+            Helpers.overrideFonts(context, relativeLayoutNewPost);
+
+            relativeLayoutNewPost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // start new event post
+                    context.startActivity(new Intent(context, CreateEventActivity.class));
+                }
+            });
+
         }
     }
 
@@ -134,9 +191,9 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private class ViewHolder2 extends RecyclerView.ViewHolder {
 
         private TextView restaurantName, postDate, eventDate, description, address, numComment;
-        private LinearLayout layoutComment, layoutJoin, layoutMore;
+        private LinearLayout layoutComment, layoutJoin, layoutMore, layoutDrive;
         private RelativeLayout relativeAll;
-        private CircleImageView profileImage;
+        private CircleImageView profileImage, otherUser1, otherUser2, otherUser3, otherUser4;
 
         ViewHolder2(View itemView) {
             super(itemView);
@@ -149,11 +206,73 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             numComment = (TextView) itemView.findViewById(R.id.item_event_tvCommentNum);
             layoutComment = (LinearLayout) itemView.findViewById(R.id.item_event_layoutComment);
             layoutJoin = (LinearLayout) itemView.findViewById(R.id.item_event_layoutJoin);
+            layoutDrive = (LinearLayout) itemView.findViewById(R.id.item_event_layoutDrive);
             layoutMore = (LinearLayout) itemView.findViewById(R.id.item_event_layoutMore);
             profileImage = (CircleImageView) itemView.findViewById(R.id.item_event_profileImage);
             relativeAll = (RelativeLayout) itemView.findViewById(R.id.item_event_relativeAll);
+            otherUser1 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser1);
+            otherUser2 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser2);
+            otherUser3 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser3);
+            otherUser4 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser4);
 
             Helpers.overrideFonts(context, relativeAll);
+
+            layoutJoin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar snackbar = Snackbar
+                            .make(relativeAll, "Joined. Owner has been notified.", Snackbar.LENGTH_SHORT);
+                    View mView = snackbar.getView();
+                    TextView mTextView = (TextView) mView.findViewById(android.support.design.R.id.snackbar_text);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        mTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    } else {
+                        mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+                    }
+                    snackbar.show();
+                }
+            });
+
+            relativeAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Helpers.displayToast(context, "Clicked on background to see restaurant info");
+                }
+            });
+
+
+            profileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Helpers.displayToast(context, "Clicked to view profile");
+                }
+            });
+
+            layoutComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Helpers.displayToast(context, "Clicked on comment");
+                }
+            });
+
+            layoutDrive.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Helpers.displayToast(context, "Clicked on drive");
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps?daddr=37.416936,-121.890564"));
+                    context.startActivity(intent);
+                }
+            });
+
+            layoutMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Helpers.displayToast(context, "Clicked on more options");
+                }
+            });
+
+
         }
     }
 }

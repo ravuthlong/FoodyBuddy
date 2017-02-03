@@ -1,5 +1,6 @@
 package ravtrix.foodybuddy.utils;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -9,8 +10,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Ravinder on 1/28/17.
@@ -18,10 +30,48 @@ import android.widget.Toast;
 
 public class Helpers {
 
+    public static final String YELP_TOKEN = "zeAZ8CvH8Jh5BXgKlgomA80NvCM_dK_rZahtOnEivGo4GSypKzbRQHA5GlbKppo9NHqmYOq0AFZcKh0gKaYifBQQ0EeX7ids2FTfE0GK5PWunl1BHbmUfyZLhieQWHYx";
     private Helpers() {}
 
     public static final class ServerURL {
         public static final String SERVER_URL = "URL TO BE";
+        public static final String YELP_API_URL = "https://api.yelp.com";
+    }
+
+    private static OkHttpClient okClient() {
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+                httpClient.connectTimeout(1, TimeUnit.MINUTES)
+                .writeTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(1, TimeUnit.MINUTES)
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+
+                        // Customizing a default header for Yelp API because Yelp GET request requires an access token as header
+                        // before it can validate and fetch from the Yelp database
+                        Request original = chain.request();
+                        Request request = original.newBuilder()
+                                .header("Authorization", "Bearer " + YELP_TOKEN)
+                                .method(original.method(), original.body())
+                                .build();
+
+                        return chain.proceed(request);
+                    }
+                });
+        return httpClient.build();
+    }
+
+    /**
+     * Create a retrofit object
+     * @param serverURL       the url to the server
+     */
+    public static Retrofit retrofitBuilder(String serverURL)  {
+
+        return new Retrofit.Builder()
+                .baseUrl(serverURL)
+                .client(okClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
     }
 
     /**
@@ -122,5 +172,15 @@ public class Helpers {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null;
+    }
+
+
+    public static void hideKeyboard(Activity activity) {
+        // Check if no view has focus:
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

@@ -2,9 +2,15 @@
 <resources>
     <color name="colorPrimary">#8ea271</color>
     <color name="colorPrimaryDark">#83936B</color>
-    <color name="colorAccent">#FFFFFF</color>
+    <color name="colorAccent">#D7C6AD</color>
     <color name="toolbar">#8ea271</color>
+    <color name="greenLighter">#BECDA8</color>
     <color name="black">#000000</color>
+    <color name="blackLighter">#424242</color>
     <color name="white">#FFFFFF</color>
     <color name="navDrawer">#262C35</color>
+    <color name="greenLightest">#E0EAD1</color>
+    <color name="lightBrown">#EBE5DC</color>
+    <color name="orange">#FF8000</color>
+    <color name="orangeRed">#B40404</color>
 </resources>

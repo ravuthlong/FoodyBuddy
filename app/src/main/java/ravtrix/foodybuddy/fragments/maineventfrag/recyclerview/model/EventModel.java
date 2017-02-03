@@ -6,17 +6,13 @@ package ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model;
 
 public class EventModel {
 
-    private String profileImage;
-    private String restaurantName;
-    private String postTime;
-    private String eventTime;
-    private String eventDescription;
-    private String address;
-    private String distance;
+    private String profileImage, restaurantName, postTime, eventTime, eventDescription, address, distance,
+                    userImage1, userImage2, userImage3, userImage4;
     private int numComment;
 
     public EventModel(String profileImage, String retaurantName, String postTime,
-                      String eventTime, String eventDescription, String address, String distance, int numComment) {
+                      String eventTime, String eventDescription, String address, String distance, int numComment,
+                      String userImage1, String userImage2, String userImage3, String userImage4) {
         this.profileImage = profileImage;
         this.restaurantName = retaurantName;
         this.postTime = postTime;
@@ -25,7 +21,44 @@ public class EventModel {
         this.address = address;
         this.distance = distance;
         this.numComment = numComment;
+        this.userImage1 = userImage1;
+        this.userImage2 = userImage2;
+        this.userImage3 = userImage3;
+        this.userImage4 = userImage4;
     }
+
+    public String getUserImage1() {
+        return userImage1;
+    }
+
+    public void setUserImage1(String userImage1) {
+        this.userImage1 = userImage1;
+    }
+
+    public String getUserImage2() {
+        return userImage2;
+    }
+
+    public void setUserImage2(String userImage2) {
+        this.userImage2 = userImage2;
+    }
+
+    public String getUserImage3() {
+        return userImage3;
+    }
+
+    public void setUserImage3(String userImage3) {
+        this.userImage3 = userImage3;
+    }
+
+    public String getUserImage4() {
+        return userImage4;
+    }
+
+    public void setUserImage4(String userImage4) {
+        this.userImage4 = userImage4;
+    }
+
     public String getProfileImage() {
         return profileImage;
     }

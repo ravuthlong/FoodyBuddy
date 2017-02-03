@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,9 +23,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.activities.drawerrecycler.adapter.DrawerRecyclerAdapter;
+import ravtrix.foodybuddy.activities.drawerrecycler.model.DrawerModel;
+import ravtrix.foodybuddy.decorator.DividerDecoration;
 import ravtrix.foodybuddy.fragments.friendsfrag.FriendsFrag;
+import ravtrix.foodybuddy.fragments.inbox.InboxFragment;
 import ravtrix.foodybuddy.fragments.maineventfrag.MainEventFrag;
 import ravtrix.foodybuddy.fragments.userprofilefrag.UserProfileFrag;
+import ravtrix.foodybuddy.utils.Helpers;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,14 +39,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.toolbar) protected Toolbar toolbar;
     @BindView(R.id.activity_main_drawer_layout) protected DrawerLayout drawerLayout;
     @BindView(R.id.acitivty_main_nav_view) protected NavigationView navigationView;
+    @BindView(R.id.activity_main_recyclerView) protected RecyclerView recyclerViewMain;
+    @BindView(R.id.activity_main_tvUpcoming) protected TextView tvUpcomingEvents;
+    @BindView(R.id.activity_main_tvEdit) protected TextView tvEditEvents;
     private ImageView imageSetting, imageNavigation;
     private ViewPagerAdapter adapter;
+    private List<DrawerModel> drawerModels;
+    private DrawerRecyclerAdapter drawerRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Helpers.overrideFonts(this, tvUpcomingEvents);
+        Helpers.overrideFonts(this, tvEditEvents);
+
 
         // Set views
         TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
@@ -50,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbarTitle.setTypeface(Typeface.createFromAsset(getAssets(), "toolbar2.ttf"));
 
         setupViewPager(viewPager); // set adapter with data
+        viewPager.setOffscreenPageLimit(3); // define size of tabs
         tabLayout.setupWithViewPager(viewPager); // push viewpager into the tab layout
 
         // Set up tabs and view-pager
@@ -60,6 +76,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // set button listeners
         imageNavigation.setOnClickListener(this);
         imageSetting.setOnClickListener(this);
+
+        RecyclerView.ItemDecoration dividerDecorator = new DividerDecoration(this, R.drawable.line_divider_drawer);
+        recyclerViewMain.addItemDecoration(dividerDecorator);
+
+        drawerModels = new ArrayList<>();
+        DrawerModel drawerModel1 = new DrawerModel("Lucky Jams", "4 more days", "1322 Yakima");
+        DrawerModel drawerModel2 = new DrawerModel("Curry Friends", "11 more days", "810 New Street");
+        DrawerModel drawerModel3 = new DrawerModel("Kit Kat", "14 more days", "1022 Jumper Ave");
+
+        drawerModels.add(drawerModel1);
+        drawerModels.add(drawerModel2);
+        drawerModels.add(drawerModel3);
+
+        this.drawerRecyclerAdapter = new DrawerRecyclerAdapter(this, drawerModels);
+        this.recyclerViewMain.setAdapter(drawerRecyclerAdapter);
+        this.recyclerViewMain.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -80,12 +112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void hideMainToolbarButtons() {
-        imageNavigation.setVisibility(View.INVISIBLE);
         imageSetting.setVisibility(View.INVISIBLE);
     }
 
     private void showMainToolbarButtons() {
-        imageNavigation.setVisibility(View.VISIBLE);
         imageSetting.setVisibility(View.VISIBLE);
     }
 
@@ -98,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         // Set adapter with different fragments and their titles
         adapter.addFragment(new MainEventFrag());
-        adapter.addFragment(new UserProfileFrag()); // inbox
+        adapter.addFragment(new InboxFragment()); // inbox
         adapter.addFragment(new UserProfileFrag());
         adapter.addFragment(new FriendsFrag());
         viewPager.setAdapter(adapter);
@@ -165,10 +195,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         showMainToolbarButtons();
                         break;
                     case 1:
+                        // Load data when tab is visible
+                        //((InboxFragment) adapter.getFragmentAtPosition(1)).loadViewWithData();
+                        // Lock swipe
+                        lockDrawerLayoutScroll();
+                        // Hide toolbar items
+                        hideMainToolbarButtons();
+                        break;
                     case 2:
-                    case 3:
+                        //((UserProfileFrag) adapter.getFragmentAtPosition(2)).loadViewWithData();
                         lockDrawerLayoutScroll();
                         hideMainToolbarButtons();
+                        break;
+                    case 3:
+                        lockDrawerLayoutScroll();
+                        //hideMainToolbarButtons();
                         break;
                     default:
                         break;
