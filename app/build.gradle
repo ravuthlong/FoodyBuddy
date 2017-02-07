@@ -1,17 +1,27 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
+//apply plugin: 'android-apt'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "ravtrix.foodybuddy"
         minSdkVersion 17
-        targetSdkVersion 25
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        jackOptions {
+            enabled true
+        }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,37 +31,46 @@ android {
 }
 
 dependencies {
+
+
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    testCompile 'junit:junit:4.12'
 
-    compile 'com.android.support:design:25.1.0'
+    //compile 'com.android.support:design:25.1.0'
 
     // Circle Image View
-    compile 'de.hdodenhof:circleimageview:1.3.0'
+
     // ButterKnife
-    compile 'com.jakewharton:butterknife:8.2.1'
-    apt 'com.jakewharton:butterknife-compiler:8.2.1'
+    //apt 'com.jakewharton:butterknife-compiler:8.2.1'
+
     // Picasso image loading
-    compile 'com.squareup.picasso:picasso:2.5.2'
     // Retrofit HTTP Client
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-
-
-    compile 'com.intuit.sdp:sdp-android:1.0.4'
-    compile 'com.intuit.ssp:ssp-android:1.0.4'
 
     // blur image
-    compile 'jp.wasabeef:picasso-transformations:2.1.0'
 
     //circle indicator viewpager profile page
-    compile 'me.relex:circleindicator:1.2.2@aar'
 
     // constaint layout
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:cardview-v7:24.2.1'
+    compile 'de.hdodenhof:circleimageview:1.3.0'
+    compile 'com.jakewharton:butterknife:8.2.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'io.reactivex:rxjava:1.2.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'com.intuit.sdp:sdp-android:1.0.4'
+    compile 'com.intuit.ssp:ssp-android:1.0.4'
+    compile 'jp.wasabeef:picasso-transformations:2.1.0'
+    compile 'me.relex:circleindicator:1.2.2@aar'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.android.support:support-v4:24.2.1'
+    testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
 }

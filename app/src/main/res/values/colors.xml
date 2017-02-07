@@ -13,4 +13,7 @@
     <color name="lightBrown">#EBE5DC</color>
     <color name="orange">#FF8000</color>
     <color name="orangeRed">#B40404</color>
+
+    <color name="colorDarkGrey">#424242</color>
+
 </resources>
