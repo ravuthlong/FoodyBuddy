@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.DatePicker;
@@ -20,6 +18,8 @@ import android.widget.TimePicker;
 import com.squareup.picasso.Picasso;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +30,7 @@ import ravtrix.foodybuddy.utils.Helpers;
 
 public class CreateEventActivity extends AppCompatActivity {
 
-    @BindView(R.id.activity_create_test) protected LinearLayout linearTest;
+    @BindView(R.id.activity_create_event_restaurant) protected LinearLayout setRestaurantLinear;
     @BindView(R.id.activity_create_event_setTimeLinear) protected LinearLayout setTimeLinear;
     @BindView(R.id.activity_create_event_setDateLinear) protected LinearLayout setDateLinear;
     @BindView(R.id.activity_create_form) protected RelativeLayout relativeLayoutForm;
@@ -39,32 +39,26 @@ public class CreateEventActivity extends AppCompatActivity {
     @BindView(R.id.activity_create_etPost) protected EditText editTextPost;
     @BindView(R.id.activity_create_event_tvTime) protected TextView tvTime;
     @BindView(R.id.activity_create_event_tvDate) protected TextView tvDate;
+    @BindView(R.id.activity_create_event_infoLayout) protected LinearLayout infoLayout;
+    @BindView(R.id.activity_create_event_tvRestaurantName) protected TextView tvRestaurantName;
+    @BindView(R.id.activity_create_event_tvAddress) protected TextView tvAddress;
+    @BindView(R.id.activity_create_event_tvRestSelect) protected TextView tvRestSelect;
+
+    public static int CREATE_EVENT_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         ButterKnife.bind(this);
+
         Helpers.setToolbar(this, toolbar);
-        Helpers.overrideFonts(this, linearTest);
+        Helpers.overrideFonts(this, setRestaurantLinear);
+        Helpers.overrideFonts(this, setDateLinear);
         Helpers.overrideFonts(this, setTimeLinear);
         Helpers.overrideFonts(this, relativeLayoutForm);
         setTitle("New Event");
         editTextPost.setGravity(Gravity.CENTER);
-
-        editTextPost.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {}
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0){
-                    // position the text type in the left top corner
-                    editTextPost.setGravity(Gravity.START | Gravity.TOP);
-                } else {
-                    // no text entered. Center the hint text.
-                    editTextPost.setGravity(Gravity.CENTER);
-                }
-            }
-        });
 
         Picasso.with(this)
                 .load("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png")
@@ -88,12 +82,9 @@ public class CreateEventActivity extends AppCompatActivity {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
-                                String am_pm = "";
+                                String minuteDisplay = Integer.toString(minute);
 
-                                if (hourOfDay >= 12)
-                                    am_pm = "PM";
-                                else
-                                    am_pm = "AM";
+                                String am_pm =  (hourOfDay >= 12) ? "PM" : "AM";
 
                                 String strHrsToShow = "";
                                 if (hourOfDay == 0) {
@@ -104,7 +95,11 @@ public class CreateEventActivity extends AppCompatActivity {
                                     strHrsToShow = hourOfDay + "";
                                 }
 
-                                tvTime.setText(strHrsToShow + ":" + minute + " " + am_pm);
+                                if (minute < 10) {
+                                    minuteDisplay = "0" + minuteDisplay;
+                                }
+
+                                tvTime.setText(strHrsToShow + ":" + minuteDisplay + " " + am_pm);
                             }
                         }, mHour, mMinute, false);
                 timePickerDialog.setTitle("");
@@ -130,7 +125,17 @@ public class CreateEventActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                tvDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("EEEE", Locale.ENGLISH);
+                                Calendar cal = Calendar.getInstance();
+                                cal.set(Calendar.YEAR, year);
+                                cal.set(Calendar.MONTH, monthOfYear);
+                                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                                Date d_name = cal.getTime();
+                                String dayOfTheWeek = sdf.format(d_name);
+
+                                String monthToDisplay = getMonthToDisplay(monthOfYear);
+                                tvDate.setText(dayOfTheWeek + " " + monthToDisplay + "/" + dayOfMonth + "/" + year);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -138,11 +143,70 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        linearTest.setOnClickListener(new View.OnClickListener() {
+        setRestaurantLinear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CreateEventActivity.this, FindRestaurant.class));
+                startActivityForResult(new Intent(CreateEventActivity.this, FindRestaurant.class), CREATE_EVENT_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CREATE_EVENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            Helpers.displayToast(this, "GOT DATA");
+            tvRestSelect.setVisibility(View.GONE);
+            infoLayout.setVisibility(View.VISIBLE);
+            tvRestaurantName.setText(data.getStringExtra("name"));
+            tvAddress.setText(data.getStringExtra("address"));
+        }
+    }
+
+    private String getMonthToDisplay(int month) {
+        String monthString = "";
+
+        switch (month) {
+            case 0:
+                monthString = "Jan";
+                break;
+            case 1:
+                monthString = "Feb";
+                break;
+            case 2:
+                monthString = "Mar";
+                break;
+            case 3:
+                monthString = "April";
+                break;
+            case 4:
+                monthString = "May";
+                break;
+            case 5:
+                monthString = "June";
+                break;
+            case 6:
+                monthString = "July";
+                break;
+            case 7:
+                monthString = "Aug";
+                break;
+            case 8:
+                monthString = "Sept";
+                break;
+            case 9:
+                monthString = "Oct";
+                break;
+            case 10:
+                monthString = "Nov";
+                break;
+            case 11:
+                monthString = "Dec";
+                break;
+            default:
+                break;
+        }
+        return monthString;
     }
 }

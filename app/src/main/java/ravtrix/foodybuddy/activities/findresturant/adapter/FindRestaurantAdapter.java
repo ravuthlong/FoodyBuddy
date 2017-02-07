@@ -1,6 +1,7 @@
 package ravtrix.foodybuddy.activities.findresturant.adapter;
 
-import android.content.Context;
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -25,13 +27,13 @@ import ravtrix.foodybuddy.utils.Helpers;
 public class FindRestaurantAdapter extends RecyclerView.Adapter<FindRestaurantAdapter.ViewHolder> {
 
     private List<RestaurantModel> restaurantModels;
-    private Context context;
     private LayoutInflater inflater;
+    private Activity activity;
 
-    public FindRestaurantAdapter(Context context, List<RestaurantModel> restaurantModels) {
-        this.context = context;
+    public FindRestaurantAdapter(Activity activity, List<RestaurantModel> restaurantModels) {
+        this.activity = activity;
         this.restaurantModels = restaurantModels;
-        this.inflater = LayoutInflater.from(context);
+        this.inflater = LayoutInflater.from(activity);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class FindRestaurantAdapter extends RecyclerView.Adapter<FindRestaurantAd
         setStarIcons(currentItem, holder);
 
         if (!currentItem.getImage_url().isEmpty()) {
-            Picasso.with(context)
+            Picasso.with(activity)
                     .load(currentItem.getImage_url())
                     .centerCrop()
                     .fit()
@@ -70,6 +72,7 @@ public class FindRestaurantAdapter extends RecyclerView.Adapter<FindRestaurantAd
         private ImageView image, star1, star2, star3, star4, star5;
         private TextView restaurantName, address, details;
         private LinearLayout textLayout;
+        private RelativeLayout itemRestaurantRelative;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -84,8 +87,23 @@ public class FindRestaurantAdapter extends RecyclerView.Adapter<FindRestaurantAd
             star3 = (ImageView) itemView.findViewById(R.id.item_restaurant_star3);
             star4 = (ImageView) itemView.findViewById(R.id.item_restaurant_star4);
             star5 = (ImageView) itemView.findViewById(R.id.item_restaurant_star5);
+            itemRestaurantRelative = (RelativeLayout) itemView.findViewById(R.id.item_restaurant_relativeMain);
 
-            Helpers.overrideFonts(context, textLayout);
+            Helpers.overrideFonts(activity, textLayout);
+
+            itemRestaurantRelative.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RestaurantModel currentItem = restaurantModels.get(getAdapterPosition());
+
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("name", currentItem.getName());
+                    resultIntent.putExtra("address", currentItem.getAddress());
+                    activity.setResult(Activity.RESULT_OK, resultIntent);
+                    activity.finish();
+
+                }
+            });
         }
     }
 
@@ -93,74 +111,74 @@ public class FindRestaurantAdapter extends RecyclerView.Adapter<FindRestaurantAd
 
         switch (Double.toString(currentItem.getRating())) {
             case "0.0":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
                 break;
             case "1.0":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.one));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.one));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
                 break;
             case "1.5":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.one));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.onepointfive));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.one));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.onepointfive));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
                 break;
             case "2.0":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.two));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.two));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.two));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.two));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
                 break;
             case "2.5":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.two));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.two));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.twopointfive));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.two));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.two));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.twopointfive));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
                 break;
             case "3.0":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.three));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.three));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.three));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.three));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.three));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.three));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
                 break;
             case "3.5":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.three));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.three));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.three));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.threepointfive));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.three));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.three));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.three));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.threepointfive));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
                 break;
             case "4.0":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.four));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.four));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.four));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.four));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.zero));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.four));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.four));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.four));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.four));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.zero));
                 break;
             case "4.5":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.four));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.four));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.four));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.four));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.fourpointfive));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.four));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.four));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.four));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.four));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.fourpointfive));
                 break;
             case "5.0":
-                holder.star1.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.five));
-                holder.star2.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.five));
-                holder.star3.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.five));
-                holder.star4.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.five));
-                holder.star5.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.five));
+                holder.star1.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.five));
+                holder.star2.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.five));
+                holder.star3.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.five));
+                holder.star4.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.five));
+                holder.star5.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.five));
                 break;
         }
     }

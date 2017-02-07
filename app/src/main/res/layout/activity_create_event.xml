@@ -1,126 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_create_event"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_weight="2"
-    android:orientation="vertical"
     tools:context="ravtrix.foodybuddy.activities.CreateEventActivity">
 
-    <include
-        layout="@layout/frag_toolbar"
+    <LinearLayout
+        android:id="@+id/activity_create_event"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.04"
-        android:padding="15dp"
-        android:id="@+id/activity_create_form">
-
-        <LinearLayout
-            android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical">
+        <include
+            layout="@layout/frag_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/activity_create_userRelative"
-            android:layout_marginBottom="10dp">
+            android:layout_height="wrap_content" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/activity_create_profileImage"
-                android:layout_width="50dp"
-                android:layout_height="50dp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.04"
+            android:padding="15dp"
+            android:id="@+id/activity_create_form">
 
-            <TextView
-                android:id="@+id/activity_create_tvUsername"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/activity_create_userRelative"
+                android:layout_marginBottom="10dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/activity_create_profileImage"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp" />
+
+                <TextView
+                    android:id="@+id/activity_create_tvUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Ortemis"
+                    android:layout_toEndOf="@+id/activity_create_profileImage"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_14ssp"
+                    android:paddingStart="5dp" />
+            </LinearLayout>
+
+            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Ortemis"
-                android:layout_toEndOf="@+id/activity_create_profileImage"
-                android:gravity="center_vertical"
-                android:textStyle="bold"
-                android:textSize="@dimen/_14ssp"
-                android:paddingStart="5dp" />
+                android:layout_below="@+id/activity_create_userRelative"
+                android:background="@android:color/transparent"
+                android:id="@+id/activity_create_etPost"
+                android:hint="Include a short description \n of your meet up!" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.002"
+            android:background="@android:color/darker_gray"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.3"
+            android:id="@+id/activity_create_event_restaurant"
+            android:padding="10dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_marker"
+                android:id="@+id/imageView4" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/activity_create_event_infoLayout"
+                android:layout_marginStart="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:text="Restaurant Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/activity_create_event_tvRestaurantName"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:text="Address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/activity_create_event_tvAddress"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <TextView
+                android:text="RESTAURANT SELECTION"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/activity_create_event_tvRestSelect"
+                android:gravity="center"
+                android:layout_marginStart="10dp" />
         </LinearLayout>
 
-        <EditText
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/activity_create_userRelative"
-            android:background="@android:color/transparent"
-            android:id="@+id/activity_create_etPost"
-            android:hint="Include a short description \n of your meet up!" />
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.002"
-        android:background="@android:color/darker_gray"/>
+            android:layout_height="0dp"
+            android:layout_weight="0.002"
+            android:background="@android:color/darker_gray"/>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:id="@+id/activity_create_test"
-        android:padding="10dp">
-
-        <TextView
-            android:text="RESTAURANT SELECTION"
+        <LinearLayout
+            android:id="@+id/activity_create_event_setDateLinear"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/textView3"
-            android:gravity="center" />
+            android:layout_height="0dp"
+            android:layout_weight="0.3"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_calendar"
+                android:id="@+id/imageView5" />
+
+            <TextView
+                android:id="@+id/activity_create_event_tvDate"
+                android:text="SET EVENT DATE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="10dp" />
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.002"
+            android:background="@android:color/darker_gray"/>
+
+
+        <LinearLayout
+            android:id="@+id/activity_create_event_setTimeLinear"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.3"
+            android:padding="10dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_clock"
+                android:id="@+id/imageView6" />
+
+            <TextView
+                android:id="@+id/activity_create_event_tvTime"
+                android:text="SET EVEN TIME"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="10dp" />
+        </LinearLayout>
     </LinearLayout>
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.002"
-        android:background="@android:color/darker_gray"/>
-
-
-    <LinearLayout
-        android:id="@+id/activity_create_event_setDateLinear"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:padding="10dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/activity_create_event_tvDate"
-            android:text="SET DATE"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center" />
-    </LinearLayout>
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.002"
-        android:background="@android:color/darker_gray"/>
-
-
-    <LinearLayout
-        android:id="@+id/activity_create_event_setTimeLinear"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/activity_create_event_tvTime"
-            android:text="SET TIME"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center" />
-    </LinearLayout>
-
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="10dp"
+        app:backgroundTint="@android:color/holo_blue_dark" />
+</android.support.design.widget.CoordinatorLayout>

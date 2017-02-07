@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="@dimen/_13ssp"
-                android:text="Where are you eating next?"
+                android:text="Start an event now!"
                 android:layout_toStartOf="@+id/imageView"
                 android:gravity="center" />
 
