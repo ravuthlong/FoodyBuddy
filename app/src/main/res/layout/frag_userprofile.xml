@@ -26,7 +26,9 @@
             android:layout_width="match_parent"
             app:ci_gravity="center"
             android:layout_gravity="bottom"
-            android:layout_height="30dp" />
+            android:layout_height="30dp" >
+
+        </me.relex.circleindicator.CircleIndicator>
     </FrameLayout>
 
     <LinearLayout
@@ -180,5 +182,6 @@
         android:layout_height="0dp"
         android:layout_weight="1.18"
         android:background="@color/lightBrown">
+
     </RelativeLayout>
 </LinearLayout>
