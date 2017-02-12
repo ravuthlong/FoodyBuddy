@@ -16,14 +16,17 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.model.Response;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.NetworkUtil;
-
-import java.io.IOException;
-
 import retrofit2.adapter.rxjava.HttpException;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -31,19 +34,19 @@ import rx.subscriptions.CompositeSubscription;
 import static ravtrix.foodybuddy.utils.Validation.validateEmail;
 import static ravtrix.foodybuddy.utils.Validation.validateFields;
 
-public class RegisterFragment extends Fragment {
+public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = RegisterFragment.class.getSimpleName();
 
-    private EditText mEtName;
-    private EditText mEtEmail;
-    private EditText mEtPassword;
-    private Button   mBtRegister;
-    private TextView mTvLogin;
-    private TextInputLayout mTiName;
-    private TextInputLayout mTiEmail;
-    private TextInputLayout mTiPassword;
-    private ProgressBar mProgressbar;
+    @BindView(R.id.et_name) protected EditText mEtName;
+    @BindView(R.id.et_email) protected EditText mEtEmail;
+    @BindView(R.id.et_password) EditText mEtPassword;
+    @BindView(R.id.btn_register) protected Button mBtRegister;
+    @BindView(R.id.tv_login) protected TextView mTvLogin;
+    @BindView(R.id.ti_name) protected TextInputLayout mTiName;
+    @BindView(R.id.ti_email) protected TextInputLayout mTiEmail;
+    @BindView(R.id.ti_password) protected TextInputLayout mTiPassword;
+    @BindView(R.id.progress) ProgressBar mProgressbar;
 
     private CompositeSubscription mSubscriptions;
 
@@ -52,25 +55,28 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_register,container,false);
+        ButterKnife.bind(this, view);
         mSubscriptions = new CompositeSubscription();
-        initViews(view);
+        initListeners();
         return view;
     }
 
-    private void initViews(View v) {
+    private void initListeners() {
+        mBtRegister.setOnClickListener(this);
+        mTvLogin.setOnClickListener(this);
+    }
 
-        mEtName = (EditText) v.findViewById(R.id.et_name);
-        mEtEmail = (EditText) v.findViewById(R.id.et_email);
-        mEtPassword = (EditText) v.findViewById(R.id.et_password);
-        mBtRegister = (Button) v.findViewById(R.id.btn_register);
-        mTvLogin = (TextView) v.findViewById(R.id.tv_login);
-        mTiName = (TextInputLayout) v.findViewById(R.id.ti_name);
-        mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_email);
-        mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
-        mProgressbar = (ProgressBar) v.findViewById(R.id.progress);
 
-        mBtRegister.setOnClickListener(view -> register());
-        mTvLogin.setOnClickListener(view -> goToLogin());
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_register:
+                register();
+                break;
+            case R.id.tv_login:
+                goToLogin();
+                break;
+        }
     }
 
     private void register() {
@@ -129,7 +135,20 @@ public class RegisterFragment extends Fragment {
         mSubscriptions.add(NetworkUtil.getRetrofit().register(user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        handleError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        handleResponse(response);
+                    }
+                }));
     }
 
     private void handleResponse(Response response) {

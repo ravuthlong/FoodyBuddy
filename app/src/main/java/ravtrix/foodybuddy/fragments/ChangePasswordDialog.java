@@ -15,45 +15,46 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ravtrix.foodybuddy.ProfileActivity;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.model.Response;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.NetworkUtil;
 import ravtrix.foodybuddy.utils.Constants;
-
-import java.io.IOException;
-
 import retrofit2.adapter.rxjava.HttpException;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static ravtrix.foodybuddy.utils.Validation.validateFields;
 
-public class ChangePasswordDialog extends DialogFragment {
+public class ChangePasswordDialog extends DialogFragment implements View.OnClickListener {
 
     public interface Listener {
-
         void onPasswordChanged();
     }
 
     public static final String TAG = ChangePasswordDialog.class.getSimpleName();
 
-    private EditText mEtOldPassword;
-    private EditText mEtNewPassword;
-    private Button mBtChangePassword;
-    private Button mBtCancel;
-    private TextView mTvMessage;
-    private TextInputLayout mTiOldPassword;
-    private TextInputLayout mTiNewPassword;
-    private ProgressBar mProgressBar;
+    @BindView(R.id.et_old_password) protected EditText mEtOldPassword;
+    @BindView(R.id.et_new_password) protected EditText mEtNewPassword;
+    @BindView(R.id.btn_change_password) protected Button mBtChangePassword;
+    @BindView(R.id.btn_cancel) protected Button mBtCancel;
+    @BindView(R.id.tv_message) protected TextView mTvMessage;
+    @BindView(R.id.ti_old_password) protected TextInputLayout mTiOldPassword;
+    @BindView(R.id.ti_new_password) TextInputLayout mTiNewPassword;
+    @BindView(R.id.progress) protected ProgressBar mProgressBar;
 
     private CompositeSubscription mSubscriptions;
 
     private String mToken;
     private String mEmail;
-
     private Listener mListener;
 
     @Nullable
@@ -61,9 +62,12 @@ public class ChangePasswordDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.dialog_change_password,container,false);
+        ButterKnife.bind(this, view);
+
         mSubscriptions = new CompositeSubscription();
         getData();
-        initViews(view);
+        initListeners();
+
         return view;
     }
 
@@ -81,19 +85,22 @@ public class ChangePasswordDialog extends DialogFragment {
         mListener = (ProfileActivity)context;
     }
 
-    private void initViews(View v) {
+    private void initListeners() {
 
-        mEtOldPassword = (EditText) v.findViewById(R.id.et_old_password);
-        mEtNewPassword = (EditText) v.findViewById(R.id.et_new_password);
-        mTiOldPassword = (TextInputLayout) v.findViewById(R.id.ti_old_password);
-        mTiNewPassword = (TextInputLayout) v.findViewById(R.id.ti_new_password);
-        mTvMessage = (TextView) v.findViewById(R.id.tv_message);
-        mBtChangePassword = (Button) v.findViewById(R.id.btn_change_password);
-        mBtCancel = (Button) v.findViewById(R.id.btn_cancel);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
+        mBtChangePassword.setOnClickListener(this);
+        mBtCancel.setOnClickListener(this);
+    }
 
-        mBtChangePassword.setOnClickListener(view -> changePassword());
-        mBtCancel.setOnClickListener(view -> dismiss());
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_change_password:
+                changePassword();
+                break;
+            case R.id.btn_cancel:
+                dismiss();
+                break;
+        }
     }
 
     private void changePassword() {
@@ -139,7 +146,19 @@ public class ChangePasswordDialog extends DialogFragment {
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail,user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        handleError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        handleResponse(response);
+                    }}));
     }
 
     private void handleResponse(Response response) {

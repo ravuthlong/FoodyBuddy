@@ -32,6 +32,8 @@ public class MainEventFrag extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_eventmain, container, false);
+
+        ButterKnife.setDebug(true);
         ButterKnife.bind(this, view);
 
         setModels();

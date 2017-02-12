@@ -10,7 +10,7 @@
     android:id="@+id/item_event_relativeAll">
 
     <RelativeLayout
-        android:id="@+id/relative1"
+        android:id="@+id/item_event_comment_relativeUserInfo"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,10 +89,10 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/relative2"
+        android:id="@+id/item_event_comment_relative_moreOptions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/relative1"
+        android:layout_below="@id/item_event_comment_relativeUserInfo"
         android:layout_marginBottom="15dp"
         android:layout_marginTop="15dp">
 
@@ -106,7 +106,7 @@
 
     <RelativeLayout
         android:id="@+id/relative3"
-        android:layout_below="@id/relative2"
+        android:layout_below="@id/item_event_comment_relative_moreOptions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">

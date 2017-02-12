@@ -33,7 +33,9 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
 
             mLoginFragment = new LoginFragment();
         }
-        getFragmentManager().beginTransaction().replace(R.id.fragmentFrame,mLoginFragment,LoginFragment.TAG).commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragmentFrame, mLoginFragment, LoginFragment.TAG)
+                .commit();
     }
 
     @Override

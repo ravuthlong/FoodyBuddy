@@ -16,27 +16,28 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
+import butterknife.BindView;
 import ravtrix.foodybuddy.fragments.ChangePasswordDialog;
 import ravtrix.foodybuddy.model.Response;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.NetworkUtil;
 import ravtrix.foodybuddy.utils.Constants;
 import retrofit2.adapter.rxjava.HttpException;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class ProfileActivity extends AppCompatActivity implements ChangePasswordDialog.Listener {
+public class ProfileActivity extends AppCompatActivity implements ChangePasswordDialog.Listener, View.OnClickListener {
 
     public static final String TAG = ProfileActivity.class.getSimpleName();
 
-    private TextView mTvName;
-    private TextView mTvEmail;
-    private TextView mTvDate;
-    private Button mBtChangePassword;
-    private Button mBtLogout;
-
-    private ProgressBar mProgressbar;
+    @BindView(R.id.tv_name) protected TextView mTvName;
+    @BindView(R.id.tv_email) protected TextView mTvEmail;
+    @BindView(R.id.tv_date) protected TextView mTvDate;
+    @BindView(R.id.btn_change_password) protected Button mBtChangePassword;
+    @BindView(R.id.btn_logout) protected Button mBtLogout;
+    @BindView(R.id.progress) protected ProgressBar mProgressbar;
 
     private SharedPreferences mSharedPreferences;
     private String mToken;
@@ -55,16 +56,21 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     }
 
     private void initViews() {
+        mBtChangePassword.setOnClickListener(this);
+        mBtLogout.setOnClickListener(this);
+    }
 
-        mTvName = (TextView) findViewById(R.id.tv_name);
-        mTvEmail = (TextView) findViewById(R.id.tv_email);
-        mTvDate = (TextView) findViewById(R.id.tv_date);
-        mBtChangePassword = (Button) findViewById(R.id.btn_change_password);
-        mBtLogout = (Button) findViewById(R.id.btn_logout);
-        mProgressbar = (ProgressBar) findViewById(R.id.progress);
 
-        mBtChangePassword.setOnClickListener(view -> showDialog());
-        mBtLogout.setOnClickListener(view -> logout());
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_change_password:
+                showDialog();
+                break;
+            case R.id.btn_logout:
+                logout();
+                break;
+        }
     }
 
     private void initSharedPreferences() {
@@ -100,7 +106,20 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).getProfile(mEmail)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(new Observer<User>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        handleError(e);
+                    }
+
+                    @Override
+                    public void onNext(User user) {
+                        handleResponse(user);
+                    }
+                }));
     }
 
     private void handleResponse(User user) {

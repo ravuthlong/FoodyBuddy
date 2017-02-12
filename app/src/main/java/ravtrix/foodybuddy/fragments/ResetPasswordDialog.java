@@ -18,12 +18,15 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ravtrix.foodybuddy.LoginActivity;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.model.Response;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.NetworkUtil;
 import retrofit2.adapter.rxjava.HttpException;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -31,7 +34,7 @@ import rx.subscriptions.CompositeSubscription;
 import static ravtrix.foodybuddy.utils.Validation.validateEmail;
 import static ravtrix.foodybuddy.utils.Validation.validateFields;
 
-public class ResetPasswordDialog extends DialogFragment {
+public class ResetPasswordDialog extends DialogFragment implements View.OnClickListener {
 
     public interface Listener {
 
@@ -40,55 +43,49 @@ public class ResetPasswordDialog extends DialogFragment {
 
     public static final String TAG = ResetPasswordDialog.class.getSimpleName();
 
-    private EditText mEtEmail;
-    private EditText mEtToken;
-    private EditText mEtPassword;
-    private Button mBtResetPassword;
-    private TextView mTvMessage;
-    private TextInputLayout mTiEmail;
-    private TextInputLayout mTiToken;
-    private TextInputLayout mTiPassword;
-    private ProgressBar mProgressBar;
+    @BindView(R.id.et_email) protected EditText mEtEmail;
+    @BindView(R.id.et_token) protected EditText mEtToken;
+    @BindView(R.id.et_password) protected EditText mEtPassword;
+    @BindView(R.id.btn_reset_password) protected Button mBtResetPassword;
+    @BindView(R.id.tv_message) protected TextView mTvMessage;
+    @BindView(R.id.ti_email) protected TextInputLayout mTiEmail;
+    @BindView(R.id.ti_token) protected TextInputLayout mTiToken;
+    @BindView(R.id.ti_password) protected TextInputLayout mTiPassword;
+    @BindView(R.id.progress) protected ProgressBar mProgressBar;
 
     private CompositeSubscription mSubscriptions;
-
     private String mEmail;
-
     private boolean isInit = true;
-
     private Listener mListner;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_reset_password,container,false);
+        ButterKnife.bind(this, view);
         mSubscriptions = new CompositeSubscription();
-        initViews(view);
+        initListeners();
         return view;
     }
 
-    private void initViews(View v) {
-
-        mEtEmail = (EditText) v.findViewById(R.id.et_email);
-        mEtToken = (EditText) v.findViewById(R.id.et_token);
-        mEtPassword = (EditText) v.findViewById(R.id.et_password);
-        mBtResetPassword = (Button) v.findViewById(R.id.btn_reset_password);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
-        mTvMessage = (TextView) v.findViewById(R.id.tv_message);
-        mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_email);
-        mTiToken = (TextInputLayout) v.findViewById(R.id.ti_token);
-        mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
-
-        mBtResetPassword.setOnClickListener(view -> {
-            if (isInit) resetPasswordInit();
-            else resetPasswordFinish();
-        });
+    private void initListeners() {
+        mBtResetPassword.setOnClickListener(this);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mListner = (LoginActivity)context;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_reset_password:
+                if (isInit) resetPasswordInit();
+                else resetPasswordFinish();
+                break;
+        }
     }
 
     private void setEmptyFields() {
@@ -100,7 +97,6 @@ public class ResetPasswordDialog extends DialogFragment {
     }
 
     public void setToken(String token) {
-
         mEtToken.setText(token);
     }
 
@@ -162,7 +158,19 @@ public class ResetPasswordDialog extends DialogFragment {
         mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordInit(email)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        handleError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        handleResponse(response);
+                    }}));
     }
 
     private void resetPasswordFinishProgress(User user) {
@@ -170,7 +178,20 @@ public class ResetPasswordDialog extends DialogFragment {
         mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordFinish(mEmail,user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        handleError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        handleResponse(response);
+                    }
+                }));
     }
 
     private void handleResponse(Response response) {

@@ -1,6 +1,9 @@
 package ravtrix.foodybuddy.activities.drawerrecycler.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.drawerrecycler.model.DrawerModel;
 import ravtrix.foodybuddy.utils.Helpers;
@@ -23,6 +27,7 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
     private List<DrawerModel> drawerModelList;
     private Context context;
     private LayoutInflater inflater;
+    private boolean isEditEventClicked = false;
 
     public DrawerRecyclerAdapter(Context context, List<DrawerModel> drawerModels) {
         this.drawerModelList = drawerModels;
@@ -41,6 +46,11 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
         // get current item of viewholder
         DrawerModel currentItem = drawerModelList.get(position);
 
+        if (isEditEventClicked) {
+            holder.imageRemove.setVisibility(View.VISIBLE);
+        } else {
+            holder.imageRemove.setVisibility(View.GONE);
+        }
         // populate with list data
         holder.tvRestaurantName.setText(currentItem.getRestaurantName());
         holder.tvTime.setText(currentItem.getTime());
@@ -54,8 +64,10 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+
         private TextView tvRestaurantName, tvTime, tvAddress;
-        private LinearLayout mainLinear;
+        private LinearLayout mainLinear, layoutCancelEvent, layoutRestaurant;
+        private CircleImageView imageRemove;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -64,18 +76,49 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
             tvTime = (TextView) itemView.findViewById(R.id.item_drawer_tvTime);
             tvAddress = (TextView) itemView.findViewById(R.id.item_drawer_tvAddress);
             mainLinear = (LinearLayout) itemView.findViewById(R.id.item_drawer_mainLinear);
+            layoutRestaurant = (LinearLayout) itemView.findViewById(R.id.item_drawer_recycler_layoutRestaurant);
+            layoutCancelEvent = (LinearLayout) itemView.findViewById(R.id.item_drawer_recycler_layoutCancelEvent);
+            imageRemove = (CircleImageView) itemView.findViewById(R.id.item_drawer_recycler_imgDelete);
 
             Helpers.overrideFonts(context, mainLinear);
 
             mainLinear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     DrawerModel currentItem = drawerModelList.get(getAdapterPosition());
                     Helpers.displayToast(context, "Clicked On: " + currentItem.getRestaurantName());
 
                 }
             });
+
+            layoutCancelEvent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DrawerModel currentItem = drawerModelList.get(getAdapterPosition());
+                    showOptionDialog(currentItem.getRestaurantName());
+                }
+            });
+
         }
+    }
+
+    public void setEditEventClicked(boolean isEditEventClicked) {
+        this.isEditEventClicked = isEditEventClicked;
+        notifyDataSetChanged();
+    }
+
+    private void showOptionDialog(String restaurantName) {
+
+        AlertDialog.Builder optionDialog = Helpers.showAlertDialogWithTwoOptions((Activity) context,
+                "Cancel " + restaurantName + " event",
+                "Are you sure you want to cancel this event?", "No");
+
+        optionDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Helpers.displayToast(context, "You clicked cancelled.... :/");
+            }
+        });
+        optionDialog.show();
     }
 }

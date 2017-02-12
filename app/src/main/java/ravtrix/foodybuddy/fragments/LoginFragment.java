@@ -19,15 +19,19 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import ravtrix.foodybuddy.ProfileActivity;
-import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.model.Response;
-import ravtrix.foodybuddy.network.NetworkUtil;
-import ravtrix.foodybuddy.utils.Constants;
 
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import ravtrix.foodybuddy.ProfileActivity;
+import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.activities.MainActivity;
+import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.network.NetworkUtil;
+import ravtrix.foodybuddy.utils.Constants;
 import retrofit2.adapter.rxjava.HttpException;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -35,18 +39,19 @@ import rx.subscriptions.CompositeSubscription;
 import static ravtrix.foodybuddy.utils.Validation.validateEmail;
 import static ravtrix.foodybuddy.utils.Validation.validateFields;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = LoginFragment.class.getSimpleName();
 
-    private EditText mEtEmail;
-    private EditText mEtPassword;
-    private Button mBtLogin;
-    private TextView mTvRegister;
-    private TextView mTvForgotPassword;
-    private TextInputLayout mTiEmail;
-    private TextInputLayout mTiPassword;
-    private ProgressBar mProgressBar;
+    @BindView(R.id.et_email) protected EditText mEtEmail;
+    @BindView(R.id.et_password) protected EditText mEtPassword;
+    @BindView(R.id.btn_login) protected Button mBtLogin;
+    @BindView(R.id.btn_main) protected Button btMain;
+    @BindView(R.id.tv_register) protected TextView mTvRegister;
+    @BindView(R.id.tv_forgot_password) protected TextView mTvForgotPassword;
+    @BindView(R.id.ti_email) protected TextInputLayout mTiEmail;
+    @BindView(R.id.ti_password) protected TextInputLayout mTiPassword;
+    @BindView(R.id.progress) protected ProgressBar mProgressBar;
 
     private CompositeSubscription mSubscriptions;
     private SharedPreferences mSharedPreferences;
@@ -55,26 +60,37 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login,container,false);
+        ButterKnife.bind(this, view);
         mSubscriptions = new CompositeSubscription();
-        initViews(view);
+        initListeners();
         initSharedPreferences();
         return view;
     }
 
-    private void initViews(View v) {
+    private void initListeners() {
+        mBtLogin.setOnClickListener(this);
+        mTvRegister.setOnClickListener(this);
+        mTvForgotPassword.setOnClickListener(this);
+        btMain.setOnClickListener(this);
+    }
 
-        mEtEmail = (EditText) v.findViewById(R.id.et_email);
-        mEtPassword = (EditText) v.findViewById(R.id.et_password);
-        mBtLogin = (Button) v.findViewById(R.id.btn_login);
-        mTiEmail = (TextInputLayout) v.findViewById(R.id.ti_email);
-        mTiPassword = (TextInputLayout) v.findViewById(R.id.ti_password);
-        mProgressBar = (ProgressBar) v.findViewById(R.id.progress);
-        mTvRegister = (TextView) v.findViewById(R.id.tv_register);
-        mTvForgotPassword = (TextView) v.findViewById(R.id.tv_forgot_password);
+    @Override
+    public void onClick(View view) {
 
-        mBtLogin.setOnClickListener(view -> login());
-        mTvRegister.setOnClickListener(view -> goToRegister());
-        mTvForgotPassword.setOnClickListener(view -> showDialog());
+        switch (view.getId()) {
+            case R.id.btn_login:
+                login();
+                break;
+            case R.id.tv_register:
+                goToRegister();
+                break;
+            case R.id.tv_forgot_password:
+                showDialog();
+                break;
+            case R.id.btn_main:
+                startMainActivity();
+                break;
+        }
     }
 
     private void initSharedPreferences() {
@@ -125,7 +141,21 @@ public class LoginFragment extends Fragment {
         mSubscriptions.add(NetworkUtil.getRetrofit(email, password).login()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleResponse,this::handleError));
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        handleError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        handleResponse(response);
+                    }
+                }));
     }
 
     private void handleResponse(Response response) {
@@ -181,7 +211,12 @@ public class LoginFragment extends Fragment {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         RegisterFragment fragment = new RegisterFragment();
         ft.replace(R.id.fragmentFrame,fragment,RegisterFragment.TAG);
+        ft.addToBackStack(null); // add fragment to back stack so user can navigate back
         ft.commit();
+    }
+
+    private void startMainActivity() {
+        this.startActivity(new Intent(getActivity(), MainActivity.class));
     }
 
     private void showDialog(){

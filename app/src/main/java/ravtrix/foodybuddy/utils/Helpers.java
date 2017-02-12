@@ -6,8 +6,12 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -143,6 +147,22 @@ public class Helpers {
     }
 
     /**
+     * Create an alert dialog with positive buttons
+     * @param activity      the activity for the dialog
+     * @param message       the message to be displayed
+     * @param negative      the text for negative button
+     */
+    public static AlertDialog.Builder showAlertDialogWithTwoOptions(final android.app.Activity activity, String title, String message,
+                                                                    String negative) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+        dialogBuilder.setTitle(title);
+        dialogBuilder.setMessage(message);
+        dialogBuilder.setNegativeButton(negative, null);
+        return dialogBuilder;
+    }
+
+
+    /**
      * Display a toast on the screen
      * @param context           - the context to display the toast
      * @param string            - the message to be diaplyed
@@ -155,12 +175,25 @@ public class Helpers {
      * Display error toast based on error
      * @param context           - the context to display
      */
-    public static void displayErrorToast(Context context) {
+    public static void displayErrorSnackbar(Context context, View parentView) {
         if (!isConnectedToInternet(context)) {
-            Helpers.displayToast(context, "Not connected to the internet");
+            makeSnackbar(parentView, "Not Connected to the Internet");
         } else {
-            Helpers.displayToast(context, "Problem loading...");
+            makeSnackbar(parentView, "Problem Loading");
         }
+    }
+
+    private static void makeSnackbar(View parentView, String message) {
+        Snackbar snackbar = Snackbar
+                .make(parentView, message, Snackbar.LENGTH_SHORT);
+        View mView = snackbar.getView();
+        TextView mTextView = (TextView) mView.findViewById(android.support.design.R.id.snackbar_text);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        } else {
+            mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
+        }
+        snackbar.show();
     }
 
     /**

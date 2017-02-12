@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_event_comments"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ravtrix.foodybuddy.activities.eventcomments.EventCommentsActivity">
+
+    <include
+        android:id="@+id/toolbar_main"
+        layout="@layout/frag_toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" >
+    </include>
+
+    <RelativeLayout
+        android:id="@+id/activity_event_comment_relativeMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"
+            android:id="@+id/activity_event_comment_linearProg">
+            <ProgressBar
+                android:id="@+id/activity_event_comment_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyle"
+                android:indeterminate="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/activity_event_comment_relativeComment"
+            android:layout_alignParentTop="true"
+            android:id="@+id/activity_event_comment_linearRecycler">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/activity_event_comment_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/activity_event_comment_relativeComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/edit_text_border">
+            <EditText
+                android:id="@+id/activity_event_comment_etComment"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_60sdp"
+                android:inputType="textMultiLine|textCapSentences"
+                android:focusable="true"
+                android:padding="@dimen/_5sdp"
+                android:layout_toLeftOf="@+id/activity_event_comment_submitButton"
+                android:background="@android:color/transparent"
+                android:textSize="@dimen/_11sdp"
+                android:hint="Write comment..."/>
+
+            <Button
+                android:id="@+id/activity_event_comment_submitButton"
+                android:text="Post"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_60sdp"
+                android:textSize="@dimen/_10ssp"
+                android:background="@drawable/edit_text_border"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

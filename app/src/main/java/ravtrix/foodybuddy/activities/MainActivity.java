@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -41,11 +42,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.acitivty_main_nav_view) protected NavigationView navigationView;
     @BindView(R.id.activity_main_recyclerView) protected RecyclerView recyclerViewMain;
     @BindView(R.id.activity_main_tvUpcoming) protected TextView tvUpcomingEvents;
-    @BindView(R.id.activity_main_tvEdit) protected TextView tvEditEvents;
+    @BindView(R.id.activity_main_layoutEdit) protected LinearLayout layoutEdit;
     private ImageView imageSetting, imageNavigation;
     private ViewPagerAdapter adapter;
     private List<DrawerModel> drawerModels;
     private DrawerRecyclerAdapter drawerRecyclerAdapter;
+    private boolean isEventEditClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         Helpers.overrideFonts(this, tvUpcomingEvents);
-        Helpers.overrideFonts(this, tvEditEvents);
+        Helpers.overrideFonts(this, layoutEdit);
 
 
         // Set views
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // set button listeners
         imageNavigation.setOnClickListener(this);
         imageSetting.setOnClickListener(this);
+        layoutEdit.setOnClickListener(this);
 
         RecyclerView.ItemDecoration dividerDecorator = new DividerDecoration(this, R.drawable.line_divider_drawer);
         recyclerViewMain.addItemDecoration(dividerDecorator);
@@ -101,6 +104,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 drawerLayout.openDrawer(navigationView);
                 break;
             case R.id.layout_main_imageSetting:
+                break;
+            case R.id.activity_main_layoutEdit:
+                if (!isEventEditClicked) {
+                    drawerRecyclerAdapter.setEditEventClicked(true);
+                    isEventEditClicked = true;
+                } else {
+                    // User already clicked edit before, if they click again, it means they want to cancel edit
+                    drawerRecyclerAdapter.setEditEventClicked(false);
+                    isEventEditClicked = false;
+                }
                 break;
             default:
                 break;
@@ -131,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.addFragment(new InboxFragment()); // inbox
         adapter.addFragment(new UserProfileFrag());
         adapter.addFragment(new FriendsFrag());
-        viewPager.setAdapter(adapter);
+        this.viewPager.setAdapter(adapter);
     }
 
     /**

@@ -43,7 +43,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:background="@color/toolbar">
+            android:background="@color/toolbar"
+            android:id="@+id/frag_userprofile_linearFollowers">
 
             <TextView
                 android:id="@+id/textView"
@@ -92,7 +93,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:background="@color/toolbar">
+            android:background="@color/toolbar"
+            android:id="@+id/frag_userprofile_linearFollowing">
 
             <TextView
                 android:id="@+id/textView24"
@@ -139,7 +141,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:background="@color/toolbar">
+            android:background="@color/toolbar"
+            android:id="@+id/frag_userprofile_linearJoined">
 
             <TextView
                 android:id="@+id/textView2"
