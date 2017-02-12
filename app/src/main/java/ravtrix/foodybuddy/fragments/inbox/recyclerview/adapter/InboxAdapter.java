@@ -73,22 +73,15 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
             message = (TextView) itemView.findViewById(R.id.item_inboxFeed_lastMessage);
             inboxLinear = (LinearLayout) itemView.findViewById(R.id.item_inboxFeed_linearLayout);
 
-            //Helpers.overrideFonts(context, inboxLinear);
+            Helpers.overrideFonts(context, inboxLinear);
 
-            profileImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Helpers.displayToast(context, "Clicked to view profile");
-                }
-            });
-
-            inboxLinear.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Helpers.displayToast(context, "Clicked to view message");
-                }
-            });
+            //profileImage.setOnClickListener(view -> showToast("Clicked to view profile"));
+            //inboxLinear.setOnClickListener(view -> showToast("Clicked to view message"));
 
         }
+    }
+
+    private void showToast(String text) {
+        Helpers.displayToast(context, text);
     }
 }

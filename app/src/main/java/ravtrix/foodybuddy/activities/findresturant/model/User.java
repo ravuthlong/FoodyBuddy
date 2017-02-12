@@ -1,11 +1,11 @@
-package ravtrix.foodybuddy.activities;
+package ravtrix.foodybuddy.activities.findresturant.model;
 
 /**
  * Created by Emily on 1/31/17.
  */
 
 public class User {
-    String email, userName, password;
+    String email, userName, password, newPassword;
 
     public User(String email, String userName, String password) {
         this.email = email;
@@ -40,5 +40,9 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 }

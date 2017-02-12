@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,11 @@ import ravtrix.foodybuddy.utils.Helpers;
 public class UserProfileFrag extends Fragment {
 
     @BindView(R.id.frag_userprofile_viewpager) protected ViewPager viewPager;
+
     @BindView(R.id.frag_userprofile_indicator) protected CircleIndicator circleIndicator;
+    @BindView(R.id.frag_userprofile_linearFollowers) protected LinearLayout linearFollowers;
+    @BindView(R.id.frag_userprofile_linearFollowing) protected LinearLayout linearFollowing;
+    @BindView(R.id.frag_userprofile_linearJoined) protected LinearLayout linearJoined;
     private UserProfileFrag.ViewPagerAdapter adapter;
     boolean isFragLoaded = false;
 
@@ -49,6 +54,11 @@ public class UserProfileFrag extends Fragment {
 
         View view = inflater.inflate(R.layout.frag_userprofile, container, false);
         ButterKnife.bind(this, view);
+
+
+        Helpers.overrideFonts(getContext(), linearFollowers);
+        Helpers.overrideFonts(getContext(), linearFollowing);
+        Helpers.overrideFonts(getContext(), linearJoined);
 
         setupViewPager(viewPager);
         viewPager.setOffscreenPageLimit(1); // define size 0,1

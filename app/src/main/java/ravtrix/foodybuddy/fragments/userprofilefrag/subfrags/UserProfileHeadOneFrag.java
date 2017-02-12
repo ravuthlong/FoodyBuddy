@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,6 +27,7 @@ public class UserProfileHeadOneFrag extends Fragment {
 
     @BindView(R.id.frag_userprofile_background) protected ImageView backgroundImage;
     @BindView(R.id.frag_userprofile_profileImage) protected CircleImageView profileImage;
+    @BindView(R.id.frag_userprofile_username) protected TextView tvUsername;
     @BindView(R.id.frag_profile_head1_mainRelative) protected RelativeLayout mainRelative;
 
     @Nullable
@@ -35,6 +37,7 @@ public class UserProfileHeadOneFrag extends Fragment {
         ButterKnife.bind(this, view);
 
         Helpers.overrideFonts(getContext(), mainRelative);
+        Helpers.overrideFonts(getContext(), tvUsername);
 
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override

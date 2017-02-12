@@ -44,6 +44,8 @@ public class InboxFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_userinbox, container, false);
+
+        ButterKnife.setDebug(true);
         ButterKnife.bind(this, view);
         Helpers.displayToast(getContext(), "CALLED2");
 

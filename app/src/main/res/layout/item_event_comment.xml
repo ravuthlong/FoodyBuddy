@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_10sdp">
+
+    <RelativeLayout
+        android:id="@+id/item_event_comment_relativeUserInfo"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_event_comment_profileimage"
+            android:layout_alignParentStart="true"
+            android:layout_width="@dimen/_45sdp"
+            android:layout_height="@dimen/_45sdp" />
+
+        <LinearLayout
+            android:id="@+id/linearlayout2"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/item_event_comment_profileimage">
+
+            <TextView
+                android:id="@+id/item_event_comment_tvUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/toolbar"
+                android:textSize="@dimen/_15ssp"
+                android:layout_marginStart="@dimen/_5sdp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/item_event_comment_tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/item_event_comment_relative_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/item_event_comment_relativeUserInfo"
+        android:layout_marginTop="@dimen/_2sdp"
+        android:layout_marginBottom="@dimen/_2sdp">
+
+        <TextView
+            android:id="@+id/item_event_comment_tvComment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp" />
+        </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/item_event_comment_relative_moreOptions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/item_event_comment_relative_comment"
+        android:layout_marginBottom="@dimen/_3sdp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:paddingBottom="5dp"
+            android:paddingEnd="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:id="@+id/item_event_imageButtonMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_more_horiz_black_24dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

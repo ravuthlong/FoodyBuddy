@@ -21,6 +21,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.CreateEventActivity;
+import ravtrix.foodybuddy.activities.eventcomments.EventCommentsActivity;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.EventModel;
 import ravtrix.foodybuddy.utils.Helpers;
 
@@ -251,7 +252,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             layoutComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Helpers.displayToast(context, "Clicked on comment");
+                    context.startActivity(new Intent(context, EventCommentsActivity.class));
                 }
             });
 

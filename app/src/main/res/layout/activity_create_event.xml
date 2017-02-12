@@ -181,5 +181,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="10dp"
-        app:backgroundTint="@android:color/holo_blue_dark" />
+        app:backgroundTint="@android:color/holo_green_dark"
+        android:src="@drawable/ic_done_white_24dp"
+        android:id="@+id/activity_create_event_floatingButtonSubmit" />
 </android.support.design.widget.CoordinatorLayout>
