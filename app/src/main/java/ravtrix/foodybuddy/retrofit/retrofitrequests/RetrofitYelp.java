@@ -16,7 +16,8 @@ public class RetrofitYelp {
         retrofit = Helpers.retrofitBuilder(Helpers.ServerURL.YELP_API_URL);
     }
 
-    public RetrofitYelpInterfaces.FetchAPlace fetchAPlace() {
-        return retrofit.create(RetrofitYelpInterfaces.FetchAPlace.class);
+
+    public RetrofitYelpInterfaces.FetchPlacesWithFilter fetchPlacesWithFilter() {
+        return retrofit.create(RetrofitYelpInterfaces.FetchPlacesWithFilter.class);
     }
 }

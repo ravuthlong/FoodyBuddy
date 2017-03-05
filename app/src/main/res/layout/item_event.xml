@@ -38,7 +38,8 @@
                     android:textColor="@color/toolbar"
                     android:layout_marginStart="5dp"
                     android:textSize="17sp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:layout_marginTop="-5dp" />
 
                 <TextView
                     android:id="@+id/item_event_tvPostTime"
@@ -79,7 +80,7 @@
 
         </LinearLayout>
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/item_event_profileImage"
             android:layout_width="50dp"
             android:layout_height="50dp"

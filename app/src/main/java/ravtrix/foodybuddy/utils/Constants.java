@@ -5,7 +5,7 @@ package ravtrix.foodybuddy.utils;
  */
 
 public class Constants {
-    public static final String BASE_URL = "http://54.219.178.235:8080/api/";
+    public static final String BASE_URL = "https://limitless-reaches-90159.herokuapp.com/api/";
     public static final String TOKEN = "token";
     public static final String EMAIL = "email";
 }

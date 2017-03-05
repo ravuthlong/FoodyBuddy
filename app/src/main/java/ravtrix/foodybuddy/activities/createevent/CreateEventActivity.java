@@ -1,4 +1,4 @@
-package ravtrix.foodybuddy.activities;
+package ravtrix.foodybuddy.activities.createevent;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -27,7 +27,15 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.findresturant.FindRestaurant;
+import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.network.NetworkUtil;
 import ravtrix.foodybuddy.utils.Helpers;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,6 +55,11 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     @BindView(R.id.activity_create_event_floatingButtonSubmit) protected FloatingActionButton buttonSubmit;
 
     public static int CREATE_EVENT_REQUEST_CODE = 1;
+    private CompositeSubscription mSubscriptions;
+
+    private String eventDescription, restaurantName, restaurantAddress, restaurantID, eventDate, eventTime;
+    private double restaurantLongitude, restaurantLatitude, eventTimeUnix;
+    private UserLocalStore userLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +81,14 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 .centerCrop()
                 .into(profileImage);
 
-       setTimeLinear.setOnClickListener(this);
-       setDateLinear.setOnClickListener(this);
-       setRestaurantLinear.setOnClickListener(this);
-       buttonSubmit.setOnClickListener(this);
+        setTimeLinear.setOnClickListener(this);
+        setDateLinear.setOnClickListener(this);
+        setRestaurantLinear.setOnClickListener(this);
+        buttonSubmit.setOnClickListener(this);
+
+        userLocalStore = new UserLocalStore(this);
+        mSubscriptions = new CompositeSubscription();
+
     }
 
     @Override
@@ -88,6 +105,38 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.activity_create_event_floatingButtonSubmit:
                 displayToastSubmit();
+
+                this.eventDescription = editTextPost.getText().toString();
+
+                // Create new event object based on user's selection
+                Event event = new Event();
+                event.setUser_id(userLocalStore.getLoggedInUser().getUserID());
+                event.setRest_id(1111);
+                event.setAddress(this.restaurantAddress);
+                event.setRest_name(this.restaurantName);
+                event.setEvent_des(this.eventDescription);
+                event.setLat(this.restaurantLatitude);
+                event.setLng(this.restaurantLongitude);
+                event.setCreate_time(System.currentTimeMillis() / 1000L);
+                event.setEvent_time(1488857610);
+
+                mSubscriptions.add(NetworkUtil.getRawRetrofit().postEvent(event)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(new Observer<Response>() {
+
+                            @Override
+                            public void onCompleted() {}
+
+                            @Override
+                            public void onError(Throwable e) {}
+
+                            @Override
+                            public void onNext(Response response) {
+                                Helpers.displayToast(CreateEventActivity.this, response.getMessage());
+                            }
+
+                        }));
                 break;
 
         }
@@ -102,6 +151,13 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             infoLayout.setVisibility(View.VISIBLE);
             tvRestaurantName.setText(data.getStringExtra("name"));
             tvAddress.setText(data.getStringExtra("address"));
+
+            this.restaurantID = data.getStringExtra("id");
+            this.restaurantName = data.getStringExtra("name");
+            this.restaurantAddress = data.getStringExtra("address");
+            this.restaurantLatitude = data.getDoubleExtra("latitude", 0.0);
+            this.restaurantLongitude = data.getDoubleExtra("longitude", 0.0);
+
         }
     }
 

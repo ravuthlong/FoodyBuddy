@@ -14,26 +14,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".activities.mainpage.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activities.CreateEventActivity"
+            android:name=".activities.createevent.CreateEventActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.findresturant.FindRestaurant"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activities.ProfileActivity" />
+        <activity android:name=".activities.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.eventcomments.EventCommentsActivity"></activity>
+        <activity android:name=".activities.eventcomments.EventCommentsActivity" />
+        <activity android:name=".activities.restaurantfilter.RestaurantFilterActivity" />
+        <activity android:name=".activities.otheruserprofile.OtherUserProfileActivity" />
     </application>
 
 </manifest>

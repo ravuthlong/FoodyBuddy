@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_restaurant_filter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ravtrix.foodybuddy.activities.restaurantfilter.RestaurantFilterActivity">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/AppToolbar"
+            android:background="@color/toolbar">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="RESET ALL"
+                android:gravity="end|center_vertical"
+                android:paddingEnd="10dp"
+                android:paddingStart="0dp"
+                android:id="@+id/activity_restaurant_tvReset" />
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="8"
+            android:id="@+id/activity_restaurant_filter_layoutMain"
+            android:layout_margin="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:text="Distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14ssp" />
+
+                <Spinner
+                    android:id="@+id/activity_restaurant_distanceDrop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:text="Price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14ssp" />
+
+                <Spinner
+                    android:id="@+id/activity_restaurant_priceDrop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:text="Sort By"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/_14ssp" />
+
+                <Spinner
+                    android:id="@+id/activity_restaurant_sortDrop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true"
+                    android:layout_above="@+id/activity_restaurant_bApplyFilter">
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="visible"
+                    android:id="@+id/tableLayout"
+                    android:layout_alignParentTop="false"
+                    android:layout_above="@+id/activity_restaurant_bApplyFilter">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:weightSum="3"
+                        android:gravity="center">
+
+
+                        <Button
+                            android:text="ALL"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bAll"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="American"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bAmerican"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Burgers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bBurgers"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:weightSum="3">
+                        <Button
+                            android:text="Brazilian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bBrazilian"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Cambodian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bCambodian"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Chinese"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bChinese"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:weightSum="3"
+                        android:id="@+id/row3">
+
+                        <Button
+                            android:text="Filipino"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bFilipino"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Indian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bIndian"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Italian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bItalian"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:weightSum="3">
+
+                        <Button
+                            android:text="Japanese"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bJapanese"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Korean"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bKorean"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Laotian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bLaotian"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:weightSum="3"
+                        android:id="@+id/row5">
+
+                        <Button
+                            android:text="Mexican"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bMexican"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Moroccan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bMoroccan"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Peruvian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bPeruvian"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:weightSum="3"
+                        android:id="@+id/row6">
+
+                        <Button
+                            android:text="Portuguese"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bPortuguese"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Russian"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bRussian"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Scottish"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bScottish"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:weightSum="3"
+                        android:id="@+id/row7">
+
+                        <Button
+                            android:text="Taiwanese"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bTaiwanese"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Thai"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bThai"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Vietnamese"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bVietnamese"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:weightSum="3">
+
+                        <Button
+                            android:text="Bakeries"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bBakeries"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Bubble Tea"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bBubbleTea"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+
+                        <Button
+                            android:text="Desserts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/activity_restaurant_bDesserts"
+                            android:layout_weight="1"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:background="@drawable/button_filter"
+                            android:paddingTop="@dimen/_5sdp"
+                            android:paddingBottom="@dimen/_5sdp"
+                            />
+                    </TableRow>
+                </TableLayout>
+                </ScrollView>
+
+                <Button
+                    android:text="APPLY"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/activity_restaurant_bApplyFilter"
+                    android:background="@color/toolbar"
+                    android:textColor="@color/white"
+                    android:layout_alignParentBottom="true" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

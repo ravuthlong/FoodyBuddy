@@ -40,12 +40,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_edit"
-                    android:id="@+id/imageView3" />
+                    android:id="@+id/activity_find_restaurant_filter" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_toEndOf="@id/imageView3"
+                    android:layout_toEndOf="@id/activity_find_restaurant_filter"
                     android:textColor="@color/white"
                     android:text="Edit Events"
                     android:layout_alignParentEnd="false"

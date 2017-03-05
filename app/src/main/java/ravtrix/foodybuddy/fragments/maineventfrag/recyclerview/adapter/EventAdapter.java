@@ -6,23 +6,29 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.activities.CreateEventActivity;
+import ravtrix.foodybuddy.activities.createevent.CreateEventActivity;
 import ravtrix.foodybuddy.activities.eventcomments.EventCommentsActivity;
-import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.EventModel;
+import ravtrix.foodybuddy.activities.otheruserprofile.OtherUserProfileActivity;
+import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
 import ravtrix.foodybuddy.utils.Helpers;
 
 /**
@@ -31,12 +37,12 @@ import ravtrix.foodybuddy.utils.Helpers;
 
 public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<EventModel> eventModelList;
+    private List<Event> eventModelList;
     private LayoutInflater inflater;
     private Context context;
     private boolean firstOfList = true;
 
-    public EventAdapter(Context context, List<EventModel> eventModels) {
+    public EventAdapter(Context context, List<Event> eventModels) {
         this.context = context;
         this.eventModelList = eventModels;
         inflater = LayoutInflater.from(context);
@@ -71,7 +77,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                  * Because the first position 0 is "current user's event post" (unique), we need to start reading
                  * from array list only when position is 1. This is why care 1 reads from position 0.
                  */
-                EventModel currentItem;
+                Event currentItem;
                 if (firstOfList) {
                     currentItem = eventModelList.get(0);
                     firstOfList = false;
@@ -79,22 +85,28 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     currentItem = eventModelList.get(position - 1);
                 }
                 ViewHolder2 viewHolder2 = (ViewHolder2) holder;
-                viewHolder2.restaurantName.setText(currentItem.getRestaurantName());
-                viewHolder2.postDate.setText(currentItem.getPostTime());
-                viewHolder2.eventDate.setText(currentItem.getEventTime());
-                viewHolder2.description.setText(currentItem.getEventDescription());
-                viewHolder2.address.setText(currentItem.getAddress());
-                viewHolder2.numComment.setText(Integer.toString(currentItem.getNumComment()));
+                viewHolder2.restaurantName.setText(currentItem.getRest_name());
 
-                if (!currentItem.getProfileImage().isEmpty()) {
+                // Converting timestamp into x ago format
+                CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(
+                        currentItem.getCreate_time() * 1000,
+                        System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
+
+                viewHolder2.postDate.setText(timeAgo);
+                viewHolder2.eventDate.setText(getDate(currentItem.getEvent_time() * 1000));
+                viewHolder2.description.setText(currentItem.getEvent_des());
+                viewHolder2.address.setText(currentItem.getAddress());
+                viewHolder2.numComment.setText("2");
+
+                if (!currentItem.getOwnerImage().isEmpty()) {
                     Picasso.with(context)
-                            .load(currentItem.getProfileImage())
+                            .load(currentItem.getOwnerImage())
                             .centerCrop()
                             .fit()
                             .into(viewHolder2.profileImage);
                 } else {
                     viewHolder2.profileImage.setVisibility(View.GONE);
-                }
+                }/*
                 if (!currentItem.getUserImage1().isEmpty()) {
                     Picasso.with(context)
                             .load(currentItem.getUserImage1())
@@ -133,7 +145,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                             .into(viewHolder2.otherUser4);
                 } else {
                     viewHolder2.otherUser4.setVisibility(View.GONE);
-                }
+                }*/
 
                 break;
             default:
@@ -194,7 +206,8 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView restaurantName, postDate, eventDate, description, address, numComment;
         private LinearLayout layoutComment, layoutJoin, layoutMore, layoutDrive;
         private RelativeLayout relativeAll;
-        private CircleImageView profileImage, otherUser1, otherUser2, otherUser3, otherUser4;
+        private CircleImageView otherUser1, otherUser2, otherUser3, otherUser4;
+        private ImageView profileImage;
 
         ViewHolder2(View itemView) {
             super(itemView);
@@ -209,7 +222,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             layoutJoin = (LinearLayout) itemView.findViewById(R.id.item_event_layoutJoin);
             layoutDrive = (LinearLayout) itemView.findViewById(R.id.item_event_layoutDrive);
             layoutMore = (LinearLayout) itemView.findViewById(R.id.item_event_layoutMore);
-            profileImage = (CircleImageView) itemView.findViewById(R.id.item_event_profileImage);
+            profileImage = (ImageView) itemView.findViewById(R.id.item_event_profileImage);
             relativeAll = (RelativeLayout) itemView.findViewById(R.id.item_event_relativeAll);
             otherUser1 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser1);
             otherUser2 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser2);
@@ -245,7 +258,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             profileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Helpers.displayToast(context, "Clicked to view profile");
+                    context.startActivity(new Intent(context, OtherUserProfileActivity.class));
                 }
             });
 
@@ -275,5 +288,11 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
 
         }
+    }
+
+    private String getDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time);
+        return DateFormat.format("MM-dd-yyyy hh:mm a", cal).toString();
     }
 }

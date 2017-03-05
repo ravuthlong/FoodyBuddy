@@ -1,4 +1,4 @@
-package ravtrix.foodybuddy.fragments;
+package ravtrix.foodybuddy.fragments.register;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -14,27 +14,16 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.io.IOException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.fragments.login.LoginFragment;
 import ravtrix.foodybuddy.model.User;
-import ravtrix.foodybuddy.network.NetworkUtil;
-import retrofit2.adapter.rxjava.HttpException;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static ravtrix.foodybuddy.utils.Validation.validateEmail;
 import static ravtrix.foodybuddy.utils.Validation.validateFields;
 
-public class RegisterFragment extends Fragment implements View.OnClickListener {
+public class RegisterFragment extends Fragment implements View.OnClickListener, IRegisterView {
 
     public static final String TAG = RegisterFragment.class.getSimpleName();
 
@@ -48,7 +37,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.ti_password) protected TextInputLayout mTiPassword;
     @BindView(R.id.progress) ProgressBar mProgressbar;
 
-    private CompositeSubscription mSubscriptions;
+    private RegisterPresenter registerPresenter;
 
     @Nullable
     @Override
@@ -56,8 +45,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_register,container,false);
         ButterKnife.bind(this, view);
-        mSubscriptions = new CompositeSubscription();
         initListeners();
+
+        this.registerPresenter = new RegisterPresenter(this);
         return view;
     }
 
@@ -115,11 +105,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             user.setPassword(password);
 
             mProgressbar.setVisibility(View.VISIBLE);
-            registerProcess(user);
+            this.registerPresenter.register(user);
 
         } else {
-
-            showSnackBarMessage("Enter Valid Details !");
+            showSnackbar("Enter Valid Details !");
         }
     }
 
@@ -128,64 +117,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         mTiName.setError(null);
         mTiEmail.setError(null);
         mTiPassword.setError(null);
-    }
-
-    private void registerProcess(User user) {
-
-        mSubscriptions.add(NetworkUtil.getRetrofit().register(user)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Response>() {
-                    @Override
-                    public void onCompleted() {}
-
-                    @Override
-                    public void onError(Throwable e) {
-                        handleError(e);
-                    }
-
-                    @Override
-                    public void onNext(Response response) {
-                        handleResponse(response);
-                    }
-                }));
-    }
-
-    private void handleResponse(Response response) {
-
-        mProgressbar.setVisibility(View.GONE);
-        showSnackBarMessage(response.getMessage());
-    }
-
-    private void handleError(Throwable error) {
-
-        mProgressbar.setVisibility(View.GONE);
-
-        if (error instanceof HttpException) {
-
-            Gson gson = new GsonBuilder().create();
-
-            try {
-
-                String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
-                showSnackBarMessage(response.getMessage());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-
-            showSnackBarMessage("Network Error !");
-        }
-    }
-
-    private void showSnackBarMessage(String message) {
-
-        if (getView() != null) {
-
-            Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
-        }
     }
 
     private void goToLogin(){
@@ -199,6 +130,18 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mSubscriptions.unsubscribe();
+        registerPresenter.unsubscribe();
+    }
+
+    @Override
+    public void hideProgressbar() {
+        mProgressbar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showSnackbar(String message) {
+        if (getView() != null) {
+            Snackbar.make(getView(),message,Snackbar.LENGTH_SHORT).show();
+        }
     }
 }

@@ -4,9 +4,9 @@ package ravtrix.foodybuddy.network;
  * Created by Emily on 2/6/17.
  */
 
-import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.model.LoggedInUser;
+import ravtrix.foodybuddy.model.LogInResponse;
 import ravtrix.foodybuddy.model.User;
-
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -17,20 +17,20 @@ import rx.Observable;
 public interface RetrofitInterface {
 
     @POST("users")
-    Observable<Response> register(@Body User user);
+    Observable<LogInResponse> register(@Body User user);
 
     @POST("authenticate")
-    Observable<Response> login();
+    Observable<LoggedInUser> login();
 
     @GET("users/{email}")
     Observable<User> getProfile(@Path("email") String email);
 
     @PUT("users/{email}")
-    Observable<Response> changePassword(@Path("email") String email, @Body User user);
+    Observable<LogInResponse> changePassword(@Path("email") String email, @Body User user);
 
     @POST("users/{email}/password")
-    Observable<Response> resetPasswordInit(@Path("email") String email);
+    Observable<LogInResponse> resetPasswordInit(@Path("email") String email);
 
     @POST("users/{email}/password")
-    Observable<Response> resetPasswordFinish(@Path("email") String email, @Body User user);
+    Observable<LogInResponse> resetPasswordFinish(@Path("email") String email, @Body User user);
 }

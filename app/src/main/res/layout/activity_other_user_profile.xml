@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/activity_userprofile_mainLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="2">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.60">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/activity_userprofile_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/toolbar"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        </android.support.v4.view.ViewPager>
+
+        <me.relex.circleindicator.CircleIndicator
+            android:id="@+id/activity_userprofile_indicator"
+            android:layout_width="match_parent"
+            app:ci_gravity="center"
+            android:layout_gravity="bottom"
+            android:layout_height="30dp" >
+
+        </me.relex.circleindicator.CircleIndicator>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.22"
+        android:weightSum="4.03"
+        android:id="@+id/activity_userprofile_linearShortcuts">
+
+        <LinearLayout
+            android:id="@+id/activity_userprofile_linearFollowers"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@color/toolbar"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textView"
+                android:text="Followers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/_12ssp"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_user_friends" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:text="22"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/activity_eventmain_lineview"
+            android:layout_weight="0.01"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_width="0dp" />
+
+        <LinearLayout
+            android:id="@+id/activity_userprofile_linearFollowing"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@color/toolbar"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textView24"
+                android:text="Following"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_12ssp"
+                android:gravity="center_horizontal"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageView232"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_user" />
+
+                <TextView
+                    android:id="@+id/textView324"
+                    android:text="21"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/activity_eventmain_lineview2"
+            android:layout_weight="0.01"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_width="0dp" />
+
+        <LinearLayout
+            android:id="@+id/activity_userprofile_linearJoined"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@color/toolbar"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:text=" Joined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_12ssp"
+                android:gravity="center_horizontal"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageView22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_calendar_white" />
+
+                <TextView
+                    android:id="@+id/textView34"
+                    android:text="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/activity_eventmain_lineview3"
+            android:layout_weight="0.01"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_width="0dp" />
+
+        <LinearLayout
+            android:id="@+id/activity_userprofile_linearCreated"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@color/toolbar"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:text=" Created"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_12ssp"
+                android:gravity="center_horizontal"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageView222"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_calendar_done" />
+
+                <TextView
+                    android:id="@+id/textView343"
+                    android:text="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.18"
+        android:orientation="vertical"
+        android:background="@color/lightBrown">
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView7" />
+    </LinearLayout>
+</LinearLayout>

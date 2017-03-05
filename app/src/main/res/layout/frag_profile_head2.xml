@@ -7,7 +7,7 @@
         android:id="@+id/frag_profile_head2_tvDetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="My name is Davis Woohoo, and my job is to woohoo all day. Woohoo is apparently banned in North Korea because it sounds like Kim Jun Ung when he is in bed."
+        android:text="I am a food lover."
         android:textColor="@color/blackLighter"
         android:textSize="@dimen/_12ssp"
         android:gravity="center"
