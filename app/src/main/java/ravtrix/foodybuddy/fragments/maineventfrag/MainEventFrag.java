@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -17,27 +16,56 @@ import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.adapter.EventAdapter;
+import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.EventModel;
+import ravtrix.foodybuddy.network.NetworkUtil;
+import ravtrix.foodybuddy.utils.Helpers;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Ravinder on 1/27/17.
  */
 
-public class MainEventFrag extends Fragment {
+public class MainEventFrag extends Fragment implements IOnDistanceSettingSelected {
 
     @BindView(R.id.frag_eventmain_recyclerView) protected RecyclerView eventRecyclerView;
-    private List<EventModel> eventModels;
+    private List<Event> eventModels;
+    private CompositeSubscription mSubscriptions;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_eventmain, container, false);
+        View view = inflater.inflate(R.layout.frag_event_main, container, false);
 
         ButterKnife.setDebug(true);
         ButterKnife.bind(this, view);
 
-        setModels();
-        setRecyclerView();
+        //setModels();
+
+        mSubscriptions = new CompositeSubscription();
+        mSubscriptions.add(NetworkUtil.getRawRetrofit().getEvents()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<List<Event>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(List<Event> events) {
+                        eventModels = events;
+                        for (int i = 0; i < eventModels.size(); i++) {
+                            eventModels.get(i).setOwnerImage("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png");
+                        }
+                        setRecyclerView();
+                    }
+                }));
+
         return view;
     }
 
@@ -57,12 +85,6 @@ public class MainEventFrag extends Fragment {
 
         EventModel eventModel4 = new EventModel("http://a1.mzstatic.com/us/r30/Purple4/v4/eb/36/69/eb366995-c26d-85be-16e3-44cbb1adff9a/icon350x350.png", "All You Can Eat Foo Foo", "Jan 02, 2017", "Jan 30, 2017", "I'm trying to gain 10 pounds before my wedding. The baby bump is coming soon too!",
                 "11112 Hell street", "31 miles", 2, "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "");
-
-        this.eventModels = new ArrayList<>();
-        this.eventModels.add(eventModel1);
-        this.eventModels.add(eventModel2);
-        this.eventModels.add(eventModel3);
-        this.eventModels.add(eventModel4);
     }
 
     /**
@@ -82,5 +104,16 @@ public class MainEventFrag extends Fragment {
      */
     public void scrollToTop() {
         eventRecyclerView.scrollToPosition(0);
+    }
+
+    @Override
+    public void onDistanceSelected(String distance) {
+        Helpers.displayToast(getContext(), "FRAGMENT RECEIVED VALUE: " + distance);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSubscriptions.unsubscribe();
     }
 }

@@ -36,7 +36,7 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         android:layout_weight="0.22"
-        android:weightSum="3.02">
+        android:weightSum="4.03">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -44,7 +44,8 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:background="@color/toolbar"
-            android:id="@+id/frag_userprofile_linearFollowers">
+            android:id="@+id/frag_userprofile_linearFollowers"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/textView"
@@ -53,8 +54,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:textSize="@dimen/_12ssp"
-                android:textColor="@color/white"
-                android:paddingTop="4dp" />
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -76,7 +76,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12ssp"
-                    android:layout_marginStart="5dp" />
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -94,7 +95,8 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:background="@color/toolbar"
-            android:id="@+id/frag_userprofile_linearFollowing">
+            android:id="@+id/frag_userprofile_linearFollowing"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/textView24"
@@ -103,8 +105,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_12ssp"
                 android:gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:paddingTop="4dp" />
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -125,7 +126,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12ssp"
-                    android:layout_marginStart="5dp" />
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -142,17 +144,17 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:background="@color/toolbar"
-            android:id="@+id/frag_userprofile_linearJoined">
+            android:id="@+id/frag_userprofile_linearJoined"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/textView2"
-                android:text="Events Joined"
+                android:text=" Joined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_12ssp"
                 android:gravity="center_horizontal"
-                android:textColor="@color/white"
-                android:paddingTop="4dp" />
+                android:textColor="@color/white" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -163,7 +165,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_user"
+                    app:srcCompat="@drawable/ic_calendar_white"
                     android:id="@+id/imageView22" />
 
                 <TextView
@@ -173,18 +175,115 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_12ssp"
-                    android:layout_marginStart="5dp" />
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/frag_eventmain_lineview3"
+            android:layout_weight="0.01"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:layout_width="0dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="@color/toolbar"
+            android:id="@+id/frag_userprofile_linearCreated"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:text=" Created"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_12ssp"
+                android:gravity="center_horizontal"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_calendar_done"
+                    android:id="@+id/imageView222" />
+
+                <TextView
+                    android:id="@+id/textView343"
+                    android:text="2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="4dp" />
             </LinearLayout>
 
         </LinearLayout>
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.18"
+        android:orientation="vertical"
         android:background="@color/lightBrown">
 
-    </RelativeLayout>
+        <android.support.v4.app.FragmentTabHost
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/frag_userprofile_tabhost">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/tab1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+        </android.support.v4.app.FragmentTabHost>
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView7" />
+    </LinearLayout>
 </LinearLayout>

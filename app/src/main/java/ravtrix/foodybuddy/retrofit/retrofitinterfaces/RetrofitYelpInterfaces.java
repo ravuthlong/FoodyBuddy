@@ -2,10 +2,12 @@ package ravtrix.foodybuddy.retrofit.retrofitinterfaces;
 
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
+
 import ravtrix.foodybuddy.utils.Helpers;
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 /**
  * Created by Ravinder on 1/30/17.
@@ -14,9 +16,8 @@ import retrofit2.http.Query;
 public class RetrofitYelpInterfaces {
     private String token = Helpers.YELP_TOKEN;
 
-    public interface FetchAPlace {
-        //@Headers("Authorization: Bearer zeAZ8CvH8Jh5BXgKlgomA80NvCM_dK_rZahtOnEivGo4GSypKzbRQHA5GlbKppo9NHqmYOq0AFZcKh0gKaYifBQQ0EeX7ids2FTfE0GK5PWunl1BHbmUfyZLhieQWHYx")
+    public interface FetchPlacesWithFilter {
         @GET("/v3/businesses/search")
-        Call<JsonObject> fetchAPlace(@Query("location") String city, @Query(value = "term", encoded = true) String keyword);
+        Call<JsonObject> fetchPlacesWithFilter(@QueryMap HashMap<String, String> values);
     }
 }

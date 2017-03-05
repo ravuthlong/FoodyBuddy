@@ -9,74 +9,83 @@
     tools:context="ravtrix.foodybuddy.activities.findresturant.FindRestaurant">
 
 
-    <android.support.design.widget.CoordinatorLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:elevation="0dp">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/AppToolbar"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        android:background="@color/toolbar">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:id="@+id/activity_find_restaurant_search"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:theme="@style/AppToolbar"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                android:background="@color/toolbar">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <EditText
-                        android:id="@+id/activity_find_restaurant_search"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:ems="10"
-                        android:background="@android:color/transparent"
-                        android:hint="Search food/restaurants"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:imeOptions="actionSearch"
-                        android:gravity="center_vertical|start"
-                        android:padding="5dp"
-                        android:layout_toLeftOf="@+id/activity_find_restaurant_imageDelete">
-                    </EditText>
+                android:layout_height="match_parent"
+                android:ems="10"
+                android:background="@color/greenLighter"
+                android:hint="Search food/restaurants"
+                android:inputType="text"
+                android:maxLines="1"
+                android:imeOptions="actionSearch"
+                android:gravity="center_vertical|start"
+                android:padding="5dp"
+                android:layout_toLeftOf="@+id/activity_find_restaurant_imageDelete"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+            </EditText>
 
 
-                    <ImageView
-                        android:id="@+id/activity_find_restaurant_imageDelete"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        app:srcCompat="@drawable/ic_clear_white_18dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="10dp" />
-                </RelativeLayout>
+            <ImageView
+                android:id="@+id/activity_find_restaurant_imageDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_clear_white_18dp"
+                android:layout_alignParentEnd="false"
+                android:layout_marginEnd="10dp"
+                android:layout_toLeftOf="@+id/activity_find_restaurant_filter"
+                android:background="@color/greenLighter"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:paddingRight="5dp" />
 
-            </android.support.v7.widget.Toolbar>
 
-        </android.support.design.widget.AppBarLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:srcCompat="@drawable/ic_horizontal_settings_mixer"
+                android:id="@+id/activity_find_restaurant_filter"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_find_restaurant_recyclerview"
-            android:clipToPadding="false"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:paddingTop="4dp">
+        android:id="@+id/activity_find_restaurant_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="4dp">
         </android.support.v7.widget.RecyclerView>
 
-        <TextView
-            android:id="@+id/activity_find_restaurant_noResult"
-            android:text="No Result Matching Search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="@dimen/_13ssp"
-            android:gravity="center"
-            android:visibility="gone" />
+    <TextView
+        android:id="@+id/activity_find_restaurant_noResult"
+        android:text="No Result Matching Search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/_13ssp"
+        android:gravity="center"
+        android:visibility="gone" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

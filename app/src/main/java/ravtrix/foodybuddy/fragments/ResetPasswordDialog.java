@@ -20,9 +20,9 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ravtrix.foodybuddy.LoginActivity;
+import ravtrix.foodybuddy.activities.login.LoginActivity;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.model.LogInResponse;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.NetworkUtil;
 import retrofit2.adapter.rxjava.HttpException;
@@ -158,7 +158,7 @@ public class ResetPasswordDialog extends DialogFragment implements View.OnClickL
         mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordInit(email)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Response>() {
+                .subscribe(new Observer<LogInResponse>() {
                     @Override
                     public void onCompleted() {}
 
@@ -168,8 +168,8 @@ public class ResetPasswordDialog extends DialogFragment implements View.OnClickL
                     }
 
                     @Override
-                    public void onNext(Response response) {
-                        handleResponse(response);
+                    public void onNext(LogInResponse logInResponse) {
+                        handleResponse(logInResponse);
                     }}));
     }
 
@@ -178,7 +178,7 @@ public class ResetPasswordDialog extends DialogFragment implements View.OnClickL
         mSubscriptions.add(NetworkUtil.getRetrofit().resetPasswordFinish(mEmail,user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Response>() {
+                .subscribe(new Observer<LogInResponse>() {
                     @Override
                     public void onCompleted() {}
 
@@ -188,27 +188,27 @@ public class ResetPasswordDialog extends DialogFragment implements View.OnClickL
                     }
 
                     @Override
-                    public void onNext(Response response) {
-                        handleResponse(response);
+                    public void onNext(LogInResponse logInResponse) {
+                        handleResponse(logInResponse);
                     }
                 }));
     }
 
-    private void handleResponse(Response response) {
+    private void handleResponse(LogInResponse logInResponse) {
 
         mProgressBar.setVisibility(View.GONE);
 
         if (isInit) {
 
             isInit = false;
-            showMessage(response.getMessage());
+            showMessage(logInResponse.getMessage());
             mTiEmail.setVisibility(View.GONE);
             mTiToken.setVisibility(View.VISIBLE);
             mTiPassword.setVisibility(View.VISIBLE);
 
         } else {
 
-            mListner.onPasswordReset(response.getMessage());
+            mListner.onPasswordReset(logInResponse.getMessage());
             dismiss();
         }
     }
@@ -224,8 +224,8 @@ public class ResetPasswordDialog extends DialogFragment implements View.OnClickL
             try {
 
                 String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
-                showMessage(response.getMessage());
+                LogInResponse logInResponse = gson.fromJson(errorBody,LogInResponse.class);
+                showMessage(logInResponse.getMessage());
 
             } catch (IOException e) {
                 e.printStackTrace();

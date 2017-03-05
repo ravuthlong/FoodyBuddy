@@ -1,9 +1,8 @@
-package ravtrix.foodybuddy;
+package ravtrix.foodybuddy.activities;
 
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -17,8 +16,12 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.activities.login.LoginActivity;
 import ravtrix.foodybuddy.fragments.ChangePasswordDialog;
-import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.model.LogInResponse;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.NetworkUtil;
 import ravtrix.foodybuddy.utils.Constants;
@@ -39,7 +42,7 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     @BindView(R.id.btn_logout) protected Button mBtLogout;
     @BindView(R.id.progress) protected ProgressBar mProgressbar;
 
-    private SharedPreferences mSharedPreferences;
+    private UserLocalStore userLocalStore;
     private String mToken;
     private String mEmail;
 
@@ -49,9 +52,11 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        ButterKnife.bind(this);
+
         mSubscriptions = new CompositeSubscription();
         initViews();
-        initSharedPreferences();
+        initSharedPreference();
         loadProfile();
     }
 
@@ -73,20 +78,15 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
         }
     }
 
-    private void initSharedPreferences() {
-
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mToken = mSharedPreferences.getString(Constants.TOKEN,"");
-        mEmail = mSharedPreferences.getString(Constants.EMAIL,"");
+    private void initSharedPreference() {
+        userLocalStore = new UserLocalStore(this);
+        //int token = userLocalStore.getLoggedInUser().getUserID();
+        mEmail = userLocalStore.getLoggedInUser().getEmail();
     }
 
     private void logout() {
-
-        SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(Constants.EMAIL,"");
-        editor.putString(Constants.TOKEN,"");
-        editor.apply();
-        finish();
+        userLocalStore.clearUserData();
+        startActivity(new Intent(this, LoginActivity.class));
     }
 
     private void showDialog(){
@@ -141,8 +141,8 @@ public class ProfileActivity extends AppCompatActivity implements ChangePassword
             try {
 
                 String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
-                showSnackBarMessage(response.getMessage());
+                LogInResponse logInResponse = gson.fromJson(errorBody,LogInResponse.class);
+                showSnackBarMessage(logInResponse.getMessage());
 
             } catch (IOException e) {
                 e.printStackTrace();

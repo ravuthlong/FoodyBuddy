@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/frag_other_profile_head1_mainRelative"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.50"
+        android:background="@color/toolbar">
+
+        <RelativeLayout
+            android:id="@+id/frag_other_userprofile_relativeUserImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/frag_other_userprofile_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/frag_other_userprofile_profileImage"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/frag_other_userprofile_profileImage"
+            android:layout_centerVertical="false"
+            android:layout_alignTop="@+id/frag_other_userprofile_profileImage">
+            <Button
+                android:id="@+id/button"
+                android:text="Follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_user_profile"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/frag_other_userprofile_profileImage"
+            android:layout_alignTop="@+id/frag_other_userprofile_profileImage"
+            android:layout_centerHorizontal="false">
+            <Button
+                android:id="@+id/button2"
+                android:text="Message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_user_profile"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/frag_other_userprofile_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/frag_other_userprofile_profileImage"
+            android:text="Ortemis"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_16ssp"
+            android:gravity="center_horizontal" />
+    </RelativeLayout>
+</LinearLayout>

@@ -94,14 +94,19 @@ public class FindRestaurantAdapter extends RecyclerView.Adapter<FindRestaurantAd
             itemRestaurantRelative.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+
                     RestaurantModel currentItem = restaurantModels.get(getAdapterPosition());
 
                     Intent resultIntent = new Intent();
+                    resultIntent.putExtra("id", currentItem.getId());
                     resultIntent.putExtra("name", currentItem.getName());
                     resultIntent.putExtra("address", currentItem.getAddress());
+                    resultIntent.putExtra("longitude", currentItem.getLongitude());
+                    resultIntent.putExtra("latitude", currentItem.getLatitude());
+
                     activity.setResult(Activity.RESULT_OK, resultIntent);
                     activity.finish();
-
                 }
             });
         }

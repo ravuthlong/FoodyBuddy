@@ -1,5 +1,6 @@
-package ravtrix.foodybuddy.activities;
+package ravtrix.foodybuddy.activities.mainpage;
 
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +31,7 @@ import ravtrix.foodybuddy.activities.drawerrecycler.model.DrawerModel;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
 import ravtrix.foodybuddy.fragments.friendsfrag.FriendsFrag;
 import ravtrix.foodybuddy.fragments.inbox.InboxFragment;
+import ravtrix.foodybuddy.fragments.maineventfrag.IOnDistanceSettingSelected;
 import ravtrix.foodybuddy.fragments.maineventfrag.MainEventFrag;
 import ravtrix.foodybuddy.fragments.userprofilefrag.UserProfileFrag;
 import ravtrix.foodybuddy.utils.Helpers;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<DrawerModel> drawerModels;
     private DrawerRecyclerAdapter drawerRecyclerAdapter;
     private boolean isEventEditClicked = false;
+    private IOnDistanceSettingSelected iOnDistanceSettingSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Set font
         toolbarTitle.setTypeface(Typeface.createFromAsset(getAssets(), "toolbar2.ttf"));
 
-        setupViewPager(viewPager); // set adapter with data
+        setupViewPager(); // set adapter with data
         viewPager.setOffscreenPageLimit(3); // define size of tabs
         tabLayout.setupWithViewPager(viewPager); // push viewpager into the tab layout
 
@@ -104,6 +108,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 drawerLayout.openDrawer(navigationView);
                 break;
             case R.id.layout_main_imageSetting:
+                // call fragment to update distance
+
+                AlertDialog.Builder b = new AlertDialog.Builder(this);
+                b.setTitle("Filter by Distance");
+                final String[] types = getResources().getStringArray(R.array.distance_main_spinner);
+                b.setItems(types, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        iOnDistanceSettingSelected.onDistanceSelected(types[which]);
+
+                    }
+                });
+                b.setCancelable(true);
+                b.show();
                 break;
             case R.id.activity_main_layoutEdit:
                 if (!isEventEditClicked) {
@@ -134,17 +153,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Set up the tab adapter with fragments
-     * @param viewPager                 - the viewpager
      */
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager() {
 
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        Fragment mainEventFrag = new MainEventFrag();
         // Set adapter with different fragments and their titles
-        adapter.addFragment(new MainEventFrag());
+        adapter.addFragment(mainEventFrag);
         adapter.addFragment(new InboxFragment()); // inbox
         adapter.addFragment(new UserProfileFrag());
         adapter.addFragment(new FriendsFrag());
         this.viewPager.setAdapter(adapter);
+        this.iOnDistanceSettingSelected = (IOnDistanceSettingSelected) mainEventFrag;
     }
 
     /**
@@ -222,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case 3:
                         lockDrawerLayoutScroll();
-                        //hideMainToolbarButtons();
                         break;
                     default:
                         break;

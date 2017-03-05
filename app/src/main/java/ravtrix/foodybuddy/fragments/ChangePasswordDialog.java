@@ -20,9 +20,9 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ravtrix.foodybuddy.ProfileActivity;
+import ravtrix.foodybuddy.activities.ProfileActivity;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.model.LogInResponse;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.NetworkUtil;
 import ravtrix.foodybuddy.utils.Constants;
@@ -146,7 +146,7 @@ public class ChangePasswordDialog extends DialogFragment implements View.OnClick
         mSubscriptions.add(NetworkUtil.getRetrofit(mToken).changePassword(mEmail,user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<Response>() {
+                .subscribe(new Observer<LogInResponse>() {
                     @Override
                     public void onCompleted() {}
 
@@ -156,12 +156,12 @@ public class ChangePasswordDialog extends DialogFragment implements View.OnClick
                     }
 
                     @Override
-                    public void onNext(Response response) {
-                        handleResponse(response);
+                    public void onNext(LogInResponse logInResponse) {
+                        handleResponse(logInResponse);
                     }}));
     }
 
-    private void handleResponse(Response response) {
+    private void handleResponse(LogInResponse logInResponse) {
 
         mProgressBar.setVisibility(View.GONE);
         mListener.onPasswordChanged();
@@ -179,8 +179,8 @@ public class ChangePasswordDialog extends DialogFragment implements View.OnClick
             try {
 
                 String errorBody = ((HttpException) error).response().errorBody().string();
-                Response response = gson.fromJson(errorBody,Response.class);
-                showMessage(response.getMessage());
+                LogInResponse logInResponse = gson.fromJson(errorBody,LogInResponse.class);
+                showMessage(logInResponse.getMessage());
 
             } catch (IOException e) {
                 e.printStackTrace();

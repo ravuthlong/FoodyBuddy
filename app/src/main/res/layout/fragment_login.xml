@@ -4,7 +4,8 @@
 xmlns:app="http://schemas.android.com/apk/res-auto"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:fillViewport="true">
+android:fillViewport="true"
+    android:background="@color/colorPrimary">
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -23,7 +24,8 @@ android:fillViewport="true">
         android:id="@+id/ti_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/child_margin_top">
+        android:layout_marginTop="@dimen/child_margin_top"
+        android:textColorHint="@color/white">
 
         <EditText
             android:id="@+id/et_email"
@@ -31,7 +33,10 @@ android:fillViewport="true">
             android:layout_height="wrap_content"
             android:drawableRight="@drawable/ic_email"
             android:hint="Email"
-            android:inputType="textEmailAddress" />
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:textColorLink="@android:color/white" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -41,14 +46,17 @@ android:fillViewport="true">
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/child_margin_top"
         app:passwordToggleEnabled="true"
-        app:passwordToggleTint="@android:color/white">
+        app:passwordToggleTint="@android:color/white"
+        android:textColorHint="@color/white">
 
         <EditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/white" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -67,7 +75,8 @@ android:fillViewport="true">
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/button_margin"
         android:text="Not Registered ? Register Now !"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/tv_forgot_password"
@@ -75,7 +84,8 @@ android:fillViewport="true">
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/button_margin"
         android:text="Forgot Password ?"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textColor="@android:color/white" />
 
     <ProgressBar
         android:id="@+id/progress"
@@ -85,13 +95,6 @@ android:fillViewport="true">
         android:layout_marginTop="@dimen/button_margin"
         android:layout_marginBottom="@dimen/button_margin"
         android:visibility="gone"/>
-
-    <Button
-        android:id="@+id/btn_main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/button_margin"
-        android:text="GO MAIN" />
 
 </LinearLayout>
 </ScrollView>

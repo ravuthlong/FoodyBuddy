@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ravtrix.foodybuddy.activities.CreateEventActivity">
+    tools:context="ravtrix.foodybuddy.activities.createevent.CreateEventActivity">
 
     <LinearLayout
         android:id="@+id/activity_create_event"

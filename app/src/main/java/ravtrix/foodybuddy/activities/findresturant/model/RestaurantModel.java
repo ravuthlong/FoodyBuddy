@@ -13,7 +13,8 @@ public class RestaurantModel {
     private String name;
     private String categories;
     private String address;
-    private String coordinates;
+    private double longitude;
+    private double latitude;
     private double rating;
     private int review_count;
 
@@ -33,12 +34,20 @@ public class RestaurantModel {
         this.address = address;
     }
 
-    public String getCoordinates() {
-        return coordinates;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
     public String getImage_url() {

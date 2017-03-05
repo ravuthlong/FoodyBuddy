@@ -1,10 +1,10 @@
-package ravtrix.foodybuddy.activities.findresturant.model;
+package ravtrix.foodybuddy.model;
 
 /**
- * Created by Emily on 2/4/17.
+ * Created by Emily on 2/6/17.
  */
 
-public class Response {
+public class LogInResponse {
 
     private String message;
     private String token;
@@ -16,5 +16,5 @@ public class Response {
     public String getToken() {
         return token;
     }
-
 }
+

@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTabHost;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
 import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.fragments.activityprofilefrag.ActivityProfileFrag;
+import ravtrix.foodybuddy.fragments.eventprofilefrag.EventProfileFrag;
 import ravtrix.foodybuddy.fragments.userprofilefrag.subfrags.UserProfileHeadOneFrag;
 import ravtrix.foodybuddy.fragments.userprofilefrag.subfrags.UserProfileHeadTwoFrag;
 import ravtrix.foodybuddy.utils.Helpers;
@@ -34,6 +38,7 @@ public class UserProfileFrag extends Fragment {
     @BindView(R.id.frag_userprofile_linearFollowers) protected LinearLayout linearFollowers;
     @BindView(R.id.frag_userprofile_linearFollowing) protected LinearLayout linearFollowing;
     @BindView(R.id.frag_userprofile_linearJoined) protected LinearLayout linearJoined;
+    @BindView(R.id.frag_userprofile_tabhost) protected FragmentTabHost tabHost;
     private UserProfileFrag.ViewPagerAdapter adapter;
     boolean isFragLoaded = false;
 
@@ -50,18 +55,22 @@ public class UserProfileFrag extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Helpers.displayToast(getContext(), "CALLED3");
 
         View view = inflater.inflate(R.layout.frag_userprofile, container, false);
         ButterKnife.bind(this, view);
+        tabHost.setup(getActivity(), getChildFragmentManager(), android.R.id.tabcontent);
 
+        tabHost.addTab(tabHost.newTabSpec("eventFrag").setIndicator("", ContextCompat.getDrawable(getContext(), R.drawable.ic_grid)),
+                EventProfileFrag.class, null);
+        tabHost.addTab(tabHost.newTabSpec("activityFrag").setIndicator("", ContextCompat.getDrawable(getContext(), R.drawable.ic_menu_gray)),
+                ActivityProfileFrag.class, null);
 
         Helpers.overrideFonts(getContext(), linearFollowers);
         Helpers.overrideFonts(getContext(), linearFollowing);
         Helpers.overrideFonts(getContext(), linearJoined);
 
         setupViewPager(viewPager);
-        viewPager.setOffscreenPageLimit(1); // define size 0,1
+        //viewPager.setOffscreenPageLimit(1); // define size 0,1
 
         return view;
     }

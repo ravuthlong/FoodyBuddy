@@ -5,4 +5,36 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string-array name="distance_categories">
+        <item>All</item>
+        <item>5 miles</item>
+        <item>10 miles</item>
+        <item>15 miles</item>
+        <item>20 miles\u0020\u0020\u0020\u0020\u0020</item>
+    </string-array>
+
+    <string-array name="price_categories">
+        <item>All</item>
+        <item>$</item>
+        <item>$$</item>
+        <item>$$$</item>
+        <item>$$$$\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020</item>
+    </string-array>
+
+    <string-array name="sort_categories">
+        <item>Best Match</item>
+        <item>Distance</item>
+        <item>Rating</item>
+        <item>Reviews</item>
+    </string-array>
+
+    <string-array name="distance_main_spinner">
+        <item>Best Match</item>
+        <item>Within 5 miles</item>
+        <item>Within 10 miles</item>
+        <item>Within 15 miles</item>
+    </string-array>
+    <string name="title_activity_event_profile_frag">EventProfileFrag</string>
 </resources>
