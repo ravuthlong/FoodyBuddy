@@ -6,6 +6,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.mainpage.MainActivity;
 import ravtrix.foodybuddy.fragments.ResetPasswordDialog;
@@ -23,6 +26,9 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(getApplication());
+
         setContentView(R.layout.activity_login);
 
         userLocalStore = new UserLocalStore(this);
@@ -58,6 +64,11 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
 
         if (mResetPasswordDialog != null)
             mResetPasswordDialog.setToken(data);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

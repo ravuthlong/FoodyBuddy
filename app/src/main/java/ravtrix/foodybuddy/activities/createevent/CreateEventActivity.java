@@ -18,6 +18,9 @@ import android.widget.TimePicker;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -60,12 +63,16 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private String eventDescription, restaurantName, restaurantAddress, restaurantID, eventDate, eventTime;
     private double restaurantLongitude, restaurantLatitude, eventTimeUnix;
     private UserLocalStore userLocalStore;
+    private int dayChosen, monthChosen, yearChosen, hourChosen, minuteChosen;
+    private boolean isRestaurantPicked, isDatePicked, isTimePicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         ButterKnife.bind(this);
+
+        initBooleans();
 
         Helpers.setToolbar(this, toolbar);
         Helpers.overrideFonts(this, setRestaurantLinear);
@@ -106,19 +113,20 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             case R.id.activity_create_event_floatingButtonSubmit:
                 displayToastSubmit();
 
-                this.eventDescription = editTextPost.getText().toString();
+                long timeUnix = getUnixTimeFromEvent();
 
+                this.eventDescription = editTextPost.getText().toString();
                 // Create new event object based on user's selection
                 Event event = new Event();
                 event.setUser_id(userLocalStore.getLoggedInUser().getUserID());
-                event.setRest_id(1111);
+                event.setRest_id(1111); // TO-DO, change database type to string because ID is string
                 event.setAddress(this.restaurantAddress);
                 event.setRest_name(this.restaurantName);
                 event.setEvent_des(this.eventDescription);
                 event.setLat(this.restaurantLatitude);
                 event.setLng(this.restaurantLongitude);
                 event.setCreate_time(System.currentTimeMillis() / 1000L);
-                event.setEvent_time(1488857610);
+                event.setEvent_time(timeUnix);
 
                 mSubscriptions.add(NetworkUtil.getRawRetrofit().postEvent(event)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -220,6 +228,12 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay,
                                           int minute) {
+
+                        isTimePicked = true;
+
+                        hourChosen = hourOfDay;
+                        minuteChosen = minute;
+
                         String minuteDisplay = Integer.toString(minute);
 
                         String am_pm =  (hourOfDay >= 12) ? "PM" : "AM";
@@ -260,7 +274,13 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
 
-                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("EEEE", Locale.ENGLISH);
+                        isDatePicked = true;
+
+                        yearChosen = year;
+                        monthChosen = monthOfYear + 1;
+                        dayChosen = dayOfMonth;
+
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("EEEE", Locale.US);
                         Calendar cal = Calendar.getInstance();
                         cal.set(Calendar.YEAR, year);
                         cal.set(Calendar.MONTH, monthOfYear);
@@ -277,6 +297,16 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         datePickerDialog.show();
     }
 
+    private long getUnixTimeFromEvent() {
+        String time = dayChosen + "-" + monthChosen + "-" + yearChosen + " " + hourChosen + ":" + minuteChosen;
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm", Locale.US);
+        try {
+            Date inputDate = dateFormat.parse(time);
+            return  inputDate.getTime() / 1000;
+        } catch (ParseException e) {e.printStackTrace();}
+        return 0;
+    }
+
     private void startFindRestaurantActivity() {
         startActivityForResult(new Intent(CreateEventActivity.this, FindRestaurant.class), CREATE_EVENT_REQUEST_CODE);
     }
@@ -284,5 +314,11 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private void displayToastSubmit() {
         Helpers.displayToast(this, "Clicked Submit...");
         finish(); // go back to screen before
+    }
+
+    private void initBooleans() {
+        isRestaurantPicked = false;
+        isDatePicked = false;
+        isTimePicked = false;
     }
 }

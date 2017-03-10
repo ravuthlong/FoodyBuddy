@@ -2,6 +2,7 @@ package ravtrix.foodybuddy.fragments.login;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,19 +54,41 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
     @BindView(R.id.ti_email) protected TextInputLayout mTiEmail;
     @BindView(R.id.ti_password) protected TextInputLayout mTiPassword;
     @BindView(R.id.progress) protected ProgressBar mProgressBar;
-
+    @BindView(R.id.fragment_login_bFacebook) protected LoginButton bFacebook;
     private UserLocalStore userLocalStore;
     private LoginPresenter loginPresenter;
+    private CallbackManager callbackManager;
+    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login,container,false);
         ButterKnife.bind(this, view);
+        callbackManager = CallbackManager.Factory.create();
+
         initListeners();
         initSharedPreference();
 
         loginPresenter = new LoginPresenter(this);
+
+        bFacebook.setFragment(this);
+        bFacebook.setReadPermissions(Arrays.asList("public_profile", "email"));
+        bFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                graphRequest(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+            }
+        });
+
         return view;
     }
 
@@ -74,7 +111,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
             case R.id.tv_forgot_password:
                 showDialog();
                 break;
+            case R.id.fragment_login_bFacebook:
+
+                break;
         }
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     private void initSharedPreference() {
@@ -132,6 +179,28 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
 
         ResetPasswordDialog fragment = new ResetPasswordDialog();
         fragment.show(getFragmentManager(), ResetPasswordDialog.TAG);
+    }
+
+    public void graphRequest(final AccessToken token) {
+
+        //Make a request to fetch facebook user data based on the given token
+        GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+
+                try {
+                    final String email = object.get("email").toString();
+                    final String imageURL = object.getJSONObject("picture").getJSONObject("data").get("url").toString();
+                    final String firstName = object.get("last_name").toString();
+                    final String lastName = object.get("first_name").toString();
+
+                } catch (JSONException e) {e.printStackTrace();}
+            }
+        });
+        Bundle bundle = new Bundle();
+        bundle.putString("fields", "first_name,last_name, email, picture.type(large)");
+        request.setParameters(bundle);
+        request.executeAsync(); // which will invoke onCompleted
     }
 
     @Override

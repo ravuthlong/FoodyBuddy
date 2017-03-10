@@ -1,5 +1,6 @@
 package ravtrix.foodybuddy.fragments.userprofilefrag.subfrags;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,18 +18,22 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.activities.login.LoginActivity;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.utils.Helpers;
 
 /**
  * Created by Ravinder on 1/30/17.
  */
 
-public class UserProfileHeadOneFrag extends Fragment {
+public class UserProfileHeadOneFrag extends Fragment implements View.OnClickListener {
 
     @BindView(R.id.frag_userprofile_background) protected ImageView backgroundImage;
     @BindView(R.id.frag_userprofile_profileImage) protected CircleImageView profileImage;
     @BindView(R.id.frag_userprofile_username) protected TextView tvUsername;
     @BindView(R.id.frag_profile_head1_mainRelative) protected RelativeLayout mainRelative;
+    @BindView(R.id.frag_profile_head1_bSetting) protected ImageView bSetting;
+    private UserLocalStore userLocalStore;
 
     @Nullable
     @Override
@@ -39,20 +44,34 @@ public class UserProfileHeadOneFrag extends Fragment {
         Helpers.overrideFonts(getContext(), mainRelative);
         Helpers.overrideFonts(getContext(), tvUsername);
 
+        bSetting.setOnClickListener(this);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
             }
         });
+
+        userLocalStore = new UserLocalStore(getActivity());
         return view;
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.frag_profile_head1_bSetting:
+                userLocalStore.clearUserData();
+                startActivity(new Intent(getActivity(), LoginActivity.class));
+                break;
+        }
     }
 
     public void loadViewWithData() {
 
         if(profileImage != null) {
             Picasso.with(getContext())
-                    .load("http://b-i.forbesimg.com/zackomalleygreenburg/files/2014/01/0102_30-under-30-bruno-mars_650x455.jpg")
+                    .load("http://media.safebee.com/assets/images/2015/12/guy%20with%20giant%20burger.jpg.838x0_q67_crop-smart.jpg")
                     .fit()
                     .centerCrop()
                     .into(profileImage);
@@ -60,7 +79,7 @@ public class UserProfileHeadOneFrag extends Fragment {
 
         if(backgroundImage != null) {
             Picasso.with(getContext())
-                    .load("http://b-i.forbesimg.com/zackomalleygreenburg/files/2014/01/0102_30-under-30-bruno-mars_650x455.jpg")
+                    .load("http://media.safebee.com/assets/images/2015/12/guy%20with%20giant%20burger.jpg.838x0_q67_crop-smart.jpg")
                     .transform(new BlurTransformation(getContext()))
                     .fit()
                     .centerCrop()

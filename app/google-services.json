@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "485091782489",
+    "firebase_url": "https://foody-buddy.firebaseio.com",
+    "project_id": "foody-buddy",
+    "storage_bucket": "foody-buddy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485091782489:android:ac1feef38d4fae6b",
+        "android_client_info": {
+          "package_name": "ravtrix.foodybuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485091782489-49t3jrmjqm5elros01k977e8jmr81vqm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDkOC1cH--3We92LlZ92im7hCxxSujZzI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
