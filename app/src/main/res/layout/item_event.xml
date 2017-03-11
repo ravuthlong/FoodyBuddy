@@ -17,7 +17,7 @@
         android:layout_alignParentTop="true">
 
         <LinearLayout
-            android:id="@+id/linearlayout2"
+            android:id="@+id/linear_layout_2"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                     android:id="@+id/item_event_tvPostTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/linearlayout2"
+                    android:layout_toEndOf="@+id/linear_layout_2"
                     android:text="Jan 09, 2017"
                     android:gravity="end" />
             </LinearLayout>

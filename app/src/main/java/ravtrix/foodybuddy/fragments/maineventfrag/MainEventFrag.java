@@ -42,7 +42,6 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
 
         ButterKnife.setDebug(true);
         ButterKnife.bind(this, view);
-
         //setModels();
 
         mSubscriptions = new CompositeSubscription();
@@ -54,10 +53,13 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
                     public void onCompleted() {}
 
                     @Override
-                    public void onError(Throwable e) {}
+                    public void onError(Throwable e) {System.out.println("*********************************** On Error CALLED");
+                    }
 
                     @Override
                     public void onNext(List<Event> events) {
+                        System.out.println("*********************************** On Next CALLED");
+
                         eventModels = events;
                         for (int i = 0; i < eventModels.size(); i++) {
                             eventModels.get(i).setOwnerImage("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png");
@@ -91,6 +93,7 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
      * Sets up the recycler view with its adapter and decorator
      */
     private void setRecyclerView() {
+        System.out.println("*********************************** Recycler view CALLED");
 
         RecyclerView.ItemDecoration dividerDecorator = new DividerDecoration(getActivity(), R.drawable.line_divider_main);
         EventAdapter eventAdapter = new EventAdapter(getContext(), eventModels);

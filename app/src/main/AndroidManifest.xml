@@ -36,6 +36,7 @@
         <activity android:name=".activities.eventcomments.EventCommentsActivity" />
         <activity android:name=".activities.restaurantfilter.RestaurantFilterActivity" />
         <activity android:name=".activities.otheruserprofile.OtherUserProfileActivity" />
+
     </application>
 
 </manifest>

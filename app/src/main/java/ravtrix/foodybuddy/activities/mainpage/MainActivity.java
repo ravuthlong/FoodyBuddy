@@ -29,7 +29,7 @@ import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.drawerrecycler.adapter.DrawerRecyclerAdapter;
 import ravtrix.foodybuddy.activities.drawerrecycler.model.DrawerModel;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
-import ravtrix.foodybuddy.fragments.friendsfrag.FriendsFrag;
+import ravtrix.foodybuddy.fragments.deals.DealsFragment;
 import ravtrix.foodybuddy.fragments.inbox.InboxFragment;
 import ravtrix.foodybuddy.fragments.maineventfrag.IOnDistanceSettingSelected;
 import ravtrix.foodybuddy.fragments.maineventfrag.MainEventFrag;
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbarTitle.setTypeface(Typeface.createFromAsset(getAssets(), "toolbar2.ttf"));
 
         setupViewPager(); // set adapter with data
-        viewPager.setOffscreenPageLimit(3); // define size of tabs
+        viewPager.setOffscreenPageLimit(4); // define size of tabs
         tabLayout.setupWithViewPager(viewPager); // push viewpager into the tab layout
 
         // Set up tabs and view-pager
@@ -162,7 +162,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.addFragment(mainEventFrag);
         adapter.addFragment(new InboxFragment()); // inbox
         adapter.addFragment(new UserProfileFrag());
-        adapter.addFragment(new FriendsFrag());
+        //adapter.addFragment(new FriendsFrag());
+        adapter.addFragment(new DealsFragment());
         this.viewPager.setAdapter(adapter);
         this.iOnDistanceSettingSelected = (IOnDistanceSettingSelected) mainEventFrag;
     }

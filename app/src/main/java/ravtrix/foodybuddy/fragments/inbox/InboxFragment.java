@@ -32,7 +32,7 @@ public class InboxFragment extends Fragment {
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
+        super.setUserVisibleHint(isVisibledToUser);
 
         if (isVisibleToUser && !isFragLoaded) {
             loadViewWithData();

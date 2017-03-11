@@ -6,7 +6,7 @@ package ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model;
 
 public class Event {
 
-    private int event_id;
+    private String event_id;
     private int user_id;
     private int rest_id;
     private String rest_name;
@@ -42,11 +42,11 @@ public class Event {
         this.ownerImage = ownerImage;
     }
 
-    public int getEvent_id() {
+    public String getEvent_id() {
         return event_id;
     }
 
-    public void setEvent_id(int event_id) {
+    public void setEvent_id(String event_id) {
         this.event_id = event_id;
     }
 
