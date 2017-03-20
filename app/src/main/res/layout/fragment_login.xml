@@ -60,12 +60,23 @@ android:fillViewport="true"
 
     </android.support.design.widget.TextInputLayout>
 
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/fragment_login_bFacebook"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp" />
+
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/button_margin"
-        android:drawableRight="@drawable/ic_arrow_forward"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:drawableEnd="@drawable/ic_arrow_forward"
         android:paddingLeft="@dimen/button_padding"
         android:text="Login" />
 

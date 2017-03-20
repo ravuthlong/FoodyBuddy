@@ -1,6 +1,6 @@
 package ravtrix.foodybuddy.utils;
 
-import ravtrix.foodybuddy.retrofit.retrofitrequests.RetrofitYelp;
+import ravtrix.foodybuddy.network.retrofitrequests.RetrofitYelp;
 
 /**
  * Created by Ravinder on 1/30/17.

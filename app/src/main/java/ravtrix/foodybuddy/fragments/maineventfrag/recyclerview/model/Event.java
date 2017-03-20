@@ -8,7 +8,7 @@ public class Event {
 
     private int event_id;
     private int user_id;
-    private int rest_id;
+    private String rest_id;
     private String rest_name;
     private String address;
     private String ownerImage;
@@ -58,11 +58,11 @@ public class Event {
         this.user_id = user_id;
     }
 
-    public int getRest_id() {
+    public String getRest_id() {
         return rest_id;
     }
 
-    public void setRest_id(int rest_id) {
+    public void setRest_id(String rest_id) {
         this.rest_id = rest_id;
     }
 

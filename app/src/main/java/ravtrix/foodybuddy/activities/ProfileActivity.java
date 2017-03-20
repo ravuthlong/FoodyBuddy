@@ -23,7 +23,7 @@ import ravtrix.foodybuddy.fragments.ChangePasswordDialog;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.model.LogInResponse;
 import ravtrix.foodybuddy.model.User;
-import ravtrix.foodybuddy.network.NetworkUtil;
+import ravtrix.foodybuddy.utils.NetworkUtil;
 import ravtrix.foodybuddy.utils.Constants;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;

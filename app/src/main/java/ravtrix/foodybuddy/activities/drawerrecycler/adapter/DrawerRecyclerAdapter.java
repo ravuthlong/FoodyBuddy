@@ -15,7 +15,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.activities.drawerrecycler.model.DrawerModel;
+import ravtrix.foodybuddy.activities.mainpage.model.EventJoined;
 import ravtrix.foodybuddy.utils.Helpers;
 
 /**
@@ -24,13 +24,13 @@ import ravtrix.foodybuddy.utils.Helpers;
 
 public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAdapter.ViewHolder> {
 
-    private List<DrawerModel> drawerModelList;
+    private List<EventJoined> eventModelList;
     private Context context;
     private LayoutInflater inflater;
     private boolean isEditEventClicked = false;
 
-    public DrawerRecyclerAdapter(Context context, List<DrawerModel> drawerModels) {
-        this.drawerModelList = drawerModels;
+    public DrawerRecyclerAdapter(Context context, List<EventJoined> eventModels) {
+        this.eventModelList = eventModels;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
     }
@@ -44,7 +44,7 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         // get current item of viewholder
-        DrawerModel currentItem = drawerModelList.get(position);
+        EventJoined currentItem = eventModelList.get(position);
 
         if (isEditEventClicked) {
             holder.imageRemove.setVisibility(View.VISIBLE);
@@ -52,14 +52,14 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
             holder.imageRemove.setVisibility(View.GONE);
         }
         // populate with list data
-        holder.tvRestaurantName.setText(currentItem.getRestaurantName());
-        holder.tvTime.setText(currentItem.getTime());
+        holder.tvRestaurantName.setText(currentItem.getRest_name());
+        holder.tvTime.setText(Long.toString(currentItem.getEvent_time()));
         holder.tvAddress.setText(currentItem.getAddress());
     }
 
     @Override
     public int getItemCount() {
-        return drawerModelList.size();
+        return eventModelList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -85,8 +85,8 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
             mainLinear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DrawerModel currentItem = drawerModelList.get(getAdapterPosition());
-                    Helpers.displayToast(context, "Clicked On: " + currentItem.getRestaurantName());
+                    EventJoined currentItem = eventModelList.get(getAdapterPosition());
+                    Helpers.displayToast(context, "Clicked On: " + currentItem.getRest_name());
 
                 }
             });
@@ -94,8 +94,8 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
             layoutCancelEvent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DrawerModel currentItem = drawerModelList.get(getAdapterPosition());
-                    showOptionDialog(currentItem.getRestaurantName());
+                    EventJoined currentItem = eventModelList.get(getAdapterPosition());
+                    showOptionDialog(currentItem.getRest_name());
                 }
             });
 

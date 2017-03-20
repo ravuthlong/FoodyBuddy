@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/frag_inbox_tabs_tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/greenLightest"
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextColor="@color/blackLighter"
+        app:tabGravity="fill"
+        app:tabMode="fixed"/>
+
+    <ravtrix.foodybuddy.fragments.inbox.CustomViewPager
+        android:id="@+id/frag_inbox_tabs_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ravtrix.foodybuddy.fragments.inbox.CustomViewPager>
+
+</LinearLayout>

@@ -1,4 +1,4 @@
-package ravtrix.foodybuddy.network;
+package ravtrix.foodybuddy.utils;
 
 /**
  * Created by Emily on 2/6/17.
@@ -12,7 +12,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import ravtrix.foodybuddy.utils.Constants;
+import ravtrix.foodybuddy.network.retrofitinterfaces.RetrofitInterface;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -20,7 +20,7 @@ import rx.schedulers.Schedulers;
 
 public class NetworkUtil {
 
-    public static RetrofitInterface getRetrofit(){
+    public static RetrofitInterface getRetrofit() {
 
         RxJavaCallAdapterFactory rxAdapter = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
 
@@ -30,7 +30,6 @@ public class NetworkUtil {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(RetrofitInterface.class);
-
     }
 
     public static RetrofitInterface getRetrofit(String email, String password) {
@@ -85,7 +84,7 @@ public class NetworkUtil {
                 .build().create(RetrofitInterface.class);
     }
 
-    public static RetrofitInterfaceEvents getRawRetrofit() {
+    public static Retrofit buildRetrofit() {
 
         RxJavaCallAdapterFactory rxAdapter = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
 
@@ -93,7 +92,6 @@ public class NetworkUtil {
                 .baseUrl(Constants.BASE_URL)
                 .addCallAdapterFactory(rxAdapter)
                 .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(RetrofitInterfaceEvents.class);
+                .build();
     }
 }

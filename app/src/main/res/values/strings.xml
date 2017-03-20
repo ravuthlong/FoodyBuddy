@@ -2,7 +2,12 @@
     <string name="app_name">FoodyBuddy</string>
     <string name="drawerClosed">Closed</string>
     <string name="drawerOpened">Opened</string>
-
+    <string name="facebook_app_id">415236935494103</string>
+    <string name="fb_login_protocol_scheme">fb415236935494103</string>
+    <string name="meetUpHint">Include a short description \n of your meet up!</string>
+    <string name="restSelection">RESTAURANT SELECTION</string>
+    <string name="setDate">SET EVENT DATE</string>
+    <string name="setTime">SET EVENT TIME</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

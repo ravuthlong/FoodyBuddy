@@ -93,7 +93,7 @@ public class UserProfileFrag extends Fragment {
     /**
      * Adapter class for custom tabs
      */
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>(); // array list with tab fragments
 
         ViewPagerAdapter(FragmentManager manager) {

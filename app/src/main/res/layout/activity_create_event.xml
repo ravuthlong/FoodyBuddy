@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -40,22 +42,21 @@
                     android:id="@+id/activity_create_tvUsername"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Ortemis"
-                    android:layout_toEndOf="@+id/activity_create_profileImage"
                     android:gravity="center_vertical"
                     android:textStyle="bold"
                     android:textSize="@dimen/_14ssp"
-                    android:paddingStart="5dp" />
+                    android:paddingStart="5dp"
+                    android:paddingEnd="0dp"/>
             </LinearLayout>
 
             <EditText
+                android:id="@+id/activity_create_etPost"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/activity_create_userRelative"
                 android:background="@android:color/transparent"
-                android:id="@+id/activity_create_etPost"
-                android:hint="Include a short description \n of your meet up!" />
-
+                android:inputType="textMultiLine|textCapSentences"
+                android:hint="@string/meetUpHint" />
         </RelativeLayout>
 
         <View
@@ -66,10 +67,11 @@
 
 
         <LinearLayout
+            android:id="@+id/activity_create_event_restaurant"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.3"
-            android:id="@+id/activity_create_event_restaurant"
+            android:orientation="horizontal"
             android:padding="10dp"
             android:gravity="center_vertical">
 
@@ -88,14 +90,12 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:text="Restaurant Name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/activity_create_event_tvRestaurantName"
                     android:layout_weight="1" />
 
                 <TextView
-                    android:text="Address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/activity_create_event_tvAddress"
@@ -103,7 +103,7 @@
             </LinearLayout>
 
             <TextView
-                android:text="RESTAURANT SELECTION"
+                android:text="@string/restSelection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/activity_create_event_tvRestSelect"
@@ -136,7 +136,7 @@
 
             <TextView
                 android:id="@+id/activity_create_event_tvDate"
-                android:text="SET EVENT DATE"
+                android:text="@string/setDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -167,14 +167,13 @@
 
             <TextView
                 android:id="@+id/activity_create_event_tvTime"
-                android:text="SET EVEN TIME"
+                android:text="@string/setTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginStart="10dp" />
         </LinearLayout>
     </LinearLayout>
-
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
@@ -184,4 +183,5 @@
         app:backgroundTint="@android:color/holo_green_dark"
         android:src="@drawable/ic_done_white_24dp"
         android:id="@+id/activity_create_event_floatingButtonSubmit" />
+
 </android.support.design.widget.CoordinatorLayout>

@@ -28,13 +28,20 @@ import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.drawerrecycler.adapter.DrawerRecyclerAdapter;
 import ravtrix.foodybuddy.activities.drawerrecycler.model.DrawerModel;
+import ravtrix.foodybuddy.activities.mainpage.model.EventJoined;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
-import ravtrix.foodybuddy.fragments.friendsfrag.FriendsFrag;
+import ravtrix.foodybuddy.fragments.deals.DealsFragment;
 import ravtrix.foodybuddy.fragments.inbox.InboxFragment;
 import ravtrix.foodybuddy.fragments.maineventfrag.IOnDistanceSettingSelected;
 import ravtrix.foodybuddy.fragments.maineventfrag.MainEventFrag;
 import ravtrix.foodybuddy.fragments.userprofilefrag.UserProfileFrag;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -51,7 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<DrawerModel> drawerModels;
     private DrawerRecyclerAdapter drawerRecyclerAdapter;
     private boolean isEventEditClicked = false;
+    private UserLocalStore userLocalStore;
     private IOnDistanceSettingSelected iOnDistanceSettingSelected;
+    private CompositeSubscription mSubscriptions;
+    private List<EventJoined> eventModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,22 +93,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageNavigation.setOnClickListener(this);
         imageSetting.setOnClickListener(this);
         layoutEdit.setOnClickListener(this);
+        userLocalStore = new UserLocalStore(this);
 
         RecyclerView.ItemDecoration dividerDecorator = new DividerDecoration(this, R.drawable.line_divider_drawer);
         recyclerViewMain.addItemDecoration(dividerDecorator);
+        mSubscriptions = new CompositeSubscription();
 
+
+        fetchDrawerModelsRetrofit();
+
+        /*
         drawerModels = new ArrayList<>();
         DrawerModel drawerModel1 = new DrawerModel("Lucky Jams", "4 more days", "1322 Yakima");
         DrawerModel drawerModel2 = new DrawerModel("Curry Friends", "11 more days", "810 New Street");
         DrawerModel drawerModel3 = new DrawerModel("Kit Kat", "14 more days", "1022 Jumper Ave");
-
         drawerModels.add(drawerModel1);
         drawerModels.add(drawerModel2);
-        drawerModels.add(drawerModel3);
+        drawerModels.add(drawerModel3);*/
+    }
 
-        this.drawerRecyclerAdapter = new DrawerRecyclerAdapter(this, drawerModels);
-        this.recyclerViewMain.setAdapter(drawerRecyclerAdapter);
-        this.recyclerViewMain.setLayoutManager(new LinearLayoutManager(this));
+    private void fetchDrawerModelsRetrofit() {
+
+        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+                .getEventJoined()
+                .getEventJoined(userLocalStore.getLoggedInUser().getUserID())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<List<EventJoined>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(List<EventJoined> events) {
+                        // Fetch events joined
+                        eventModels = events;
+                        drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventModels);
+                        recyclerViewMain.setAdapter(drawerRecyclerAdapter);
+                        recyclerViewMain.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    }
+                }));
     }
 
     @Override
@@ -162,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.addFragment(mainEventFrag);
         adapter.addFragment(new InboxFragment()); // inbox
         adapter.addFragment(new UserProfileFrag());
-        adapter.addFragment(new FriendsFrag());
+        adapter.addFragment(new DealsFragment());
         this.viewPager.setAdapter(adapter);
         this.iOnDistanceSettingSelected = (IOnDistanceSettingSelected) mainEventFrag;
     }
@@ -183,10 +219,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tabLayout.getTabAt(i).setIcon(R.drawable.ic_user);
                     break;
                 case 3:
-                    tabLayout.getTabAt(i).setIcon(R.drawable.ic_user_friends);
-                    break;
-                default:
-                    tabLayout.getTabAt(i).setIcon(R.drawable.ic_user_friends);
+                    tabLayout.getTabAt(i).setIcon(R.drawable.ic_price_tag);
                     break;
             }
         }
@@ -279,5 +312,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Fragment getFragmentAtPosition(int position) {
             return mFragmentList.get(position);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mSubscriptions.unsubscribe();
     }
 }

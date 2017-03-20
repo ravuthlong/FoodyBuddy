@@ -1,4 +1,4 @@
-package ravtrix.foodybuddy.network;
+package ravtrix.foodybuddy.network.retrofitinterfaces;
 
 /**
  * Created by Emily on 2/6/17.

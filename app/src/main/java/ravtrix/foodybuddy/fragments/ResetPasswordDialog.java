@@ -24,7 +24,7 @@ import ravtrix.foodybuddy.activities.login.LoginActivity;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.model.LogInResponse;
 import ravtrix.foodybuddy.model.User;
-import ravtrix.foodybuddy.network.NetworkUtil;
+import ravtrix.foodybuddy.utils.NetworkUtil;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;

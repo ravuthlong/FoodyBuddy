@@ -1,5 +1,6 @@
 package ravtrix.foodybuddy.fragments.maineventfrag;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,8 +19,12 @@ import ravtrix.foodybuddy.decorator.DividerDecoration;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.adapter.EventAdapter;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.EventModel;
-import ravtrix.foodybuddy.network.NetworkUtil;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.networkmodel.EventParam;
+import ravtrix.foodybuddy.utils.Constants;
 import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -34,6 +39,8 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
     @BindView(R.id.frag_eventmain_recyclerView) protected RecyclerView eventRecyclerView;
     private List<Event> eventModels;
     private CompositeSubscription mSubscriptions;
+    private UserLocalStore userLocalStore;
+    private EventAdapter eventAdapter;
 
     @Nullable
     @Override
@@ -43,10 +50,20 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
         ButterKnife.setDebug(true);
         ButterKnife.bind(this, view);
 
-        //setModels();
 
         mSubscriptions = new CompositeSubscription();
-        mSubscriptions.add(NetworkUtil.getRawRetrofit().getEvents()
+        fetchEvents();
+
+        userLocalStore = new UserLocalStore(getActivity());
+
+        return view;
+    }
+
+
+    private void fetchEvents() {
+        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+                .getEvents()
+                .getEvents()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<List<Event>>() {
@@ -65,8 +82,32 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
                         setRecyclerView();
                     }
                 }));
+    }
 
-        return view;
+    private void fetchEventRefresh() {
+        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+                .getEvents()
+                .getEvents()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<List<Event>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(List<Event> events) {
+                        eventModels = events;
+                        for (int i = 0; i < eventModels.size(); i++) {
+                            eventModels.get(i).setOwnerImage("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png");
+                        }
+                        // refresh with new data
+                        eventAdapter.swap(eventModels);
+
+                    }
+                }));
     }
 
     /**
@@ -87,13 +128,44 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
                 "11112 Hell street", "31 miles", 2, "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "");
     }
 
+    public void joinEventRetrofit(int eventID, final String restID) {
+
+        System.out.println("USER ID: " + userLocalStore.getLoggedInUser().getUserID());
+
+        System.out.println("IM GONNA TO JOIN EVENT");
+
+
+        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+                .joinEvent()
+                .joinEvenet(new EventParam(userLocalStore.getLoggedInUser().getUserID(), eventID, restID))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println("JOIN ERROR");
+
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        System.out.println("JOIN DONE");
+
+                        Helpers.displayToast(getActivity(), response.getMessage());
+                    }
+                }));
+
+    }
     /**
      * Sets up the recycler view with its adapter and decorator
      */
     private void setRecyclerView() {
 
         RecyclerView.ItemDecoration dividerDecorator = new DividerDecoration(getActivity(), R.drawable.line_divider_main);
-        EventAdapter eventAdapter = new EventAdapter(getContext(), eventModels);
+        eventAdapter = new EventAdapter(this, eventModels);
         eventRecyclerView.addItemDecoration(dividerDecorator);
         eventRecyclerView.setAdapter(eventAdapter);
         eventRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -104,6 +176,18 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
      */
     public void scrollToTop() {
         eventRecyclerView.scrollToPosition(0);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constants.NEW_EVENT_REQUEST_CODE &&
+                resultCode == Constants.EVENT_INSERTED_RESULT_CODE) {
+            // Callback after event inserted. Time to refresh this fragment
+            fetchEventRefresh();
+        }
     }
 
     @Override

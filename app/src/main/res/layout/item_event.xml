@@ -31,23 +31,26 @@
 
                 <TextView
                     android:id="@+id/item_event_tvRestaurantName"
-                    android:text="The Eastside Restaurant"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/toolbar"
                     android:layout_marginStart="5dp"
-                    android:textSize="17sp"
+                    android:layout_marginTop="-5dp"
                     android:layout_weight="1"
-                    android:layout_marginTop="-5dp" />
+                    android:text="The Eastside Restaurant"
+                    android:textColor="@color/toolbar"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/item_event_tvPostTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/linearlayout2"
-                    android:text="Jan 09, 2017"
-                    android:gravity="end" />
+                    android:gravity="end"
+
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="-5dp"
+                    android:text="Jan 09, 2017" />
             </LinearLayout>
 
             <LinearLayout
@@ -101,8 +104,7 @@
             android:id="@+id/item_event_tvDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Heard they use fresh seafood and the chef is eye cake. Anyone want to try this out? You know you do. *wink*">
-        </TextView>
+            android:text="Comment"></TextView>
     </RelativeLayout>
 
     <RelativeLayout
