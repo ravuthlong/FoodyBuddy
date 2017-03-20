@@ -1,6 +1,6 @@
-package ravtrix.foodybuddy.retrofit.retrofitrequests;
+package ravtrix.foodybuddy.network.retrofitrequests;
 
-import ravtrix.foodybuddy.retrofit.retrofitinterfaces.RetrofitYelpInterfaces;
+import ravtrix.foodybuddy.network.retrofitinterfaces.RetrofitYelpInterfaces;
 import ravtrix.foodybuddy.utils.Helpers;
 import retrofit2.Retrofit;
 

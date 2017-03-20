@@ -33,8 +33,9 @@ import ravtrix.foodybuddy.activities.findresturant.FindRestaurant;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.model.Response;
-import ravtrix.foodybuddy.network.NetworkUtil;
+import ravtrix.foodybuddy.utils.Constants;
 import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -119,7 +120,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 // Create new event object based on user's selection
                 Event event = new Event();
                 event.setUser_id(userLocalStore.getLoggedInUser().getUserID());
-                event.setRest_id(1111); // TO-DO, change database type to string because ID is string
+                event.setRest_id(this.restaurantID); // TO-DO, change database type to string because ID is string
                 event.setAddress(this.restaurantAddress);
                 event.setRest_name(this.restaurantName);
                 event.setEvent_des(this.eventDescription);
@@ -128,7 +129,9 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 event.setCreate_time(System.currentTimeMillis() / 1000L);
                 event.setEvent_time(timeUnix);
 
-                mSubscriptions.add(NetworkUtil.getRawRetrofit().postEvent(event)
+                mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+                        .postEvent()
+                        .postEvent(event)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(new Observer<Response>() {
@@ -142,6 +145,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                             @Override
                             public void onNext(Response response) {
                                 Helpers.displayToast(CreateEventActivity.this, response.getMessage());
+                                setResult(Constants.EVENT_INSERTED_RESULT_CODE);
+                                finish();
                             }
 
                         }));

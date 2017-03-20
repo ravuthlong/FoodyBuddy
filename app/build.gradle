@@ -68,6 +68,7 @@ dependencies {
     compile 'jp.wasabeef:picasso-transformations:2.1.0'
     compile 'me.relex:circleindicator:1.2.2@aar'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    compile 'com.yelp.clientlib:yelp-android:3.0.0'
     testCompile 'junit:junit:4.12'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     //annotationProcessor 'com.google.dagger:dagger-compiler:2.0'

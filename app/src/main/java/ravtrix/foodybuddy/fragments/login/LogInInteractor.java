@@ -2,7 +2,7 @@ package ravtrix.foodybuddy.fragments.login;
 
 import ravtrix.foodybuddy.callbacks.OnRetrofitFinishedJSON;
 import ravtrix.foodybuddy.model.LoggedInUser;
-import ravtrix.foodybuddy.network.NetworkUtil;
+import ravtrix.foodybuddy.utils.NetworkUtil;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

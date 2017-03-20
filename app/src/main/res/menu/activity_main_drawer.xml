@@ -4,6 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:title=""
+            android:orderInCategory="100"
             android:id="@+id/navDiscussion" />
     </group>
 </menu>

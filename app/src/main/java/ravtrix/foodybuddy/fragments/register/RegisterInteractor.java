@@ -3,7 +3,7 @@ package ravtrix.foodybuddy.fragments.register;
 import ravtrix.foodybuddy.callbacks.OnRetrofitFinished;
 import ravtrix.foodybuddy.model.LogInResponse;
 import ravtrix.foodybuddy.model.User;
-import ravtrix.foodybuddy.network.NetworkUtil;
+import ravtrix.foodybuddy.utils.NetworkUtil;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

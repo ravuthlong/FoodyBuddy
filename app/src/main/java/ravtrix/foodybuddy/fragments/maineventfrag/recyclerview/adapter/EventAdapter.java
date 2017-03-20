@@ -1,14 +1,11 @@
 package ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.adapter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +25,9 @@ import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.createevent.CreateEventActivity;
 import ravtrix.foodybuddy.activities.eventcomments.EventCommentsActivity;
 import ravtrix.foodybuddy.activities.otheruserprofile.OtherUserProfileActivity;
+import ravtrix.foodybuddy.fragments.maineventfrag.MainEventFrag;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
+import ravtrix.foodybuddy.utils.Constants;
 import ravtrix.foodybuddy.utils.Helpers;
 
 /**
@@ -39,13 +38,13 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private List<Event> eventModelList;
     private LayoutInflater inflater;
-    private Context context;
+    private Fragment fragment;
     private boolean firstOfList = true;
 
-    public EventAdapter(Context context, List<Event> eventModels) {
-        this.context = context;
+    public EventAdapter(Fragment fragment, List<Event> eventModels) {
+        this.fragment = fragment;
         this.eventModelList = eventModels;
-        inflater = LayoutInflater.from(context);
+        inflater = LayoutInflater.from(fragment.getActivity());
     }
 
     @Override
@@ -65,7 +64,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         switch (holder.getItemViewType()) {
             case 0:
                 ViewHolder1 viewHolder1 = (ViewHolder1) holder;
-                Picasso.with(context)
+                Picasso.with(fragment.getActivity())
                         .load("http://orig11.deviantart.net/7bbd/f/2013/331/2/c/team_crafted_style_profile_picture__shadowvenom718_by_shadowvenom718-d6vuqot.png")
                         .centerCrop()
                         .fit()
@@ -99,7 +98,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder2.numComment.setText("2");
 
                 if (!currentItem.getOwnerImage().isEmpty()) {
-                    Picasso.with(context)
+                    Picasso.with(fragment.getActivity())
                             .load(currentItem.getOwnerImage())
                             .centerCrop()
                             .fit()
@@ -146,7 +145,26 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 } else {
                     viewHolder2.otherUser4.setVisibility(View.GONE);
                 }*/
-
+                Picasso.with(fragment.getActivity())
+                        .load("https://viralplots.com/wp-content/uploads/2015/12/angelina.jpeg")
+                        .centerCrop()
+                        .fit()
+                        .into(viewHolder2.otherUser1);
+                Picasso.with(fragment.getActivity())
+                        .load("http://cdn.hanoitimes.com.vn/mfiles/data/2014/04/81E07AB1/yeojingoo-photo-3-400x600.jpg")
+                        .centerCrop()
+                        .fit()
+                        .into(viewHolder2.otherUser2);
+                Picasso.with(fragment.getActivity())
+                        .load("https://www.cdc.gov/features/dog-bite-prevention/dog-bite-prevention_456px.jpg")
+                        .centerCrop()
+                        .fit()
+                        .into(viewHolder2.otherUser3);
+                Picasso.with(fragment.getActivity())
+                        .load("https://s-media-cache-ak0.pinimg.com/236x/75/bd/b9/75bdb9bf23175ec74f86cec6554791b5.jpg")
+                        .centerCrop()
+                        .fit()
+                        .into(viewHolder2.otherUser4);
                 break;
             default:
                 break;
@@ -185,13 +203,13 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             etDescription = (TextView) itemView.findViewById(R.id.item_eventfirst_etDescription);
             relativeLayoutNewPost = (RelativeLayout) itemView.findViewById(R.id.item_eventfirst_relativePost);
 
-            Helpers.overrideFonts(context, relativeLayoutNewPost);
+            Helpers.overrideFonts(fragment.getActivity(), relativeLayoutNewPost);
 
             relativeLayoutNewPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // start new event post
-                    context.startActivity(new Intent(context, CreateEventActivity.class));
+                    fragment.startActivityForResult(new Intent(fragment.getActivity(), CreateEventActivity.class), Constants.NEW_EVENT_REQUEST_CODE);
                 }
             });
 
@@ -229,11 +247,26 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             otherUser3 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser3);
             otherUser4 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser4);
 
-            Helpers.overrideFonts(context, relativeAll);
+            Helpers.overrideFonts(fragment.getActivity(), relativeAll);
 
             layoutJoin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    int position = getAdapterPosition();
+                    Event clickedItem = eventModelList.get(position - 1);
+
+                    if (fragment instanceof MainEventFrag) {
+
+                        System.out.println("CALLING TO JOIN EVENT");
+                        System.out.println("EVENT ID: " + clickedItem.getEvent_id());
+                        System.out.println("REST ID: " + clickedItem.getRest_id());
+
+                        // Invoke main fragment to invoke event insert
+                        ((MainEventFrag) fragment).joinEventRetrofit(clickedItem.getEvent_id(), clickedItem.getRest_id());
+                    }
+
+                    /*
                     Snackbar snackbar = Snackbar
                             .make(relativeAll, "Joined. Owner has been notified.", Snackbar.LENGTH_SHORT);
                     View mView = snackbar.getView();
@@ -243,14 +276,15 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
                     }
-                    snackbar.show();
+                    snackbar.show();*/
+
                 }
             });
 
             relativeAll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Helpers.displayToast(context, "Clicked on background to see restaurant info");
+                    Helpers.displayToast(fragment.getActivity(), "Clicked on background to see restaurant info");
                 }
             });
 
@@ -258,31 +292,31 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             profileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    context.startActivity(new Intent(context, OtherUserProfileActivity.class));
+                    fragment.startActivity(new Intent(fragment.getActivity(), OtherUserProfileActivity.class));
                 }
             });
 
             layoutComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    context.startActivity(new Intent(context, EventCommentsActivity.class));
+                    fragment.startActivity(new Intent(fragment.getActivity(), EventCommentsActivity.class));
                 }
             });
 
             layoutDrive.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Helpers.displayToast(context, "Clicked on drive");
+                    Helpers.displayToast(fragment.getActivity(), "Clicked on drive");
                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                             Uri.parse("http://maps.google.com/maps?daddr=37.416936,-121.890564"));
-                    context.startActivity(intent);
+                    fragment.startActivity(intent);
                 }
             });
 
             layoutMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Helpers.displayToast(context, "Clicked on more options");
+                    Helpers.displayToast(fragment.getActivity(), "Clicked on more options");
                 }
             });
 
@@ -294,5 +328,11 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(time);
         return DateFormat.format("MM-dd-yyyy hh:mm a", cal).toString();
+    }
+
+    public void swap(List<Event> models) {
+        this.eventModelList.clear();
+        this.eventModelList.addAll(models);
+        this.notifyDataSetChanged();
     }
 }

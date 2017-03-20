@@ -30,7 +30,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
     public InboxAdapter(Context context, List<InboxModel> inboxModels) {
         this.context = context;
         this.inboxModelList = inboxModels;
-        inflater = LayoutInflater.from(context);
+        if (null != context) inflater = LayoutInflater.from(context);
     }
 
     @Override
