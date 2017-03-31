@@ -17,24 +17,28 @@
             android:layout_margin="@dimen/activity_vertical_margin">
 
             <ImageView
-                android:id="@+id/img_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/logo_height"
+                android:id="@+id/frag_register_imgProfileImage"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_marginTop="@dimen/_10ssp"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/logo"/>
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:textSize="@dimen/_13ssp" />
+
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/ti_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/img_logo"
-                android:layout_marginTop="@dimen/child_margin_top">
+                android:layout_below="@+id/frag_register_imgProfileImage"
+                android:layout_marginTop="@dimen/_10sdp">
 
                 <EditText
                     android:id="@+id/et_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_person"
+                    android:drawableEnd="@drawable/ic_person"
                     android:hint="Name"
                     android:inputType="text" />
 
@@ -51,7 +55,7 @@
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_email"
+                    android:drawableEnd="@drawable/ic_email"
                     android:hint="Email"
                     android:inputType="textEmailAddress" />
 
@@ -81,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ti_password"
                 android:layout_marginTop="@dimen/button_margin"
-                android:drawableRight="@drawable/ic_arrow_forward"
+                android:drawableEnd="@drawable/ic_arrow_forward"
                 android:paddingLeft="@dimen/button_padding"
                 android:text="Register" />
 

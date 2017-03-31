@@ -1,5 +1,6 @@
 package ravtrix.foodybuddy.fragments.maineventfrag;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,9 +17,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
+import ravtrix.foodybuddy.fragactivityinterfaces.OnEventJoined;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.adapter.EventAdapter;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
-import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.EventModel;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.model.Response;
 import ravtrix.foodybuddy.networkmodel.EventParam;
@@ -41,6 +42,13 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
     private CompositeSubscription mSubscriptions;
     private UserLocalStore userLocalStore;
     private EventAdapter eventAdapter;
+    private OnEventJoined onEventJoinedInterface;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.onEventJoinedInterface = (OnEventJoined) context;
+    }
 
     @Nullable
     @Override
@@ -50,12 +58,10 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
         ButterKnife.setDebug(true);
         ButterKnife.bind(this, view);
 
-
         mSubscriptions = new CompositeSubscription();
         fetchEvents();
 
         userLocalStore = new UserLocalStore(getActivity());
-
         return view;
     }
 
@@ -110,30 +116,7 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
                 }));
     }
 
-    /**
-     * Fill the models of Event Model array list
-     */
-    private void setModels() {
-        EventModel eventModel1 = new EventModel("http://images6.fanpop.com/image/photos/39200000/taylor-swift-icons-demmah-39210598-250-250.png", "Lucky Charm Restaurant", "Jan 02, 2017", "Jan 30, 2017", "Who wants to try this new place",
-                "3222 Broadway", "1 miles", 0, "http://purrfectcatbreeds.com/wp-content/uploads/2014/06/small-cat-breeds.jpg", "http://purrfectcatbreeds.com/wp-content/uploads/2014/06/small-cat-breeds.jpg", "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png",
-                "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png");
-
-        EventModel eventModel2 = new EventModel("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "Red Lobster Curry Style", "Jan 02, 2017", "Jan 30, 2017", "I heard they serve really good Indian authentic food. I suddenly feel like being a curry.",
-                "3242 Lucky", "3 miles", 5, "", "", "", "");
-
-        EventModel eventModel3 = new EventModel("http://purrfectcatbreeds.com/wp-content/uploads/2014/06/small-cat-breeds.jpg", "Pho Me", "Jan 02, 2017", "Jan 30, 2017", "Pho me Pho you. Who cares? I need Pho right now. ",
-                "213 Moron", "13 miles", 1, "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "", "", "");
-
-        EventModel eventModel4 = new EventModel("http://a1.mzstatic.com/us/r30/Purple4/v4/eb/36/69/eb366995-c26d-85be-16e3-44cbb1adff9a/icon350x350.png", "All You Can Eat Foo Foo", "Jan 02, 2017", "Jan 30, 2017", "I'm trying to gain 10 pounds before my wedding. The baby bump is coming soon too!",
-                "11112 Hell street", "31 miles", 2, "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png", "");
-    }
-
     public void joinEventRetrofit(int eventID, final String restID) {
-
-        System.out.println("USER ID: " + userLocalStore.getLoggedInUser().getUserID());
-
-        System.out.println("IM GONNA TO JOIN EVENT");
-
 
         mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
                 .joinEvent()
@@ -152,9 +135,8 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
 
                     @Override
                     public void onNext(Response response) {
-                        System.out.println("JOIN DONE");
-
                         Helpers.displayToast(getActivity(), response.getMessage());
+                        onEventJoinedInterface.onEventJoined(); // refresh drawer in main
                     }
                 }));
 
@@ -183,8 +165,7 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == Constants.NEW_EVENT_REQUEST_CODE &&
-                resultCode == Constants.EVENT_INSERTED_RESULT_CODE) {
+        if (requestCode == Constants.NEW_EVENT_REQUEST_CODE) {
             // Callback after event inserted. Time to refresh this fragment
             fetchEventRefresh();
         }

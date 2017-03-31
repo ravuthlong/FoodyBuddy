@@ -5,13 +5,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
@@ -53,7 +56,7 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
         }
         // populate with list data
         holder.tvRestaurantName.setText(currentItem.getRest_name());
-        holder.tvTime.setText(Long.toString(currentItem.getEvent_time()));
+        holder.tvTime.setText(getDate(currentItem.getEvent_time() * 1000));
         holder.tvAddress.setText(currentItem.getAddress());
     }
 
@@ -121,4 +124,19 @@ public class DrawerRecyclerAdapter extends RecyclerView.Adapter<DrawerRecyclerAd
         });
         optionDialog.show();
     }
+
+    private String getDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time);
+        return DateFormat.format("MM-dd-yyyy hh:mm a", cal).toString();
+    }
+
+    public void swap(List<EventJoined> models) {
+        this.eventModelList.clear();
+        this.eventModelList.addAll(models);
+        this.notifyDataSetChanged();
+    }
 }
+
+
+

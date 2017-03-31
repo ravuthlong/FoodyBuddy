@@ -50,9 +50,11 @@ dependencies {
 
     // constaint layout
 
+    //annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
     compile 'com.jakewharton:butterknife:8.0.1'
-    annotationProcessor  'com.jakewharton:butterknife-compiler:8.0.1'
     compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:customtabs:25.2.0'
+    compile 'com.android.support:palette-v7:25.2.0'
     compile 'com.android.support:design:25.2.0'
     compile 'com.android.support:cardview-v7:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'
@@ -69,9 +71,9 @@ dependencies {
     compile 'me.relex:circleindicator:1.2.2@aar'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.yelp.clientlib:yelp-android:3.0.0'
-    testCompile 'junit:junit:4.12'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    //annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
+    testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'
 }
 apply plugin: 'com.google.gms.google-services'
 

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context="ravtrix.foodybuddy.activities.restaurantfilter.RestaurantFilterActivity">
 
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

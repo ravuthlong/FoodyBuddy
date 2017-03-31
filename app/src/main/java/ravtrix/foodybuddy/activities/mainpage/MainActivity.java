@@ -30,6 +30,7 @@ import ravtrix.foodybuddy.activities.drawerrecycler.adapter.DrawerRecyclerAdapte
 import ravtrix.foodybuddy.activities.drawerrecycler.model.DrawerModel;
 import ravtrix.foodybuddy.activities.mainpage.model.EventJoined;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
+import ravtrix.foodybuddy.fragactivityinterfaces.OnEventJoined;
 import ravtrix.foodybuddy.fragments.deals.DealsFragment;
 import ravtrix.foodybuddy.fragments.inbox.InboxFragment;
 import ravtrix.foodybuddy.fragments.maineventfrag.IOnDistanceSettingSelected;
@@ -43,7 +44,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnEventJoined {
 
     @BindView(R.id.viewpager) protected ViewPager viewPager;
     @BindView(R.id.tabs) protected TabLayout tabLayout;
@@ -101,40 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         fetchDrawerModelsRetrofit();
-
-        /*
-        drawerModels = new ArrayList<>();
-        DrawerModel drawerModel1 = new DrawerModel("Lucky Jams", "4 more days", "1322 Yakima");
-        DrawerModel drawerModel2 = new DrawerModel("Curry Friends", "11 more days", "810 New Street");
-        DrawerModel drawerModel3 = new DrawerModel("Kit Kat", "14 more days", "1022 Jumper Ave");
-        drawerModels.add(drawerModel1);
-        drawerModels.add(drawerModel2);
-        drawerModels.add(drawerModel3);*/
-    }
-
-    private void fetchDrawerModelsRetrofit() {
-
-        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
-                .getEventJoined()
-                .getEventJoined(userLocalStore.getLoggedInUser().getUserID())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<List<EventJoined>>() {
-                    @Override
-                    public void onCompleted() {}
-
-                    @Override
-                    public void onError(Throwable e) {}
-
-                    @Override
-                    public void onNext(List<EventJoined> events) {
-                        // Fetch events joined
-                        eventModels = events;
-                        drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventModels);
-                        recyclerViewMain.setAdapter(drawerRecyclerAdapter);
-                        recyclerViewMain.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                    }
-                }));
     }
 
     @Override
@@ -173,6 +140,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onEventJoined() {
+        // Called by main event fragment when user joined a new event
+        fetchDrawerModelsRetrofitRefresh();
+    }
+
+    private void fetchDrawerModelsRetrofit() {
+
+        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+                .getEventJoined()
+                .getEventJoined(userLocalStore.getLoggedInUser().getUserID())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<List<EventJoined>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(List<EventJoined> events) {
+                        // Fetch events joined
+                        eventModels = events;
+                        drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventModels);
+                        recyclerViewMain.setAdapter(drawerRecyclerAdapter);
+                        recyclerViewMain.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    }
+                }));
+    }
+
+    private void fetchDrawerModelsRetrofitRefresh() {
+
+        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+                .getEventJoined()
+                .getEventJoined(userLocalStore.getLoggedInUser().getUserID())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<List<EventJoined>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(List<EventJoined> events) {
+                        // Fetch events joined
+                        eventModels = events;
+                        if (drawerRecyclerAdapter == null) {
+                            drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventModels);
+                            recyclerViewMain.setAdapter(drawerRecyclerAdapter);
+                            recyclerViewMain.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                        }
+                        drawerRecyclerAdapter.swap(eventModels);
+                    }
+                }));
     }
 
     private void lockDrawerLayoutScroll() {
@@ -317,7 +343,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         mSubscriptions.unsubscribe();
     }
 }

@@ -1,23 +1,24 @@
-package ravtrix.foodybuddy.activities.eventcomments.recyclerview;
+package ravtrix.foodybuddy.networkmodel;
 
 /**
- * Created by Ravinder on 2/9/17.
+ * Created by Ravinder on 3/27/17.
  */
 
-public class EventCommentModel {
+public class CommentParam {
 
-    private int comment_id;
-    private int event_id;
     private int user_id;
+    private int event_id;
     private String comment;
     private long create_time;
 
-    public int getComment_id() {
-        return comment_id;
+    public CommentParam() {}
+
+    public int getUser_id() {
+        return user_id;
     }
 
-    public void setComment_id(int comment_id) {
-        this.comment_id = comment_id;
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 
     public int getEvent_id() {
@@ -26,14 +27,6 @@ public class EventCommentModel {
 
     public void setEvent_id(int event_id) {
         this.event_id = event_id;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
     }
 
     public String getComment() {

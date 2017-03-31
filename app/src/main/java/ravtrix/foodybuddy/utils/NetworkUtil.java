@@ -7,6 +7,7 @@ package ravtrix.foodybuddy.utils;
 import android.util.Base64;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -93,5 +94,39 @@ public class NetworkUtil {
                 .addCallAdapterFactory(rxAdapter)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+    }
+
+
+    public static Retrofit buildRetrofitIMGUR() {
+
+        RxJavaCallAdapterFactory rxAdapter = RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io());
+
+        return new Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL_IMGUR)
+                .client(okClientIMGUR())
+                .addCallAdapterFactory(rxAdapter)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    private static OkHttpClient okClientIMGUR() {
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.connectTimeout(1, TimeUnit.MINUTES)
+                .writeTimeout(1, TimeUnit.MINUTES)
+                .readTimeout(1, TimeUnit.MINUTES)
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+
+                        Request original = chain.request();
+                        Request request = original.newBuilder()
+                                .header("Authorization", "Client-ID " + Constants.IMGUR_CLIENT_ID)
+                                .method(original.method(), original.body())
+                                .build();
+
+                        return chain.proceed(request);
+                    }
+                });
+        return httpClient.build();
     }
 }

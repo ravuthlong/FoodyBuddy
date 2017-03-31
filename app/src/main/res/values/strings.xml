@@ -42,4 +42,7 @@
         <item>Within 15 miles</item>
     </string-array>
     <string name="title_activity_event_profile_frag">EventProfileFrag</string>
+    <string name="permission_title_rationale">Permission needed</string>
+    <string name="label_cancel">Cancel</string>
+    <string name="label_ok">OK</string>
 </resources>

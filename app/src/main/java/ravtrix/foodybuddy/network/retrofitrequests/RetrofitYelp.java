@@ -1,7 +1,7 @@
 package ravtrix.foodybuddy.network.retrofitrequests;
 
 import ravtrix.foodybuddy.network.retrofitinterfaces.RetrofitYelpInterfaces;
-import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.HelpersConnection;
 import retrofit2.Retrofit;
 
 /**
@@ -13,7 +13,7 @@ public class RetrofitYelp {
     private Retrofit retrofit;
 
     public RetrofitYelp() {
-        retrofit = Helpers.retrofitBuilder(Helpers.ServerURL.YELP_API_URL);
+        retrofit = HelpersConnection.retrofitBuilderYelp(HelpersConnection.ServerURL.YELP_API_URL);
     }
 
 

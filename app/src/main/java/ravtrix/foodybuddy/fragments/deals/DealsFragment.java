@@ -81,7 +81,7 @@ public class DealsFragment extends Fragment {
         RecyclerView.ItemDecoration dividerDecorator = new DividerDecoration(getActivity(), R.drawable.line_divider_main);
         recyclerviewDeals.addItemDecoration(dividerDecorator);
 
-        if (isViewShown) {
+        if (!isViewShown) {
             loadViewWithData();
         }
 

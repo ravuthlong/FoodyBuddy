@@ -45,10 +45,33 @@ class RegisterPresenter implements IRegisterPresenter {
     }
 
 
+    /*
+    @Override
+    public void uploadImage(String bitmap) {
+
+        registerInteractor.uploadImage(bitmap, new OnImageResponse() {
+            @Override
+            public void onComplete() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+               System.out.println("ERROR");
+
+            }
+
+            @Override
+            public void onNext(ImageResponse imageResponse) {
+                System.out.println(imageResponse.getURL());
+
+            }
+        });
+    }*/
+
     private void handleResponse(LogInResponse logInResponse) {
 
         iRegisterView.hideProgressbar();
-        iRegisterView.showSnackbar(logInResponse.getMessage());
+        iRegisterView.showSnackbar(logInResponse.getToken());
     }
 
     private void handleError(Throwable error) {

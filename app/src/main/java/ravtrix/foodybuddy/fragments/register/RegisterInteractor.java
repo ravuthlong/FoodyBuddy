@@ -43,6 +43,32 @@ class RegisterInteractor implements IRegisterInteractor {
                 }));
     }
 
+    /*
+    @Override
+    public void uploadImage(String image, final OnImageResponse onImageResponse) {
+
+        mSubscriptions.add(new RetrofitPhoto().uploadImage().uploadImage(image)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Observer<ImageResponse>() {
+                        @Override
+                        public void onCompleted() {
+                            onImageResponse.onComplete();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            onImageResponse.onError(e);
+                        }
+
+                        @Override
+                        public void onNext(ImageResponse imageResponse) {
+                            onImageResponse.onNext(imageResponse);
+                        }
+                    }));
+
+    }*/
+
     @Override
     public void unsubscribe() {
         mSubscriptions.unsubscribe();

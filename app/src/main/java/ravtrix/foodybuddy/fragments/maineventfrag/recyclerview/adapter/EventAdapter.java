@@ -257,11 +257,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     Event clickedItem = eventModelList.get(position - 1);
 
                     if (fragment instanceof MainEventFrag) {
-
-                        System.out.println("CALLING TO JOIN EVENT");
-                        System.out.println("EVENT ID: " + clickedItem.getEvent_id());
-                        System.out.println("REST ID: " + clickedItem.getRest_id());
-
                         // Invoke main fragment to invoke event insert
                         ((MainEventFrag) fragment).joinEventRetrofit(clickedItem.getEvent_id(), clickedItem.getRest_id());
                     }
@@ -299,7 +294,12 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             layoutComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    fragment.startActivity(new Intent(fragment.getActivity(), EventCommentsActivity.class));
+                    int position = getAdapterPosition();
+                    Event clickedItem = eventModelList.get(position - 1);
+
+                    Intent intent = new Intent(fragment.getActivity(), EventCommentsActivity.class);
+                    intent.putExtra("event_id", clickedItem.getEvent_id());
+                    fragment.startActivity(intent);
                 }
             });
 
