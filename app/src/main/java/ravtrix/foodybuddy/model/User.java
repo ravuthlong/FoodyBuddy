@@ -12,6 +12,7 @@ public class User {
     private String created_at;
     private String newPassword;
     private String token;
+    private String base64Image;
 
     public User() {}
 
@@ -19,6 +20,14 @@ public class User {
         this.token = token;
         this.name = name;
         this.email = email;
+    }
+
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
     }
 
     public void setName(String name) {

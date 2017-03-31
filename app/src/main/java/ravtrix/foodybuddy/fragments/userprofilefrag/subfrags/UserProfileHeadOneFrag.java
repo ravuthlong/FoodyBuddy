@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.activities.login.LoginActivity;
+import ravtrix.foodybuddy.activities.editprofileimage.EditProfileImageActivity;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.utils.Helpers;
 
@@ -61,8 +61,8 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.frag_profile_head1_bSetting:
-                userLocalStore.clearUserData();
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+                //userLocalStore.clearUserData();
+                startActivity(new Intent(getActivity(), EditProfileImageActivity.class));
                 break;
         }
     }

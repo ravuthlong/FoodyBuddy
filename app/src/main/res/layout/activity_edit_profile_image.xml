@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ravtrix.foodybuddy.activities.editprofileimage.EditProfileImageActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/frag_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <RelativeLayout
+            android:id="@+id/activity_edit_profile_image_relative"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/_8sdp"
+            android:layout_marginTop="@dimen/_35sdp"
+            android:background="@color/com_facebook_blue">
+
+            <ImageView
+                android:id="@+id/activity_edit_profile_image_profileImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:textSize="@dimen/_13ssp" />
+
+            <TextView
+                android:id="@+id/activity_edit_profile_image_tvEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/activity_edit_profile_image_profileImage"
+                android:layout_alignEnd="@+id/activity_edit_profile_image_profileImage"
+                android:layout_alignStart="@+id/activity_edit_profile_image_profileImage"
+                android:background="#80FFFFFF"
+                android:gravity="center"
+                android:text="Edit"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="@dimen/_13ssp" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

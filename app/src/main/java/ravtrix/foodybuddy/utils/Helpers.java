@@ -3,30 +3,29 @@ package ravtrix.foodybuddy.utils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 
 /**
  * Created by Ravinder on 1/28/17.
@@ -34,49 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Helpers {
 
-    public static final String YELP_TOKEN = "zeAZ8CvH8Jh5BXgKlgomA80NvCM_dK_rZahtOnEivGo4GSypKzbRQHA5GlbKppo9NHqmYOq0AFZcKh0gKaYifBQQ0EeX7ids2FTfE0GK5PWunl1BHbmUfyZLhieQWHYx";
     private Helpers() {}
-
-    public static final class ServerURL {
-        public static final String SERVER_URL = "URL TO BE";
-        public static final String YELP_API_URL = "https://api.yelp.com";
-    }
-
-    private static OkHttpClient okClient() {
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-                httpClient.connectTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
-                .readTimeout(1, TimeUnit.MINUTES)
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-
-                        // Customizing a default header for Yelp API because Yelp GET request requires an access token as header
-                        // before it can validate and fetch from the Yelp database
-                        Request original = chain.request();
-                        Request request = original.newBuilder()
-                                .header("Authorization", "Bearer " + YELP_TOKEN)
-                                .method(original.method(), original.body())
-                                .build();
-
-                        return chain.proceed(request);
-                    }
-                });
-        return httpClient.build();
-    }
-
-    /**
-     * Create a retrofit object
-     * @param serverURL       the url to the server
-     */
-    public static Retrofit retrofitBuilder(String serverURL)  {
-
-        return new Retrofit.Builder()
-                .baseUrl(serverURL)
-                .client(okClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-    }
 
     /**
      * Set the toolbar to an activity ot fragment
@@ -216,4 +173,44 @@ public class Helpers {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+    /**
+     * Scale image
+     * @param selectedImage     the image selected by user
+     * @return                  scaled version of bitmap
+     * @throws FileNotFoundException
+     */
+    public static Bitmap decodeBitmap(Activity activity, Uri selectedImage) throws FileNotFoundException {
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(selectedImage), null, o);
+
+        final int REQUIRED_SIZE = 300;
+
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+        while (true) {
+            if (width_tmp / 2 < REQUIRED_SIZE || height_tmp / 2 < REQUIRED_SIZE) {
+                break;
+            }
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(activity.getContentResolver().openInputStream(selectedImage), null, o2);
+    }
+
+    public static String getBase64ProfileImage(ImageView imageView) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ((BitmapDrawable) imageView
+                .getDrawable())
+                .getBitmap()
+                .compress(Bitmap
+                        .CompressFormat
+                        .JPEG, 60, byteArrayOutputStream);
+        return Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
+    }
+
 }

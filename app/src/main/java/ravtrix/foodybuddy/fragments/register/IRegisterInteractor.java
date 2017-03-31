@@ -10,5 +10,6 @@ import ravtrix.foodybuddy.model.User;
 interface IRegisterInteractor {
 
     void registerProcess(User user, OnRetrofitFinished onRetrofitFinished);
+    //void uploadImage(String image, OnImageResponse onImageResponse);
     void unsubscribe();
 }

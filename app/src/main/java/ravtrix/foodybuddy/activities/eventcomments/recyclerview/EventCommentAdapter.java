@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -43,13 +41,14 @@ public class EventCommentAdapter extends RecyclerView.Adapter<EventCommentAdapte
         EventCommentModel currentItem = eventCommentModelList.get(position);
 
         // load profile image
+        /*
         Picasso.with(context)
                 .load(currentItem.getUserImage())
                 .centerCrop()
                 .fit()
-                .into(holder.profileImage);
-        holder.tvUsername.setText(currentItem.getUsername());
-        holder.tvTime.setText(currentItem.getTime());
+                .into(holder.profileImage);*/
+        //holder.tvUsername.setText(currentItem.getUsername());
+        //holder.tvTime.setText(currentItem.getTime());
         holder.tvComment.setText(currentItem.getComment());
     }
 

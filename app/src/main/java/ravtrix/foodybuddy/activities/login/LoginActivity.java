@@ -2,6 +2,7 @@ package ravtrix.foodybuddy.activities.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,6 +15,7 @@ import ravtrix.foodybuddy.activities.mainpage.MainActivity;
 import ravtrix.foodybuddy.fragments.ResetPasswordDialog;
 import ravtrix.foodybuddy.fragments.login.LoginFragment;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.utils.Helpers;
 
 public class LoginActivity extends AppCompatActivity implements ResetPasswordDialog.Listener {
 
@@ -69,6 +71,13 @@ public class LoginActivity extends AppCompatActivity implements ResetPasswordDia
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Helpers.displayToast(this, "PARENT");
+
     }
 
     @Override
