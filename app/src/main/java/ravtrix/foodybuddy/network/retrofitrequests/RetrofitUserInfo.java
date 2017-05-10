@@ -19,4 +19,8 @@ public class RetrofitUserInfo {
     public RetrofitUserInfoInterface.GetAUserPhoto getAUserPhoto() {
         return retrofit.create(RetrofitUserInfoInterface.GetAUserPhoto.class);
     }
+
+    public RetrofitUserInfoInterface.InsertUserImage insertUserImage() {
+        return retrofit.create(RetrofitUserInfoInterface.InsertUserImage.class);
+    }
 }

@@ -27,11 +27,8 @@ import ravtrix.foodybuddy.fragments.deals.recyclerview.adapter.DealsAdapter;
 import ravtrix.foodybuddy.fragments.deals.recyclerview.model.DealsModel;
 import retrofit2.Call;
 
-;
-;
-
 /**
- * Created by Ravinder on 1/28/17.
+ * Created by Emily on 1/28/17.
  */
 
 public class DealsFragment extends Fragment {

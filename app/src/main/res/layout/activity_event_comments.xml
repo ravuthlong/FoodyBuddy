@@ -20,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -40,6 +39,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/activity_event_comment_relativeComment"
             android:layout_alignParentTop="true"
+            android:background="@color/whiteDark"
             android:id="@+id/activity_event_comment_linearRecycler">
 
             <android.support.v7.widget.RecyclerView

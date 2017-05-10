@@ -5,8 +5,8 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
-import ravtrix.foodybuddy.callbacks.OnRetrofitFinished;
 import ravtrix.foodybuddy.model.LogInResponse;
+import ravtrix.foodybuddy.model.RegisterResponse;
 import ravtrix.foodybuddy.model.User;
 import retrofit2.adapter.rxjava.HttpException;
 
@@ -25,12 +25,12 @@ class RegisterPresenter implements IRegisterPresenter {
     }
 
     @Override
-    public void register(User user) {
+    public void register(User user, final String imageBitmap) {
 
-        registerInteractor.registerProcess(user, new OnRetrofitFinished() {
+        registerInteractor.registerProcess(user, imageBitmap, new OnRetrofitImageFinished() {
             @Override
-            public void onNext(LogInResponse logInResponse) {
-                handleResponse(logInResponse);
+            public void onNext(RegisterResponse registerResponse) {
+                handleResponse(registerResponse);
             }
 
             @Override
@@ -68,10 +68,11 @@ class RegisterPresenter implements IRegisterPresenter {
         });
     }*/
 
-    private void handleResponse(LogInResponse logInResponse) {
+    private void handleResponse(RegisterResponse registerResponse) {
 
         iRegisterView.hideProgressbar();
-        iRegisterView.showSnackbar(logInResponse.getToken());
+        iRegisterView.storeUser(registerResponse.getMessage()); // pass back userid
+        iRegisterView.startProfileActivity();
     }
 
     private void handleError(Throwable error) {

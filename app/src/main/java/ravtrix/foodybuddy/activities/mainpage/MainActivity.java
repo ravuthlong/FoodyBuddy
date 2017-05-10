@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CompositeSubscription mSubscriptions;
     private List<EventJoined> eventModels;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
         Helpers.overrideFonts(this, tvUpcomingEvents);
         Helpers.overrideFonts(this, layoutEdit);
-
 
         // Set views
         TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);

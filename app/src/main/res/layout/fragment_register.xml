@@ -16,22 +16,45 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/activity_vertical_margin">
 
-            <ImageView
-                android:id="@+id/frag_register_imgProfileImage"
+            <RelativeLayout
+                android:id="@+id/fragment_register_layoutProfilePic"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="@dimen/_80sdp"
-                android:layout_marginTop="@dimen/_10ssp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:background="@color/greenLighter"
                 android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"
-                android:textSize="@dimen/_13ssp" />
+                android:layout_marginTop="@dimen/_25sdp">
+
+                <ImageView
+                    android:id="@+id/frag_register_imgProfileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@color/greenLighter"
+                    android:scaleType="centerCrop"
+                    android:textSize="@dimen/_13ssp" />
+                <TextView
+                    android:id="@+id/frag_signup1_tvProfilePic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignStart="@+id/frag_register_imgProfileImage"
+                    android:layout_alignTop="@+id/frag_register_imgProfileImage"
+                    android:layout_alignEnd="@+id/frag_register_imgProfileImage"
+                    android:layout_alignBottom="@+id/frag_register_imgProfileImage"
+                    android:layout_margin="1dp"
+                    android:textSize="@dimen/_13ssp"
+                    android:gravity="center"
+                    android:text="Choose\nImage"
+                    android:textColorHint="@color/white"
+                    android:textColor="@color/white"/>
+            </RelativeLayout>
 
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/ti_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/frag_register_imgProfileImage"
+                android:layout_below="@+id/fragment_register_layoutProfilePic"
                 android:layout_marginTop="@dimen/_10sdp">
 
                 <EditText

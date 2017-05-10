@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import jp.wasabeef.picasso.transformations.BlurTransformation;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.editprofileimage.EditProfileImageActivity;
+import ravtrix.foodybuddy.activities.editprofileimage.model.ProfileImageModel;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.RetrofitUserInfoSingleton;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Ravinder on 1/30/17.
@@ -34,6 +41,8 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
     @BindView(R.id.frag_profile_head1_mainRelative) protected RelativeLayout mainRelative;
     @BindView(R.id.frag_profile_head1_bSetting) protected ImageView bSetting;
     private UserLocalStore userLocalStore;
+    private CompositeSubscription mSubscriptions;
+    public static final String CLASS_NAME = UserProfileHeadOneFrag.class.getSimpleName();
 
     @Nullable
     @Override
@@ -53,6 +62,8 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
         });
 
         userLocalStore = new UserLocalStore(getActivity());
+        mSubscriptions = new CompositeSubscription();
+
         return view;
     }
 
@@ -61,7 +72,7 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.frag_profile_head1_bSetting:
-                //userLocalStore.clearUserData();
+
                 startActivity(new Intent(getActivity(), EditProfileImageActivity.class));
                 break;
         }
@@ -69,22 +80,47 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
 
     public void loadViewWithData() {
 
-        if(profileImage != null) {
-            Picasso.with(getContext())
-                    .load("http://media.safebee.com/assets/images/2015/12/guy%20with%20giant%20burger.jpg.838x0_q67_crop-smart.jpg")
-                    .fit()
-                    .centerCrop()
-                    .into(profileImage);
-        }
+        mSubscriptions.add(RetrofitUserInfoSingleton.getRetrofitUserInfo()
+                    .getAUserPhoto()
+                    .getAUserPhoto(userLocalStore.getLoggedInUser().getUserID())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Observer<ProfileImageModel>() {
+                        @Override
+                        public void onCompleted() {
+                            Log.d(CLASS_NAME, "Fetch profile image completed");
+                        }
 
-        if(backgroundImage != null) {
-            Picasso.with(getContext())
-                    .load("http://media.safebee.com/assets/images/2015/12/guy%20with%20giant%20burger.jpg.838x0_q67_crop-smart.jpg")
-                    .transform(new BlurTransformation(getContext()))
-                    .fit()
-                    .centerCrop()
-                    .into(backgroundImage);
-        }
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(CLASS_NAME, "Error fetching image");
+                        }
+
+                        @Override
+                        public void onNext(ProfileImageModel profileImageModel) {
+                            if(profileImage != null) {
+                                Picasso.with(getContext())
+                                        .load(profileImageModel.getUrl())
+                                        .fit()
+                                        .centerCrop()
+                                        .into(profileImage);
+                            }
+
+                            if(backgroundImage != null) {
+                                Picasso.with(getContext())
+                                        .load(profileImageModel.getUrl())
+                                        .transform(new BlurTransformation(getContext()))
+                                        .fit()
+                                        .centerCrop()
+                                        .into(backgroundImage);
+                            }
+                        }
+                    }));
+
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

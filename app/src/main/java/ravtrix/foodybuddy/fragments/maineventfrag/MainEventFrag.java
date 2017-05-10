@@ -25,6 +25,7 @@ import ravtrix.foodybuddy.model.Response;
 import ravtrix.foodybuddy.networkmodel.EventParam;
 import ravtrix.foodybuddy.utils.Constants;
 import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.HelpersAPI;
 import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,6 +39,8 @@ import rx.subscriptions.CompositeSubscription;
 public class MainEventFrag extends Fragment implements IOnDistanceSettingSelected {
 
     @BindView(R.id.frag_eventmain_recyclerView) protected RecyclerView eventRecyclerView;
+
+    private static final String CLASS_NAME = MainEventFrag.class.getSimpleName();
     private List<Event> eventModels;
     private CompositeSubscription mSubscriptions;
     private UserLocalStore userLocalStore;
@@ -62,6 +65,8 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
         fetchEvents();
 
         userLocalStore = new UserLocalStore(getActivity());
+
+        HelpersAPI.updateUserLocation(getActivity(), userLocalStore);
         return view;
     }
 
@@ -82,9 +87,6 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
                     @Override
                     public void onNext(List<Event> events) {
                         eventModels = events;
-                        for (int i = 0; i < eventModels.size(); i++) {
-                            eventModels.get(i).setOwnerImage("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png");
-                        }
                         setRecyclerView();
                     }
                 }));
@@ -106,9 +108,6 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
                     @Override
                     public void onNext(List<Event> events) {
                         eventModels = events;
-                        for (int i = 0; i < eventModels.size(); i++) {
-                            eventModels.get(i).setOwnerImage("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png");
-                        }
                         // refresh with new data
                         eventAdapter.swap(eventModels);
 
@@ -125,13 +124,11 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response>() {
                     @Override
-                    public void onCompleted() {}
+                    public void onCompleted() {
+                    }
 
                     @Override
-                    public void onError(Throwable e) {
-                        System.out.println("JOIN ERROR");
-
-                    }
+                    public void onError(Throwable e) {}
 
                     @Override
                     public void onNext(Response response) {

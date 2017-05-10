@@ -11,12 +11,38 @@ public class Event {
     private String rest_id;
     private String rest_name;
     private String address;
-    private String ownerImage;
     private String event_des;
     private double lat;
     private double lng;
     private long create_time;
     private long event_time;
+    private int profile_pic_id;
+    private String url;
+    private int count;
+
+    public int getProfile_pic_id() {
+        return profile_pic_id;
+    }
+
+    public void setProfile_pic_id(int profile_pic_id) {
+        this.profile_pic_id = profile_pic_id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public String getEvent_des() {
         return event_des;
@@ -32,14 +58,6 @@ public class Event {
 
     public void setCreate_time(long create_time) {
         this.create_time = create_time;
-    }
-
-    public String getOwnerImage() {
-        return ownerImage;
-    }
-
-    public void setOwnerImage(String ownerImage) {
-        this.ownerImage = ownerImage;
     }
 
     public int getEvent_id() {

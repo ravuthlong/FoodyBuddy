@@ -11,8 +11,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,9 +26,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.editprofileimage.model.ProfileImageModel;
+import ravtrix.foodybuddy.activities.login.LoginActivity;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.model.ImageResponse;
 import ravtrix.foodybuddy.network.retrofitrequests.RetrofitPhoto;
+import ravtrix.foodybuddy.networkmodel.NewImageParam;
 import ravtrix.foodybuddy.utils.Helpers;
 import ravtrix.foodybuddy.utils.HelpersPermission;
 import ravtrix.foodybuddy.utils.RetrofitUserInfoSingleton;
@@ -39,18 +43,23 @@ public class EditProfileImageActivity extends AppCompatActivity implements View.
 
     @BindView(R.id.activity_edit_profile_image_profileImage) protected ImageView profileImage;
     @BindView(R.id.activity_edit_profile_image_tvEdit) protected TextView tvEdit;
+    @BindView(R.id.activity_edit_profile_image_bLogout) protected Button bLogout;
+    @BindView(R.id.toolbar) protected Toolbar toolbar;
+
     private CompositeSubscription mSubscriptions;
     private UserLocalStore userLocalStore;
     protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 101;
     private static final int RESULT_LOAD_IMAGE = 1;
+    public static final String CLASS_NAME = EditProfileImageActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile_image);
         ButterKnife.bind(this);
-
+        Helpers.setToolbar(this,toolbar);
         Helpers.overrideFonts(this, tvEdit);
+
         setListeners();
 
         mSubscriptions = new CompositeSubscription();
@@ -60,6 +69,7 @@ public class EditProfileImageActivity extends AppCompatActivity implements View.
 
     private void setListeners() {
         tvEdit.setOnClickListener(this);
+        bLogout.setOnClickListener(this);
     }
 
     @Override
@@ -80,6 +90,13 @@ public class EditProfileImageActivity extends AppCompatActivity implements View.
                     startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
                 }
 
+                break;
+
+            case R.id.activity_edit_profile_image_bLogout:
+
+                // log user out
+                userLocalStore.clearUserData();
+                startActivity(new Intent(this, LoginActivity.class));
                 break;
         }
     }
@@ -172,10 +189,37 @@ public class EditProfileImageActivity extends AppCompatActivity implements View.
 
                     @Override
                     public void onNext(ImageResponse imageResponse) {
+                        // After image has been uploaded to imgur, insert it into the database table for user image
+                        insertUserImage(imageResponse.getURL());
                         Log.d(EditProfileImageActivity.class.getSimpleName(), imageResponse.getURL());
                     }
                 }));
 
+    }
+
+    private void insertUserImage(String imageURL) {
+
+        mSubscriptions.add(RetrofitUserInfoSingleton.getRetrofitUserInfo()
+                    .insertUserImage()
+                    .insertAUserImage(new NewImageParam(userLocalStore.getLoggedInUser().getUserID(), imageURL))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new Observer<Void>() {
+                        @Override
+                        public void onCompleted() {
+                            Log.d(CLASS_NAME, "On complete called for inserting image");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(CLASS_NAME, "Error inserting image");
+                        }
+
+                        @Override
+                        public void onNext(Void aVoid) {
+                            Log.d(CLASS_NAME, "Successfully inserted image");
+                        }
+                    }));
     }
 
     @Override
@@ -183,4 +227,5 @@ public class EditProfileImageActivity extends AppCompatActivity implements View.
         super.onDestroy();
         mSubscriptions.unsubscribe();
     }
+
 }

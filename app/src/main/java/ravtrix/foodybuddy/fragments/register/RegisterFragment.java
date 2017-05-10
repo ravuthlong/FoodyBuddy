@@ -33,7 +33,10 @@ import java.io.FileNotFoundException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.activities.mainpage.MainActivity;
 import ravtrix.foodybuddy.fragments.login.LoginFragment;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.model.LoggedInUser;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.utils.Helpers;
 
@@ -47,9 +50,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
 
     @BindView(R.id.et_name) protected EditText mEtName;
     @BindView(R.id.et_email) protected EditText mEtEmail;
-    @BindView(R.id.et_password) EditText mEtPassword;
+    @BindView(R.id.et_password) protected EditText mEtPassword;
     @BindView(R.id.btn_register) protected Button mBtRegister;
     @BindView(R.id.tv_login) protected TextView mTvLogin;
+    @BindView(R.id.frag_signup1_tvProfilePic) TextView tvAddProfilePic;
     @BindView(R.id.ti_name) protected TextInputLayout mTiName;
     @BindView(R.id.ti_email) protected TextInputLayout mTiEmail;
     @BindView(R.id.ti_password) protected TextInputLayout mTiPassword;
@@ -62,6 +66,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
     private Context context;
     private boolean isPhotoUploaed = false;
     private String bitmapImageBase64;
+    private UserLocalStore userLocalStore;
 
     @Nullable
     @Override
@@ -73,6 +78,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
         initListeners();
 
         this.registerPresenter = new RegisterPresenter(this);
+        this.userLocalStore = new UserLocalStore(getActivity());
+
         return view;
     }
 
@@ -109,10 +116,17 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+    @Override
+    public void storeUser(int userID) {
+        userLocalStore.storeUserData(new LoggedInUser("", userID, mEtEmail.getText().toString().trim())); // token, id, email
+    }
+
+    @Override
+    public void startProfileActivity() {
+        startActivity(new Intent(getActivity(), MainActivity.class));
+    }
+
     private void register() {
-
-        //registerPresenter.uploadImage(getBase64());
-
 
         setError();
 
@@ -155,7 +169,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
             user.setBase64Image(Helpers.getBase64ProfileImage(profilePic));
 
             mProgressbar.setVisibility(View.VISIBLE);
-            this.registerPresenter.register(user);
+            this.registerPresenter.register(user, Helpers.getBase64ProfileImage(profilePic));
 
         } else {
             showSnackbar("Enter Valid Details !");
@@ -190,6 +204,14 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
 
     @Override
     public void showSnackbar(String message) {
+        System.out.println(message);
+        if (getView() != null) {
+            Snackbar.make(getView(), message,Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void showSnackbarInt(int message) {
         System.out.println(message);
         if (getView() != null) {
             Snackbar.make(getView(), message,Snackbar.LENGTH_SHORT).show();
@@ -250,6 +272,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
             }
 
             profilePic.setImageBitmap(bitmapImage);
+            tvAddProfilePic.setVisibility(View.GONE);
             //imgRotate.setVisibility(View.VISIBLE);
         }
     }

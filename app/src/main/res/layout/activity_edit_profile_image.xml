@@ -49,6 +49,13 @@
                 android:textSize="@dimen/_13ssp" />
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/activity_edit_profile_image_bLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="LOG OUT"/>
+
 
     </LinearLayout>
 
