@@ -41,6 +41,25 @@ public class UserLocalStore {
         return userLocalDataStore.getBoolean("isLogin", false);
     }
 
+
+    public void changeCity(String city) {
+        SharedPreferences.Editor spEditor = userLocalDataStore.edit();
+        spEditor.putString("city", city);
+        spEditor.apply();
+    }
+
+    public void changeLatitude(double latitude) {
+        SharedPreferences.Editor spEditor = userLocalDataStore.edit();
+        spEditor.putLong("latitude", Double.doubleToRawLongBits(latitude));
+        spEditor.apply();
+    }
+
+    public void changeLongitude(double longitude) {
+        SharedPreferences.Editor spEditor = userLocalDataStore.edit();
+        spEditor.putLong("longitude", Double.doubleToRawLongBits(longitude));
+        spEditor.apply();
+    }
+
     // Clear user data when user logs out
     public void clearUserData() {
         SharedPreferences.Editor spEditor = userLocalDataStore.edit();

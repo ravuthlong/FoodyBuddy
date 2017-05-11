@@ -4,13 +4,34 @@ package ravtrix.foodybuddy.activities.eventcomments.recyclerview;
  * Created by Ravinder on 2/9/17.
  */
 
+/**
+ * This model represents event comment model fetched from the server
+ */
 public class EventCommentModel {
 
     private int comment_id;
     private int event_id;
     private int user_id;
+    private String user_name;
     private String comment;
     private long create_time;
+    private String url;
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public int getComment_id() {
         return comment_id;

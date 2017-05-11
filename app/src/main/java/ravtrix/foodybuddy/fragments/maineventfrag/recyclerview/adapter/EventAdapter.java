@@ -95,16 +95,14 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 viewHolder2.eventDate.setText(getDate(currentItem.getEvent_time() * 1000));
                 viewHolder2.description.setText(currentItem.getEvent_des());
                 viewHolder2.address.setText(currentItem.getAddress());
-                viewHolder2.numComment.setText("2");
+                viewHolder2.numComment.setText(Integer.toString(currentItem.getCount())); // total comment count
 
-                if (!currentItem.getOwnerImage().isEmpty()) {
+                if (!currentItem.getUrl().isEmpty()) {
                     Picasso.with(fragment.getActivity())
-                            .load(currentItem.getOwnerImage())
+                            .load(currentItem.getUrl())
                             .centerCrop()
                             .fit()
                             .into(viewHolder2.profileImage);
-                } else {
-                    viewHolder2.profileImage.setVisibility(View.GONE);
                 }/*
                 if (!currentItem.getUserImage1().isEmpty()) {
                     Picasso.with(context)

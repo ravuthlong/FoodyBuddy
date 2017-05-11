@@ -12,5 +12,6 @@ public class Constants {
     public static int NEW_EVENT_REQUEST_CODE = 1;
     public static int EVENT_INSERTED_RESULT_CODE = 2;
     public static final String IMGUR_CLIENT_ID = "43b9280c72941c5";
+    public static final String GOOGLE_MAP_API_KEY = "AIzaSyA-xAsAcRWGS60NABomo9Szs8fRxQdtW88";
     public static final String IMGUR_CLIENT_SECRET = "1369eaca5c44aaa79ec0459a263a135bd16307e7";
 }

@@ -96,11 +96,29 @@ public class EventCommentsActivity extends AppCompatActivity implements View.OnC
                         setAdapter();
                     }
                 }));
+    }
 
-        /*
-        eventCommentModelList.add(new EventCommentModel("Ortemis", "Can you make it 25 minutes later? I have work, and I really want to join.", "2 hours ago", "https://s.aolcdn.com/hss/storage/midas/4e58b258b6e54aa8d650dafd6360cf18/203771936/TopGun_INTRO.jpg"));
-        eventCommentModelList.add(new EventCommentModel("Randy", "Same here. It is a bit too early?", "1 hour ago", "https://www.biography.com/.image/c_fill,cs_srgb,dpr_1.0,g_face,h_300,q_80,w_300/MTE4MDAzNDEwMDU4NTc3NDIy/hillary-clinton-9251306-2-402.jpg"));
-        eventCommentModelList.add(new EventCommentModel("Taylor", "Okay guys, I will change the time.", "1 minute ago", "http://cdn.playbuzz.com/cdn/ff9dd0b6-7e75-45fe-8f6b-ec608e7337ab/268c931f-49c8-47b3-8185-70cc566b2538.jpg"));*/
+    private void fetchCommentsRefresh() {
+
+        mSubscriptions.add(RetrofitCommentSingleton.getRetrofitComment()
+                .getEventComments()
+                .getEventComments(event_id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<List<EventCommentModel>>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(EventCommentsActivity.class.getSimpleName(), "Error fetching event comments");
+                    }
+
+                    @Override
+                    public void onNext(List<EventCommentModel> eventCommentModels) {
+                        if (eventCommentAdapter != null) { eventCommentAdapter.swap(eventCommentModels); }
+                    }
+                }));
     }
 
     private void setAdapter() {
@@ -139,6 +157,7 @@ public class EventCommentsActivity extends AppCompatActivity implements View.OnC
                     public void onNext(Response response) {
                         Helpers.displayToast(EventCommentsActivity.this, response.getMessage());
                         etComment.getText().clear();
+                        fetchCommentsRefresh(); // update list 
                     }
                 }));
 

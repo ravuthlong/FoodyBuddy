@@ -6,6 +6,7 @@ package ravtrix.foodybuddy.network.retrofitinterfaces;
 
 import ravtrix.foodybuddy.model.LoggedInUser;
 import ravtrix.foodybuddy.model.LogInResponse;
+import ravtrix.foodybuddy.model.RegisterResponse;
 import ravtrix.foodybuddy.model.User;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -17,7 +18,7 @@ import rx.Observable;
 public interface RetrofitInterface {
 
     @POST("users")
-    Observable<LogInResponse> register(@Body User user);
+    Observable<RegisterResponse> register(@Body User user);
 
     @POST("authenticate")
     Observable<LoggedInUser> login();

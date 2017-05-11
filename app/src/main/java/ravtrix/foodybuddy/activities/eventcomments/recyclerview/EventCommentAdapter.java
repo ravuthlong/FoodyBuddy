@@ -2,11 +2,14 @@ package ravtrix.foodybuddy.activities.eventcomments.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -41,14 +44,27 @@ public class EventCommentAdapter extends RecyclerView.Adapter<EventCommentAdapte
         EventCommentModel currentItem = eventCommentModelList.get(position);
 
         // load profile image
-        /*
+
+        String profileImage = "";
+        if (!currentItem.getUrl().isEmpty()) {
+            profileImage = currentItem.getUrl();
+        } else {
+            profileImage = "http://s3.amazonaws.com/37assets/svn/765-default-avatar.png"; // default image
+        }
+
         Picasso.with(context)
-                .load(currentItem.getUserImage())
+                .load(profileImage)
                 .centerCrop()
                 .fit()
-                .into(holder.profileImage);*/
-        //holder.tvUsername.setText(currentItem.getUsername());
-        //holder.tvTime.setText(currentItem.getTime());
+                .into(holder.profileImage);
+        holder.tvUsername.setText(currentItem.getUser_name());
+
+        // Converting timestamp into x ago format
+        CharSequence timeAgo = DateUtils.getRelativeTimeSpanString(
+                currentItem.getCreate_time() * 1000,
+                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
+
+        holder.tvTime.setText(timeAgo);
         holder.tvComment.setText(currentItem.getComment());
     }
 
@@ -76,5 +92,10 @@ public class EventCommentAdapter extends RecyclerView.Adapter<EventCommentAdapte
             Helpers.overrideFonts(context, relativeUser);
             Helpers.overrideFonts(context, relativeComment);
         }
+    }
+    public void swap(List<EventCommentModel> models) {
+        this.eventCommentModelList.clear();
+        this.eventCommentModelList.addAll(models);
+        this.notifyDataSetChanged();
     }
 }

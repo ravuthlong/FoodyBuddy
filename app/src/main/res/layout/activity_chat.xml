@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <RelativeLayout
+        android:id="@+id/activity_chat_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/greenLighter">
+
+        <include
+            android:id="@+id/toolbar_main"
+            layout="@layout/frag_toolbar"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" >
+        </include>
+
+        <RelativeLayout
+            android:id="@+id/activity_chat_messageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/edit_text_border">
+
+
+            <EditText
+                android:id="@+id/activity_chat_textMessage"
+                android:layout_width="match_parent"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:hint="Type message here"
+                android:inputType="textMultiLine|textCapSentences"
+                android:maxLines="5"
+                android:layout_height="@dimen/_60sdp"
+                android:paddingStart="@dimen/_10sdp"
+                android:paddingEnd="0dp"
+                android:scrollbars="vertical"
+                android:textSize="@dimen/_11ssp" />
+
+
+            <ProgressBar
+                android:id="@+id/activity_chat_loading_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/progressBarStyle"
+                android:indeterminate="true"
+                android:visibility="gone"
+                android:paddingStart="0dp"
+                android:paddingEnd="@dimen/_10sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"/>
+
+            <Button
+                android:id="@+id/activity_chat_sendMessageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/edit_text_border"
+                android:text="Send"
+                android:textSize="@dimen/_10ssp" />
+        </RelativeLayout>
+
+
+        <ProgressBar
+            android:id="@+id/activity_chat_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyle"
+            android:indeterminate="true"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/chat_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_above="@+id/activity_chat_messageLayout"
+            android:paddingBottom="@dimen/_10sdp"
+            android:layout_below="@+id/toolbar_main">
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

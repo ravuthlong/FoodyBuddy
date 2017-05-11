@@ -7,4 +7,8 @@ package ravtrix.foodybuddy.fragments.register;
 interface IRegisterView {
     void hideProgressbar();
     void showSnackbar(String message);
+    void showSnackbarInt(int message);
+    void storeUser(int userID);
+    void startProfileActivity();
+
 }
