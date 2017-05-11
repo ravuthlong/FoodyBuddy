@@ -6,28 +6,25 @@ package ravtrix.foodybuddy.activities.chat;
 
 class MessageModel {
 
-    private String id;
+    private int userID;
     private String text;
-    private String name;
-    private String photoUrl;
-    private String imageUrl;
+    private long time;
 
     public MessageModel() {
     }
 
-    public MessageModel(String text, String name, String photoUrl, String imageUrl) {
+    public MessageModel(int userID, String text, long time) {
         this.text = text;
-        this.name = name;
-        this.photoUrl = photoUrl;
-        this.imageUrl = imageUrl;
+        this.userID = userID;
+        this.time = time;
     }
 
-    public String getId() {
-        return id;
+    public int getUserID() {
+        return userID;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
     public String getText() {
@@ -38,28 +35,11 @@ class MessageModel {
         this.text = text;
     }
 
-    public String getName() {
-        return name;
+    public long getTime() {
+        return time;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTime(long time) {
+        this.time = time;
     }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
 }

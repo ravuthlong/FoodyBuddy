@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerViewMain.addItemDecoration(dividerDecorator);
         mSubscriptions = new CompositeSubscription();
 
-
+        drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, null);
         fetchDrawerModelsRetrofit();
     }
 

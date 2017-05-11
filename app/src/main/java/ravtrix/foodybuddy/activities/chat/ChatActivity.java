@@ -2,26 +2,34 @@ package ravtrix.foodybuddy.activities.chat;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.utils.Helpers;
 
 /**
@@ -32,25 +40,23 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     @BindView(R.id.toolbar) protected Toolbar toolbar;
     @BindView(R.id.chat_recyclerView) protected RecyclerView mMessageRecyclerView;
-    @BindView(R.id.activity_chat_loading_spinner) protected Spinner spinner;
+    @BindView(R.id.activity_chat_spinner) protected ProgressBar chatProgressbar;
+    @BindView(R.id.activity_chat_loading_spinner) protected ProgressBar sendProgressbar;
     @BindView(R.id.activity_chat_sendMessageButton) protected Button bSendMessage;
     @BindView(R.id.activity_chat_textMessage) protected EditText etMessage;
 
     private DatabaseReference mFirebaseDatabaseReference;
     private FirebaseRecyclerAdapter<MessageModel, MessageViewHolder> mFirebaseAdapter;
     private LinearLayoutManager mLinearLayoutManager;
+    private UserLocalStore userLocalStore;
 
-    public static class MessageViewHolder extends RecyclerView.ViewHolder {
+    private static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
-        ImageView messageImageView;
-        TextView messengerTextView;
         CircleImageView messengerImageView;
 
         public MessageViewHolder(View v) {
             super(v);
             messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
-            messageImageView = (ImageView) itemView.findViewById(R.id.messageImageView);
-            messengerTextView = (TextView) itemView.findViewById(R.id.messengerTextView);
             messengerImageView = (CircleImageView) itemView.findViewById(R.id.messengerImageView);
         }
     }
@@ -63,12 +69,15 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
         Helpers.setToolbar(this, toolbar);
         Helpers.overrideFonts(this, etMessage);
+        Helpers.overrideFonts(this, bSendMessage);
         setTitle("Event Chat");
+        chatProgressbar.setVisibility(View.VISIBLE);
 
+        userLocalStore = new UserLocalStore(this);
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
 
-        spinner.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
         bSendMessage.setOnClickListener(this);
 
         // New child entries
@@ -78,18 +87,36 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 MessageModel.class,
                 R.layout.item_message,
                 MessageViewHolder.class,
-                mFirebaseDatabaseReference.child("1")) {
+                mFirebaseDatabaseReference.child("messages")) {
             @Override
             protected void populateViewHolder(MessageViewHolder viewHolder, MessageModel model, int position) {
-                spinner.setVisibility(View.INVISIBLE);
+                chatProgressbar.setVisibility(View.GONE);
+                Helpers.overrideFonts(ChatActivity.this, viewHolder.messageTextView);
+
+                if (model.getUserID() == userLocalStore.getLoggedInUser().getUserID()) {
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.FILL_PARENT);
+                    params.weight = 1.0f;
+                    params.gravity = Gravity.END;
+
+                    viewHolder.messengerImageView.setLayoutParams(params);
+                    viewHolder.messageTextView.setLayoutParams(params);
+                    viewHolder.messageTextView.setBackground(ContextCompat.getDrawable(ChatActivity.this, R.drawable.bubright));
+
+                } else {
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.FILL_PARENT);
+                    params.weight = 1.0f;
+                    params.gravity = Gravity.START;
+
+                    viewHolder.messengerImageView.setLayoutParams(params);
+                    viewHolder.messageTextView.setGravity(Gravity.START);
+                    viewHolder.messageTextView.setBackground(ContextCompat.getDrawable(ChatActivity.this, R.drawable.bubleft));
+                }
 
                 if (model.getText() != null) {
                     viewHolder.messageTextView.setText(model.getText());
                     viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
-                    viewHolder.messageImageView.setVisibility(ImageView.GONE);
                 }
-                viewHolder.messengerTextView.setText(model.getName());
-                Picasso.with(ChatActivity.this).load(model.getImageUrl()).into(viewHolder.messengerImageView);
+                //Picasso.with(ChatActivity.this).load(model.getImageUrl()).into(viewHolder.messengerImageView);
             }
         };
 
@@ -116,9 +143,56 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.activity_chat_sendMessageButton:
+                sendProgressbar.setVisibility(View.VISIBLE);
+                sendMessage();
                 break;
             default:
                 break;
         }
     }
+
+    /**
+     * This is the case where the user is trying to chat through another user's profile page
+     * Send/Save new message to Firebase cloud. Save in the chat room name if room exists.
+     * Otherwise, if room doesn't exist between the two users yet, make a new room
+     */
+    private void sendMessage() {
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String userMessage =  etMessage.getText().toString().trim();
+                Long time = System.currentTimeMillis();
+
+                if (dataSnapshot.child("messages").exists()) {
+                    sendMessageFirebase("messages", userMessage, time);
+                } else {
+
+                    // New chat, so create new chat in FCM and also database
+                    Map<String, Object> userData = new HashMap<>();
+                    userData.put("text", userMessage);
+                    userData.put("time", time);
+                    userData.put("userID", userLocalStore.getLoggedInUser().getUserID());
+
+                    // store message in the fire-base database
+                    //mFirebaseDatabaseReference.child(chatRoomName).push().setValue(userData);
+                    //etMessage.setText("");
+                    //setRecyclerView(chatRoomName); // since this is first message, recycler view hasn't been set before
+                }
+                sendProgressbar.setVisibility(View.GONE);
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                sendProgressbar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void sendMessageFirebase(String chatName, String userMessage, Long time) {
+        MessageModel message = new MessageModel(userLocalStore.getLoggedInUser().getUserID(), userMessage, time);
+        mFirebaseDatabaseReference.child(chatName).push().setValue(message);
+        etMessage.setText("");
+    }
+
 }
