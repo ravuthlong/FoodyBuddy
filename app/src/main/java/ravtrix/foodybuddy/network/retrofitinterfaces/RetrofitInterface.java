@@ -5,8 +5,8 @@ package ravtrix.foodybuddy.network.retrofitinterfaces;
  */
 
 import ravtrix.foodybuddy.model.LoggedInUser;
-import ravtrix.foodybuddy.model.LogInResponse;
-import ravtrix.foodybuddy.model.RegisterResponse;
+import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
+import ravtrix.foodybuddy.network.networkresponse.RegisterResponse;
 import ravtrix.foodybuddy.model.User;
 import retrofit2.http.Body;
 import retrofit2.http.GET;

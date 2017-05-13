@@ -10,7 +10,7 @@ public class RetrofitYelpSingleton {
 
     private static RetrofitYelp retrofitYelp = new RetrofitYelp();
 
-    public static RetrofitYelp getRetrofitYelp() {
+    public static RetrofitYelp getInstance() {
         return retrofitYelp;
     }
 }

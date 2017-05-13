@@ -1,6 +1,6 @@
 package ravtrix.foodybuddy.network.retrofitinterfaces;
 
-import ravtrix.foodybuddy.model.ImageResponse;
+import ravtrix.foodybuddy.network.networkresponse.ImageResponse;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;

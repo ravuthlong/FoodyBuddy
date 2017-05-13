@@ -4,8 +4,9 @@ import java.util.List;
 
 import ravtrix.foodybuddy.activities.mainpage.model.EventJoined;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
-import ravtrix.foodybuddy.model.Response;
-import ravtrix.foodybuddy.networkmodel.EventParam;
+import ravtrix.foodybuddy.network.networkresponse.CreateEventResponse;
+import ravtrix.foodybuddy.network.networkresponse.Response;
+import ravtrix.foodybuddy.network.networkmodel.EventParam;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -25,7 +26,7 @@ public class RetrofitInterfaceEvents {
 
     public interface PostEvent {
         @POST("event")
-        Observable<Response> postEvent(@Body Event event);
+        Observable<CreateEventResponse> postEvent(@Body Event event);
     }
 
     public interface JoinEvent {

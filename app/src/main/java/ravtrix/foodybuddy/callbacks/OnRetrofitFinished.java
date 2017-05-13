@@ -1,6 +1,6 @@
 package ravtrix.foodybuddy.callbacks;
 
-import ravtrix.foodybuddy.model.LogInResponse;
+import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
 
 /**
  * Created by Ravinder on 2/19/17.

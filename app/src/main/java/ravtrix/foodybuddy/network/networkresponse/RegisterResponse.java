@@ -1,4 +1,4 @@
-package ravtrix.foodybuddy.model;
+package ravtrix.foodybuddy.network.networkresponse;
 
 /**
  * Created by Ravinder on 3/30/17.

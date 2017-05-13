@@ -3,11 +3,11 @@ package ravtrix.foodybuddy.fragments.register;
 import android.util.Log;
 
 import ravtrix.foodybuddy.activities.editprofileimage.EditProfileImageActivity;
-import ravtrix.foodybuddy.model.ImageResponse;
-import ravtrix.foodybuddy.model.RegisterResponse;
+import ravtrix.foodybuddy.network.networkresponse.ImageResponse;
+import ravtrix.foodybuddy.network.networkresponse.RegisterResponse;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.retrofitrequests.RetrofitPhoto;
-import ravtrix.foodybuddy.networkmodel.NewImageParam;
+import ravtrix.foodybuddy.network.networkmodel.NewImageParam;
 import ravtrix.foodybuddy.utils.NetworkUtil;
 import ravtrix.foodybuddy.utils.RetrofitUserInfoSingleton;
 import rx.Observer;
@@ -81,7 +81,7 @@ class RegisterInteractor implements IRegisterInteractor {
 
     private void insertImage(int userID, String url, final OnRetrofitImageFinished onRetrofitImageFinished) {
 
-        mSubscriptions.add(RetrofitUserInfoSingleton.getRetrofitUserInfo()
+        mSubscriptions.add(RetrofitUserInfoSingleton.getInstance()
                 .insertUserImage()
                 .insertAUserImage(new NewImageParam(userID, url))
                 .observeOn(AndroidSchedulers.mainThread())

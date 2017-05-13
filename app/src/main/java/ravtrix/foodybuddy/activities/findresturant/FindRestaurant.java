@@ -170,7 +170,7 @@ public class FindRestaurant extends AppCompatActivity implements View.OnClickLis
 
     private void fetchRestaurantWithFilter(HashMap<String, String> values) {
 
-        Call<JsonObject> retrofit = RetrofitYelpSingleton.getRetrofitYelp()
+        Call<JsonObject> retrofit = RetrofitYelpSingleton.getInstance()
                 .fetchPlacesWithFilter()
                 .fetchPlacesWithFilter(values);
 

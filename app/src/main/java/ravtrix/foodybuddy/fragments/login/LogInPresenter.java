@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import ravtrix.foodybuddy.callbacks.OnRetrofitFinishedJSON;
 import ravtrix.foodybuddy.model.LoggedInUser;
-import ravtrix.foodybuddy.model.LogInResponse;
+import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
 import retrofit2.adapter.rxjava.HttpException;
 
 /**

@@ -1,6 +1,7 @@
 package ravtrix.foodybuddy.fragments.inbox.recyclerview.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,8 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.fragments.inbox.recyclerview.model.InboxModel;
+import ravtrix.foodybuddy.activities.chat.ChatActivity;
+import ravtrix.foodybuddy.network.networkresponse.ChatResponse;
 import ravtrix.foodybuddy.utils.Helpers;
 
 /**
@@ -23,11 +25,11 @@ import ravtrix.foodybuddy.utils.Helpers;
 
 public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> {
 
-    private List<InboxModel> inboxModelList;
+    private List<ChatResponse> inboxModelList;
     private Context context;
     private LayoutInflater inflater;
 
-    public InboxAdapter(Context context, List<InboxModel> inboxModels) {
+    public InboxAdapter(Context context, List<ChatResponse> inboxModels) {
         this.context = context;
         this.inboxModelList = inboxModels;
         if (null != context) inflater = LayoutInflater.from(context);
@@ -41,16 +43,16 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        InboxModel currentItem = inboxModelList.get(position);
+        ChatResponse currentItem = inboxModelList.get(position);
         Picasso.with(context)
-                .load(currentItem.getImageURL())
+                .load("https://www.cdc.gov/features/dog-bite-prevention/dog-bite-prevention_456px.jpg")
                 .centerCrop()
                 .fit()
                 .into(holder.profileImage);
 
-        holder.username.setText(currentItem.getUsername());
-        holder.time.setText(currentItem.getTime());
-        holder.message.setText(currentItem.getMessage());
+        holder.username.setText("EVENT ID: " + currentItem.getEvent_id());
+        holder.time.setText("USER ID: " + currentItem.getUser_id());
+        //holder.message.setText(currentItem.getMessage());
     }
 
     @Override
@@ -75,8 +77,14 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
 
             Helpers.overrideFonts(context, inboxLinear);
 
-            //profileImage.setOnClickListener(view -> showToast("Clicked to view profile"));
-            //inboxLinear.setOnClickListener(view -> showToast("Clicked to view message"));
+            inboxLinear.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("eventID", inboxModelList.get(getAdapterPosition()).getEvent_id()); // pass event id, chat name
+                    context.startActivity(intent);
+                }
+            });
 
         }
     }

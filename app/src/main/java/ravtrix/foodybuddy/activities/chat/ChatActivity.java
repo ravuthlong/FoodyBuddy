@@ -22,9 +22,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,6 +46,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseRecyclerAdapter<MessageModel, MessageViewHolder> mFirebaseAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private UserLocalStore userLocalStore;
+    private String eventID;
 
     private static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
@@ -72,6 +70,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Helpers.overrideFonts(this, bSendMessage);
         setTitle("Event Chat");
         chatProgressbar.setVisibility(View.VISIBLE);
+        getBundleData();
 
         userLocalStore = new UserLocalStore(this);
         mLinearLayoutManager = new LinearLayoutManager(this);
@@ -87,7 +86,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 MessageModel.class,
                 R.layout.item_message,
                 MessageViewHolder.class,
-                mFirebaseDatabaseReference.child("messages")) {
+                mFirebaseDatabaseReference.child(eventID)) {
             @Override
             protected void populateViewHolder(MessageViewHolder viewHolder, MessageModel model, int position) {
                 chatProgressbar.setVisibility(View.GONE);
@@ -151,6 +150,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void getBundleData() {
+        Bundle bundle = getIntent().getExtras();
+        if (null != bundle) {
+            this.eventID = Integer.toString(bundle.getInt("eventID"));
+        }
+    }
+
     /**
      * This is the case where the user is trying to chat through another user's profile page
      * Send/Save new message to Firebase cloud. Save in the chat room name if room exists.
@@ -164,20 +170,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 String userMessage =  etMessage.getText().toString().trim();
                 Long time = System.currentTimeMillis();
 
-                if (dataSnapshot.child("messages").exists()) {
-                    sendMessageFirebase("messages", userMessage, time);
-                } else {
-
-                    // New chat, so create new chat in FCM and also database
-                    Map<String, Object> userData = new HashMap<>();
-                    userData.put("text", userMessage);
-                    userData.put("time", time);
-                    userData.put("userID", userLocalStore.getLoggedInUser().getUserID());
-
-                    // store message in the fire-base database
-                    //mFirebaseDatabaseReference.child(chatRoomName).push().setValue(userData);
-                    //etMessage.setText("");
-                    //setRecyclerView(chatRoomName); // since this is first message, recycler view hasn't been set before
+                if (dataSnapshot.child(eventID).exists()) {
+                    sendMessageFirebase(eventID, userMessage, time);
                 }
                 sendProgressbar.setVisibility(View.GONE);
 
@@ -194,5 +188,4 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         mFirebaseDatabaseReference.child(chatName).push().setValue(message);
         etMessage.setText("");
     }
-
 }

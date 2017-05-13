@@ -21,7 +21,7 @@ import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.login.LoginActivity;
 import ravtrix.foodybuddy.fragments.ChangePasswordDialog;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
-import ravtrix.foodybuddy.model.LogInResponse;
+import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.utils.NetworkUtil;
 import ravtrix.foodybuddy.utils.Constants;

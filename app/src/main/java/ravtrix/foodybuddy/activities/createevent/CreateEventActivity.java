@@ -16,6 +16,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -23,7 +28,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,9 +39,12 @@ import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.findresturant.FindRestaurant;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
-import ravtrix.foodybuddy.model.Response;
+import ravtrix.foodybuddy.network.networkmodel.NewChatParam;
+import ravtrix.foodybuddy.network.networkresponse.CreateEventResponse;
+import ravtrix.foodybuddy.network.networkresponse.Response;
 import ravtrix.foodybuddy.utils.Constants;
 import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.RetrofitChatSingleton;
 import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -66,6 +76,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private UserLocalStore userLocalStore;
     private int dayChosen, monthChosen, yearChosen, hourChosen, minuteChosen;
     private boolean isRestaurantPicked, isDatePicked, isTimePicked;
+    private DatabaseReference mFirebaseDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +123,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 startFindRestaurantActivity();
                 break;
             case R.id.activity_create_event_floatingButtonSubmit:
-                displayToastSubmit();
+
+                //displayToastSubmit();
 
                 long timeUnix = getUnixTimeFromEvent();
 
@@ -129,12 +141,12 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 event.setCreate_time(System.currentTimeMillis() / 1000L);
                 event.setEvent_time(timeUnix);
 
-                mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+                mSubscriptions.add(RetrofitEventSingleton.getInstance()
                         .postEvent()
                         .postEvent(event)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
-                        .subscribe(new Observer<Response>() {
+                        .subscribe(new Observer<CreateEventResponse>() {
 
                             @Override
                             public void onCompleted() {}
@@ -143,13 +155,41 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                             public void onError(Throwable e) {}
 
                             @Override
-                            public void onNext(Response response) {
-                                Helpers.displayToast(CreateEventActivity.this, response.getMessage());
-                                setResult(Constants.EVENT_INSERTED_RESULT_CODE);
-                                finish();
-                            }
+                            public void onNext(final CreateEventResponse response) {
 
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        insertChatFirebase(Integer.toString(response.getMessage()));
+                                    }
+                                }).start();
+
+                                mSubscriptions.add(RetrofitChatSingleton.getInstance()
+                                .insertChat()
+                                .insertChat(new NewChatParam(userLocalStore.getLoggedInUser().getUserID(), response.getMessage()))
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.io())
+                                .subscribe(new Observer<Response>() {
+                                    @Override
+                                    public void onCompleted() {
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        Helpers.displayToast(CreateEventActivity.this, "Error creating event");
+                                    }
+
+                                    @Override
+                                    public void onNext(Response response) {
+                                        Helpers.displayToast(CreateEventActivity.this, "Event created");
+                                        setResult(Constants.EVENT_INSERTED_RESULT_CODE);
+                                        finish();
+                                    }
+                                }));
+                            }
                         }));
+
                 break;
 
         }
@@ -317,7 +357,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void displayToastSubmit() {
-        Helpers.displayToast(this, "Clicked Submit...");
         finish(); // go back to screen before
     }
 
@@ -325,5 +364,31 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         isRestaurantPicked = false;
         isDatePicked = false;
         isTimePicked = false;
+    }
+
+    private void insertChatFirebase(final String eventID) {
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Map<String, Object> newChat = new HashMap<>();
+                newChat.put("text", "New event chat");
+                newChat.put("time", System.currentTimeMillis());
+                newChat.put("userID", userLocalStore.getLoggedInUser().getUserID());
+
+                mFirebaseDatabaseReference.child(eventID).push().setValue(newChat);
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSubscriptions.unsubscribe();
     }
 }

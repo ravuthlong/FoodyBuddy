@@ -10,7 +10,7 @@ public class RetrofitUserInfoSingleton {
 
     private static RetrofitUserInfo retrofitUserInfo = new RetrofitUserInfo();
 
-    public static RetrofitUserInfo getRetrofitUserInfo() {
+    public static RetrofitUserInfo getInstance() {
         return retrofitUserInfo;
     }
 }

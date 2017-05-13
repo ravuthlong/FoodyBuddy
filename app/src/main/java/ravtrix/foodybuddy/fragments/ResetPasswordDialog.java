@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ravtrix.foodybuddy.activities.login.LoginActivity;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.model.LogInResponse;
+import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.utils.NetworkUtil;
 import retrofit2.adapter.rxjava.HttpException;

@@ -10,7 +10,7 @@ public class RetrofitCommentSingleton {
 
     private static RetrofitComment retrofitComment = new RetrofitComment();
 
-    public static RetrofitComment getRetrofitComment() {
+    public static RetrofitComment getInstance() {
         return retrofitComment;
     }
 }

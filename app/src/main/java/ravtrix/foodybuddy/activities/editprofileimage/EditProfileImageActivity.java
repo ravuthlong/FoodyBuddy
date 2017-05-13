@@ -28,9 +28,9 @@ import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.editprofileimage.model.ProfileImageModel;
 import ravtrix.foodybuddy.activities.login.LoginActivity;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
-import ravtrix.foodybuddy.model.ImageResponse;
+import ravtrix.foodybuddy.network.networkresponse.ImageResponse;
 import ravtrix.foodybuddy.network.retrofitrequests.RetrofitPhoto;
-import ravtrix.foodybuddy.networkmodel.NewImageParam;
+import ravtrix.foodybuddy.network.networkmodel.NewImageParam;
 import ravtrix.foodybuddy.utils.Helpers;
 import ravtrix.foodybuddy.utils.HelpersPermission;
 import ravtrix.foodybuddy.utils.RetrofitUserInfoSingleton;
@@ -103,7 +103,7 @@ public class EditProfileImageActivity extends AppCompatActivity implements View.
 
     private void fetchProfileImage() {
 
-        mSubscriptions.add(RetrofitUserInfoSingleton.getRetrofitUserInfo()
+        mSubscriptions.add(RetrofitUserInfoSingleton.getInstance()
                     .getAUserPhoto()
                     .getAUserPhoto(userLocalStore.getLoggedInUser().getUserID())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -199,7 +199,7 @@ public class EditProfileImageActivity extends AppCompatActivity implements View.
 
     private void insertUserImage(String imageURL) {
 
-        mSubscriptions.add(RetrofitUserInfoSingleton.getRetrofitUserInfo()
+        mSubscriptions.add(RetrofitUserInfoSingleton.getInstance()
                     .insertUserImage()
                     .insertAUserImage(new NewImageParam(userLocalStore.getLoggedInUser().getUserID(), imageURL))
                     .observeOn(AndroidSchedulers.mainThread())

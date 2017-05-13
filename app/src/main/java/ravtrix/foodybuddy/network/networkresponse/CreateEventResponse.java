@@ -1,13 +1,13 @@
-package ravtrix.foodybuddy.model;
+package ravtrix.foodybuddy.network.networkresponse;
 
 /**
- * Created by Ravinder on 3/4/17.
- * Used by retrofit for response callback
+ * Created by Ravinder on 5/11/17.
  */
 
-public class Response {
-    private String message;
+public class CreateEventResponse {
+
     private int status;
+    private int message;
 
     public int getStatus() {
         return status;
@@ -17,11 +17,11 @@ public class Response {
         this.status = status;
     }
 
-    public String getMessage() {
+    public int getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(int message) {
         this.message = message;
     }
 }
