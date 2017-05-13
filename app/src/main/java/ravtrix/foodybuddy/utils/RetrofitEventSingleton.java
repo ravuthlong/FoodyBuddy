@@ -10,7 +10,7 @@ public class RetrofitEventSingleton {
 
     private static RetrofitEvent retrofitEvent = new RetrofitEvent();
 
-    public static RetrofitEvent getRetrofitEvent() {
+    public static RetrofitEvent getInstance() {
         return retrofitEvent;
     }
 }

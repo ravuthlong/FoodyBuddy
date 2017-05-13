@@ -20,8 +20,8 @@ import ravtrix.foodybuddy.activities.eventcomments.recyclerview.EventCommentAdap
 import ravtrix.foodybuddy.activities.eventcomments.recyclerview.EventCommentModel;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
-import ravtrix.foodybuddy.model.Response;
-import ravtrix.foodybuddy.networkmodel.CommentParam;
+import ravtrix.foodybuddy.network.networkresponse.Response;
+import ravtrix.foodybuddy.network.networkmodel.CommentParam;
 import ravtrix.foodybuddy.utils.Helpers;
 import ravtrix.foodybuddy.utils.RetrofitCommentSingleton;
 import rx.Observer;
@@ -74,7 +74,7 @@ public class EventCommentsActivity extends AppCompatActivity implements View.OnC
 
     private void setModels() {
 
-        mSubscriptions.add(RetrofitCommentSingleton.getRetrofitComment()
+        mSubscriptions.add(RetrofitCommentSingleton.getInstance()
                 .getEventComments()
                 .getEventComments(event_id)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -100,7 +100,7 @@ public class EventCommentsActivity extends AppCompatActivity implements View.OnC
 
     private void fetchCommentsRefresh() {
 
-        mSubscriptions.add(RetrofitCommentSingleton.getRetrofitComment()
+        mSubscriptions.add(RetrofitCommentSingleton.getInstance()
                 .getEventComments()
                 .getEventComments(event_id)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -141,7 +141,7 @@ public class EventCommentsActivity extends AppCompatActivity implements View.OnC
 
     private void postComment() {
 
-        mSubscriptions.add(RetrofitCommentSingleton.getRetrofitComment()
+        mSubscriptions.add(RetrofitCommentSingleton.getInstance()
                 .postComment()
                 .postComment(getCommentParam())
                 .observeOn(AndroidSchedulers.mainThread())

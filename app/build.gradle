@@ -25,6 +25,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
         exclude 'META-INF/notice'
     }
 }
@@ -72,6 +73,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
     compile 'com.yelp.clientlib:yelp-android:3.0.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.google.android.gms:play-services-maps:10.2.0'
 
     // Firebase
     compile 'com.google.firebase:firebase-messaging:10.2.0'

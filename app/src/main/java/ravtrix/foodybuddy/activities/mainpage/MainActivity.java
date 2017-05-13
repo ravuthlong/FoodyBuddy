@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void fetchDrawerModelsRetrofit() {
 
-        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+        mSubscriptions.add(RetrofitEventSingleton.getInstance()
                 .getEventJoined()
                 .getEventJoined(userLocalStore.getLoggedInUser().getUserID())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void fetchDrawerModelsRetrofitRefresh() {
 
-        mSubscriptions.add(RetrofitEventSingleton.getRetrofitEvent()
+        mSubscriptions.add(RetrofitEventSingleton.getInstance()
                 .getEventJoined()
                 .getEventJoined(userLocalStore.getLoggedInUser().getUserID())
                 .observeOn(AndroidSchedulers.mainThread())

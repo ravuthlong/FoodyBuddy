@@ -3,8 +3,8 @@ package ravtrix.foodybuddy.network.retrofitinterfaces;
 import java.util.List;
 
 import ravtrix.foodybuddy.activities.eventcomments.recyclerview.EventCommentModel;
-import ravtrix.foodybuddy.model.Response;
-import ravtrix.foodybuddy.networkmodel.CommentParam;
+import ravtrix.foodybuddy.network.networkresponse.Response;
+import ravtrix.foodybuddy.network.networkmodel.CommentParam;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;

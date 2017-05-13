@@ -5,8 +5,8 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
-import ravtrix.foodybuddy.model.LogInResponse;
-import ravtrix.foodybuddy.model.RegisterResponse;
+import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
+import ravtrix.foodybuddy.network.networkresponse.RegisterResponse;
 import ravtrix.foodybuddy.model.User;
 import retrofit2.adapter.rxjava.HttpException;
 
