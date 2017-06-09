@@ -105,4 +105,5 @@ public class RestaurantModel {
     public void setReview_count(int review_count) {
         this.review_count = review_count;
     }
+
 }

@@ -28,6 +28,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static android.widget.Toast.makeText;
+
 /**
  * Created by Ravinder on 5/12/17.
  */
@@ -77,26 +79,29 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         dialog.setPositiveButton("JOIN",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked JOIN button
-
+                Toast toast = Toast.makeText(getApplicationContext(), "Click join", Toast.LENGTH_SHORT);
+                if(toast != null) {
+                    toast.show();
+                }
             }
         });
         dialog.setNeutralButton("NAVIGATE",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked NAVIGATE button
+                makeText(getApplicationContext(), "Click navigate", Toast.LENGTH_SHORT).show();
+
 
             }
         });
         dialog.setNegativeButton("CANCEL",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User clicked CANCEL button
+                makeText(getApplicationContext(), "Click Cancel", Toast.LENGTH_SHORT).show();
 
             }
         });
 
         dialog.show();
 
-        Toast.makeText(this, "event id: "+ eventId,
+        makeText(this, "event id: "+ eventId,
                 Toast.LENGTH_SHORT).show();
     }
 

@@ -18,6 +18,7 @@ public class Event {
     private long event_time;
     private int profile_pic_id;
     private String url;
+    private String restUrl;
     private int count;
 
     public int getProfile_pic_id() {
@@ -26,6 +27,14 @@ public class Event {
 
     public void setProfile_pic_id(int profile_pic_id) {
         this.profile_pic_id = profile_pic_id;
+    }
+
+    public String getRestaurantImage(){
+        return restUrl;
+    }
+
+    public void setRestaurantImage(String url) {
+        this.restUrl = url;
     }
 
     public String getUrl() {

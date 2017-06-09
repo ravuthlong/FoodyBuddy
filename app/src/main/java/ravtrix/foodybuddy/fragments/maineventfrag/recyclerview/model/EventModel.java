@@ -7,12 +7,12 @@ package ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model;
 public class EventModel {
 
     private String profileImage, restaurantName, postTime, eventTime, eventDescription, address, distance,
-                    userImage1, userImage2, userImage3, userImage4;
+                    userImage1, userImage2, userImage3, userImage4, restaurantImage;
     private int numComment;
 
     public EventModel(String profileImage, String retaurantName, String postTime,
                       String eventTime, String eventDescription, String address, String distance, int numComment,
-                      String userImage1, String userImage2, String userImage3, String userImage4) {
+                      String userImage1, String userImage2, String userImage3, String userImage4, String restaurantImage) {
         this.profileImage = profileImage;
         this.restaurantName = retaurantName;
         this.postTime = postTime;
@@ -25,6 +25,7 @@ public class EventModel {
         this.userImage2 = userImage2;
         this.userImage3 = userImage3;
         this.userImage4 = userImage4;
+        this.restaurantImage = restaurantImage;
     }
 
     public String getUserImage1() {
@@ -33,6 +34,14 @@ public class EventModel {
 
     public void setUserImage1(String userImage1) {
         this.userImage1 = userImage1;
+    }
+
+    public String getrestaurantImage() {
+        return restaurantImage;
+    }
+
+    public void serestaurantImage(String restaurantImage) {
+        this.restaurantImage = restaurantImage;
     }
 
     public String getUserImage2() {

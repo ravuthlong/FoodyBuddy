@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.DatePicker;
@@ -71,7 +72,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     public static int CREATE_EVENT_REQUEST_CODE = 1;
     private CompositeSubscription mSubscriptions;
 
-    private String eventDescription, restaurantName, restaurantAddress, restaurantID, eventDate, eventTime;
+    private String eventDescription, restaurantName, restaurantAddress, restaurantID, eventDate, eventTime, image;
     private double restaurantLongitude, restaurantLatitude, eventTimeUnix;
     private UserLocalStore userLocalStore;
     private int dayChosen, monthChosen, yearChosen, hourChosen, minuteChosen;
@@ -140,6 +141,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 event.setLng(this.restaurantLongitude);
                 event.setCreate_time(System.currentTimeMillis() / 1000L);
                 event.setEvent_time(timeUnix);
+                event.setRestaurantImage(this.image);
+                Log.e("res Image", "image: " + this.image );
 
                 mSubscriptions.add(RetrofitEventSingleton.getInstance()
                         .postEvent()
@@ -210,6 +213,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             this.restaurantAddress = data.getStringExtra("address");
             this.restaurantLatitude = data.getDoubleExtra("latitude", 0.0);
             this.restaurantLongitude = data.getDoubleExtra("longitude", 0.0);
+            this.image = data.getStringExtra("image");
 
         }
     }
