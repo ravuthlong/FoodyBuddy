@@ -60,6 +60,7 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
 
             }
         });
+        tvUsername.setText("Temp Username");
 
         userLocalStore = new UserLocalStore(getActivity());
         mSubscriptions = new CompositeSubscription();
@@ -85,6 +86,7 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(new Observer<ProfileImageModel>() {
+
                         @Override
                         public void onCompleted() {
                             Log.d(CLASS_NAME, "Fetch profile image completed");
@@ -97,7 +99,8 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
 
                         @Override
                         public void onNext(ProfileImageModel profileImageModel) {
-                            if(profileImage != null) {
+
+                            if (profileImage != null) {
                                 Picasso.with(getContext())
                                         .load(profileImageModel.getUrl())
                                         .fit()
@@ -105,7 +108,7 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
                                         .into(profileImage);
                             }
 
-                            if(backgroundImage != null) {
+                            if (backgroundImage != null) {
                                 Picasso.with(getContext())
                                         .load(profileImageModel.getUrl())
                                         .transform(new BlurTransformation(getContext()))

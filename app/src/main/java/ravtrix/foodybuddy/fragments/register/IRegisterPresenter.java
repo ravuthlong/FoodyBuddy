@@ -7,7 +7,8 @@ import ravtrix.foodybuddy.model.User;
  */
 
 interface IRegisterPresenter {
-    void register(User user, String imageBitmap);
+    void register(User user, String imageBitmap, double longitude, double latitude);
+    void insertLocation(int userID, double longitude, double latitude);
     //void uploadImage(String bitmap);
     void unsubscribe();
 }

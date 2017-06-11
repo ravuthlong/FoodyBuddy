@@ -8,7 +8,7 @@ interface IRegisterView {
     void hideProgressbar();
     void showSnackbar(String message);
     void showSnackbarInt(int message);
-    void storeUser(int userID);
+    void storeUser(int userID, double latitude, double longitude);
     void startProfileActivity();
 
 }

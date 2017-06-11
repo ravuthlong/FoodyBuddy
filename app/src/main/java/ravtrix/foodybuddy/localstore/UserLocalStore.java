@@ -19,11 +19,25 @@ public class UserLocalStore {
         userLocalDataStore = context.getSharedPreferences(SP_NAME, 0);
     }
 
+    // TODO .. ADD latitude and longitude for log in user too
     public void storeUserData(LoggedInUser loggedInUser) {
         SharedPreferences.Editor spEditor = userLocalDataStore.edit();
         spEditor.putString("token", loggedInUser.getToken());
         spEditor.putInt("userID", loggedInUser.getUserID());
         spEditor.putString("email", loggedInUser.getEmail());
+
+        spEditor.putBoolean("isLogin", true);
+        spEditor.apply();
+    }
+
+    public void storeUserData(LoggedInUser loggedInUser, double latitude, double longitude) {
+        SharedPreferences.Editor spEditor = userLocalDataStore.edit();
+        spEditor.putString("token", loggedInUser.getToken());
+        spEditor.putInt("userID", loggedInUser.getUserID());
+        spEditor.putString("email", loggedInUser.getEmail());
+        spEditor.putLong("latitude", (long) latitude);
+        spEditor.putLong("longitude", (long) longitude);
+
         spEditor.putBoolean("isLogin", true);
         spEditor.apply();
     }
@@ -34,6 +48,14 @@ public class UserLocalStore {
         int userID = userLocalDataStore.getInt("userID", 0);
         String email = userLocalDataStore.getString("email", "");
         return new LoggedInUser(token, userID, email);
+    }
+
+    public long getLatitude() {
+        return userLocalDataStore.getLong("latitude", 0);
+    }
+
+    public long getLongitude() {
+        return userLocalDataStore.getLong("longitude", 0);
     }
 
     // Check if user is logged in or not

@@ -9,7 +9,7 @@ import ravtrix.foodybuddy.model.LoggedInUser;
 interface ILoginView {
 
     void hideProgressbar();
-    void storeUser(LoggedInUser loggedInUser);
+    void storeUser(LoggedInUser loggedInUser, double latitude, double longitude);
     void setEtEmailEmpty();
     void setEtPasswordEmpty();
     void startProfileActivity();

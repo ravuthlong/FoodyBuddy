@@ -38,6 +38,7 @@ import ravtrix.foodybuddy.fragments.ResetPasswordDialog;
 import ravtrix.foodybuddy.fragments.register.RegisterFragment;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.model.LoggedInUser;
+import ravtrix.foodybuddy.utils.LocationUtil;
 
 import static ravtrix.foodybuddy.utils.Validation.validateEmail;
 import static ravtrix.foodybuddy.utils.Validation.validateFields;
@@ -70,7 +71,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
         initListeners();
         initSharedPreference();
 
-        loginPresenter = new LoginPresenter(this);
+        loginPresenter = new LoginPresenter(this, getActivity());
 
         bFacebook.setFragment(this);
         bFacebook.setReadPermissions(Arrays.asList("public_profile", "email"));
@@ -88,6 +89,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
             public void onError(FacebookException error) {
             }
         });
+
+        LocationUtil.checkLocationPermission(getActivity());
 
         return view;
     }
@@ -209,8 +212,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
     }
 
     @Override
-    public void storeUser(LoggedInUser loggedInUser) {
-        userLocalStore.storeUserData(loggedInUser); // token, name, email
+    public void storeUser(LoggedInUser loggedInUser, double latitude, double longitude) {
+        userLocalStore.storeUserData(loggedInUser, latitude, longitude); // token, name, email
     }
 
     @Override
