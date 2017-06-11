@@ -42,6 +42,8 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     private CompositeSubscription mSubscriptions;
     private HashMap<Marker, Event> eventMarkerMap;
 
+
+    private String image_url = "http://basera-dfw.com/wp-content/uploads/2016/03/restaurant.jpeg";
     // lat and lng of san jose
     double lat = 37.279518;
     double lng = -121.867905;
@@ -101,7 +103,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         dialog.show();
 
-        makeText(this, "event id: "+ eventId,
+        makeText(this, eventMarkerMap.get(marker).getRest_name() + " event id: "+ eventId,
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -159,11 +161,19 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
             for (Event event : eventList) {
                 if(event.getLng() <= lng + range && event.getLng() >= lng - range && event.getLat() <= lat + range && event.getLat() >= lat - range) {
-                    eventMarkerMap.put(googleMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(event.getLat(), event.getLng()))
-                                    .title(event.getRest_name())
-                                    .snippet(event.getAddress())
-                                    .alpha(0.7f)), event);
+
+                    MarkerOptions markerOpt = new MarkerOptions();
+
+                    markerOpt.position(new LatLng(event.getLat(), event.getLng()))
+                            .title(event.getRest_name())
+                            .snippet(event.getAddress() + "\n" + new SimpleDateFormat("mm/dd/yyyy").format(new Date(event.getEvent_time())))
+                            .alpha(0.7f);
+
+                    //Set Custom InfoWindow Adapter
+                    CustomInfoWindowAdapter adapter = new CustomInfoWindowAdapter(this);
+                    googleMap.setInfoWindowAdapter(adapter);
+
+                    eventMarkerMap.put(googleMap.addMarker(markerOpt), event);
                 }
             }
 
