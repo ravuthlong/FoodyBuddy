@@ -43,13 +43,13 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     private HashMap<Marker, Event> eventMarkerMap;
 
 
-    private String image_url = "http://basera-dfw.com/wp-content/uploads/2016/03/restaurant.jpeg";
+
     // lat and lng of san jose
     double lat = 37.279518;
     double lng = -121.867905;
 
     // marker display range
-    double range = 1;
+    double range = 0.5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +114,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activity_user_map_mapFrag);
         mapFragment.getMapAsync(this);
-       // googleMap.setOnMarkerClickListener(this);
+      //  googleMap.setOnMarkerClickListener(this);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-
+        marker.showInfoWindow();
         return true;
     }
 
@@ -185,4 +185,6 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         super.onDestroy();
         mSubscriptions.unsubscribe();
     }
+
 }
+
