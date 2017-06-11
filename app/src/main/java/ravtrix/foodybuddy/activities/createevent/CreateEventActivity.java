@@ -71,7 +71,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     public static int CREATE_EVENT_REQUEST_CODE = 1;
     private CompositeSubscription mSubscriptions;
 
-    private String eventDescription, restaurantName, restaurantAddress, restaurantID, eventDate, eventTime;
+    private String eventDescription, restaurantName, restaurantAddress, restaurantID, eventDate, eventTime, rest_image;
     private double restaurantLongitude, restaurantLatitude, eventTimeUnix;
     private UserLocalStore userLocalStore;
     private int dayChosen, monthChosen, yearChosen, hourChosen, minuteChosen;
@@ -83,6 +83,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         ButterKnife.bind(this);
+
+
 
         initBooleans();
 
@@ -138,6 +140,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 event.setEvent_des(this.eventDescription);
                 event.setLat(this.restaurantLatitude);
                 event.setLng(this.restaurantLongitude);
+                event.setRest_image(this.rest_image);
                 event.setCreate_time(System.currentTimeMillis() / 1000L);
                 event.setEvent_time(timeUnix);
 
@@ -210,7 +213,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             this.restaurantAddress = data.getStringExtra("address");
             this.restaurantLatitude = data.getDoubleExtra("latitude", 0.0);
             this.restaurantLongitude = data.getDoubleExtra("longitude", 0.0);
-
+            this.rest_image = data.getStringExtra("rest_image");
         }
     }
 

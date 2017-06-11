@@ -95,7 +95,6 @@ public class FindRestaurantAdapter extends RecyclerView.Adapter<FindRestaurantAd
                 @Override
                 public void onClick(View view) {
 
-
                     RestaurantModel currentItem = restaurantModels.get(getAdapterPosition());
 
                     Intent resultIntent = new Intent();
@@ -104,7 +103,7 @@ public class FindRestaurantAdapter extends RecyclerView.Adapter<FindRestaurantAd
                     resultIntent.putExtra("address", currentItem.getAddress());
                     resultIntent.putExtra("longitude", currentItem.getLongitude());
                     resultIntent.putExtra("latitude", currentItem.getLatitude());
-
+                    resultIntent.putExtra("rest_image", currentItem.getImage_url());
                     activity.setResult(Activity.RESULT_OK, resultIntent);
                     activity.finish();
                 }

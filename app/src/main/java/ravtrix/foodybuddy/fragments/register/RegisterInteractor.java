@@ -3,9 +3,12 @@ package ravtrix.foodybuddy.fragments.register;
 import android.util.Log;
 
 import ravtrix.foodybuddy.activities.editprofileimage.EditProfileImageActivity;
+import ravtrix.foodybuddy.callbacks.OnRetrofitFinished;
+import ravtrix.foodybuddy.network.networkmodel.UserLocationParam;
 import ravtrix.foodybuddy.network.networkresponse.ImageResponse;
 import ravtrix.foodybuddy.network.networkresponse.RegisterResponse;
 import ravtrix.foodybuddy.model.User;
+import ravtrix.foodybuddy.network.networkresponse.Response;
 import ravtrix.foodybuddy.network.retrofitrequests.RetrofitPhoto;
 import ravtrix.foodybuddy.network.networkmodel.NewImageParam;
 import ravtrix.foodybuddy.utils.NetworkUtil;
@@ -30,32 +33,31 @@ class RegisterInteractor implements IRegisterInteractor {
     }
 
     @Override
-    public void registerProcess(User user, final String bitmap, final OnRetrofitImageFinished onRetrofitFinished) {
+    public void registerProcess(User user, final String bitmap, final OnRetrofitFinishedRegister onRetrofitFinishedRegister) {
         mSubscriptions.add(NetworkUtil.getRetrofit().register(user)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<RegisterResponse>() {
                     @Override
                     public void onCompleted() {
-                        onRetrofitFinished.onCompleted();
+                        onRetrofitFinishedRegister.onCompleted();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        onRetrofitFinished.onError(e);
+                        onRetrofitFinishedRegister.onError(e);
                     }
 
                     @Override
                     public void onNext(RegisterResponse registerResponse) {
-                        //onRetrofitFinished.onNext(registerResponse);
                         registerResponseObj = registerResponse;
-                        uploadImageIMGUR(registerResponse.getMessage(), bitmap, onRetrofitFinished);
+                        uploadImageIMGUR(registerResponse.getMessage(), bitmap, onRetrofitFinishedRegister);
                     }
                 }));
     }
 
     @Override
-    public void uploadImageIMGUR(final int userID, final String imageBitmap, final OnRetrofitImageFinished onRetrofitImageFinished) {
+    public void uploadImageIMGUR(final int userID, final String imageBitmap, final OnRetrofitFinishedRegister onRetrofitFinishedRegister) {
 
         mSubscriptions.add(new RetrofitPhoto().uploadImage().uploadImage(imageBitmap)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -72,14 +74,14 @@ class RegisterInteractor implements IRegisterInteractor {
                     @Override
                     public void onNext(ImageResponse imageResponse) {
                         // After image has been uploaded to imgur, insert it into the database table for user image
-                        insertImage(userID, imageResponse.getURL(), onRetrofitImageFinished);
+                        insertImage(userID, imageResponse.getURL(), onRetrofitFinishedRegister);
                         Log.d(EditProfileImageActivity.class.getSimpleName(), imageResponse.getURL());
                     }
                 }));
 
     }
 
-    private void insertImage(int userID, String url, final OnRetrofitImageFinished onRetrofitImageFinished) {
+    private void insertImage(int userID, String url, final OnRetrofitFinishedRegister onRetrofitFinishedRegister) {
 
         mSubscriptions.add(RetrofitUserInfoSingleton.getInstance()
                 .insertUserImage()
@@ -87,6 +89,7 @@ class RegisterInteractor implements IRegisterInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<Void>() {
+
                     @Override
                     public void onCompleted() {
                         Log.d(CLASS_NAME, "On complete called for inserting image");
@@ -100,10 +103,36 @@ class RegisterInteractor implements IRegisterInteractor {
                     @Override
                     public void onNext(Void aVoid) {
                         Log.d(CLASS_NAME, "Successfully inserted image");
-                        onRetrofitImageFinished.onNext(registerResponseObj);
+                        onRetrofitFinishedRegister.onNext(registerResponseObj);
                     }
                 }));
+    }
 
+
+    @Override
+    public void insertLocation(int userID, double longitude, double latitude, final OnRetrofitFinished onRetrofitFinished) {
+
+        mSubscriptions.add(RetrofitUserInfoSingleton.getInstance()
+                .insertUserLocation()
+                .insertUserLocation(new UserLocationParam(userID, latitude, longitude))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onCompleted() {
+                        onRetrofitFinished.onCompleted();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onRetrofitFinished.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        onRetrofitFinished.onNext(response);
+                    }
+                }));
     }
 
     @Override

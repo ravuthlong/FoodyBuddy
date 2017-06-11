@@ -1,11 +1,16 @@
 package ravtrix.foodybuddy.fragments.login;
 
+import android.app.Activity;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
 import ravtrix.foodybuddy.callbacks.OnRetrofitFinishedJSON;
+import ravtrix.foodybuddy.location.OnLocationReceived;
+import ravtrix.foodybuddy.location.UserLocation;
 import ravtrix.foodybuddy.model.LoggedInUser;
 import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
 import retrofit2.adapter.rxjava.HttpException;
@@ -18,10 +23,12 @@ class LoginPresenter implements ILoginPresenter {
 
     private ILoginView iLoginView;
     private LoginInteractor logIninteractor;
+    private Activity activity;
 
-    LoginPresenter(ILoginView iLoginView) {
+    LoginPresenter(ILoginView iLoginView, Activity activity) {
         this.iLoginView = iLoginView;
         this.logIninteractor = new LoginInteractor();
+        this.activity = activity;
     }
 
     @Override
@@ -30,27 +37,32 @@ class LoginPresenter implements ILoginPresenter {
         logIninteractor.loginProcess(email, password, new OnRetrofitFinishedJSON() {
 
             @Override
-            public void onNext(LoggedInUser loggedInUser) {
-                handleResponse(loggedInUser);
+            public void onNext(final LoggedInUser loggedInUser) {
+                new UserLocation(activity).startLocationListener(new OnLocationReceived() {
+                    @Override
+                    public void onLocationReceived(double latitude, double longitude) {
+                        handleResponse(loggedInUser, latitude, longitude);
+                    }
+                });
             }
 
             @Override
             public void onCompleted() {
-
             }
 
             @Override
             public void onError(Throwable e) {
+                Log.e(LoginPresenter.class.getSimpleName(), "LOG IN ERROR");
                 handleError(e);
             }
         });
     }
 
-    private void handleResponse(LoggedInUser loggedInUser) {
+    private void handleResponse(LoggedInUser loggedInUser, double latitude, double longitude) {
 
         iLoginView.hideProgressbar();
 
-        iLoginView.storeUser(loggedInUser); // token, name, email
+        iLoginView.storeUser(loggedInUser, latitude, longitude); // token, name, email
 
         iLoginView.setEtEmailEmpty();
         iLoginView.setEtPasswordEmpty();
