@@ -47,7 +47,13 @@ public class UserProfileFrag extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
 
         if (isVisibleToUser && !isFragLoaded) {
-            ((UserProfileHeadOneFrag) adapter.getFragmentAtPosition(0)).loadViewWithData();
+
+            new Runnable() {
+                @Override
+                public void run() {
+                    ((UserProfileHeadOneFrag) adapter.getFragmentAtPosition(0)).loadViewWithData();
+                }
+            }.run();
             isFragLoaded = true;
         }
     }

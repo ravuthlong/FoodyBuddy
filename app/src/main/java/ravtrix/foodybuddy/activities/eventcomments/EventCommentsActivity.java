@@ -9,7 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -31,10 +33,12 @@ import rx.subscriptions.CompositeSubscription;
 
 public class EventCommentsActivity extends AppCompatActivity implements View.OnClickListener {
 
+    @BindView(R.id.activity_event_comment_linearRecycler) protected LinearLayout linearRecyclerView;
     @BindView(R.id.activity_event_comment_recyclerView) protected RecyclerView recyclerView;
     @BindView(R.id.toolbar) protected Toolbar toolbar;
     @BindView(R.id.activity_event_comment_submitButton) protected Button bSubmit;
     @BindView(R.id.activity_event_comment_etComment) protected EditText etComment;
+    @BindView(R.id.activity_event_comment_tvNoComments) protected TextView tvNoComments;
     @BindView(R.id.activity_event_comment_relativeComment) protected RelativeLayout relativeComment;
     private List<EventCommentModel> eventCommentModelList;
     private EventCommentAdapter eventCommentAdapter;
@@ -93,7 +97,15 @@ public class EventCommentsActivity extends AppCompatActivity implements View.OnC
                         Log.d(EventCommentsActivity.class.getSimpleName(), "ON NEXT COMMENT");
 
                         eventCommentModelList = eventCommentModels;
-                        setAdapter();
+
+                        if (eventCommentModelList.size() > 0) {
+                            linearRecyclerView.setVisibility(View.VISIBLE);
+                            setAdapter();
+                        } else {
+                            // no comments
+                            linearRecyclerView.setVisibility(View.GONE);
+                            tvNoComments.setVisibility(View.VISIBLE);
+                        }
                     }
                 }));
     }

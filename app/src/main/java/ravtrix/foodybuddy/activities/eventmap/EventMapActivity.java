@@ -1,4 +1,4 @@
-package ravtrix.foodybuddy.activities;
+package ravtrix.foodybuddy.activities.eventmap;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -21,7 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.activities.CustomInfoWindowAdapter;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.network.networkmodel.EventParam;
+import ravtrix.foodybuddy.network.networkresponse.Response;
 import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -41,7 +46,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     private List<Event> eventList;
     private CompositeSubscription mSubscriptions;
     private HashMap<Marker, Event> eventMarkerMap;
-
+    private static final int ZOOM_LEVEL = 11;
 
 
     // lat and lng of san jose
@@ -51,10 +56,14 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     // marker display range
     double range = 0.5;
 
+    private UserLocalStore userLocalStore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSubscriptions = new CompositeSubscription();
+        userLocalStore = new UserLocalStore(this);
+
         Log.e("testLog", "testtest");
         setContentView(R.layout.activity_event_map);
         setMap();
@@ -72,7 +81,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     @Override
-    public void onInfoWindowClick(Marker marker) {
+    public void onInfoWindowClick(final Marker marker) {
         int eventId = eventMarkerMap.get(marker).getEvent_id();
         String dateString = new SimpleDateFormat("mm/dd/yyyy").format(new Date(eventMarkerMap.get(marker).getEvent_time()));
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
@@ -82,9 +91,38 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         dialog.setPositiveButton("JOIN",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Toast toast = Toast.makeText(getApplicationContext(), "Click join", Toast.LENGTH_SHORT);
-                if(toast != null) {
+
+                if (toast != null) {
                     toast.show();
                 }
+
+                if (mSubscriptions != null) {
+                    // Join an event
+
+                    mSubscriptions.add(RetrofitEventSingleton.getInstance()
+                            .joinEvent().joinEvent(new EventParam(userLocalStore.getLoggedInUser().getUserID(),
+                                    eventMarkerMap.get(marker).getEvent_id(), eventMarkerMap.get(marker).getRest_id()))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new Observer<Response>() {
+                                @Override
+                                public void onCompleted() {
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+
+                                }
+
+                                @Override
+                                public void onNext(Response response) {
+
+                                }
+                            }));
+                }
+
+
             }
         });
         dialog.setNeutralButton("NAVIGATE",new DialogInterface.OnClickListener() {
@@ -129,7 +167,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     /**
-     * Ftech a list of events created
+     * Fetch a list of events created
      */
     private void fetchEvents() {
         mSubscriptions.add(RetrofitEventSingleton.getInstance()
@@ -177,6 +215,9 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                 }
             }
 
+            // Make the map zoom focus to the first location. This will show the surrounding events also
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(eventList.get(0).getLat(),
+                    eventList.get(0).getLng()), ZOOM_LEVEL));
         }
     }
 

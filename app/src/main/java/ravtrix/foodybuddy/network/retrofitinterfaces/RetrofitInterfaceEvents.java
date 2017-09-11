@@ -31,7 +31,7 @@ public class RetrofitInterfaceEvents {
 
     public interface JoinEvent {
         @POST("event/join")
-        Observable<Response> joinEvenet(@Body EventParam eventParam);
+        Observable<Response> joinEvent(@Body EventParam eventParam);
     }
 
     public interface GetEventJoined {

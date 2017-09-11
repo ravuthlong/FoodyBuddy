@@ -176,8 +176,14 @@ public class FindRestaurant extends AppCompatActivity implements View.OnClickLis
 
         retrofit.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                setData(response);
+            public void onResponse(Call<JsonObject> call, final Response<JsonObject> response) {
+
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        setData(response);
+                    }
+                }.run();
             }
 
             @Override

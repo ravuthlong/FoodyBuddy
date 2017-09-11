@@ -16,10 +16,19 @@ public class Event {
     private double lng;
     private long create_time;
     private long event_time;
+    private String rest_image;
     private int profile_pic_id;
     private String url;
     private String restUrl;
     private int count;
+
+    public String getRest_image() {
+        return rest_image;
+    }
+
+    public void setRest_image(String rest_image) {
+        this.rest_image = rest_image;
+    }
 
     public int getProfile_pic_id() {
         return profile_pic_id;

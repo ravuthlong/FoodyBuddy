@@ -1,13 +1,17 @@
 package ravtrix.foodybuddy.fragments.register;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
+import ravtrix.foodybuddy.callbacks.OnRetrofitFinished;
+import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
 import ravtrix.foodybuddy.network.networkresponse.RegisterResponse;
-import ravtrix.foodybuddy.model.User;
+import ravtrix.foodybuddy.network.networkresponse.Response;
 import retrofit2.adapter.rxjava.HttpException;
 
 /**
@@ -25,12 +29,12 @@ class RegisterPresenter implements IRegisterPresenter {
     }
 
     @Override
-    public void register(User user, final String imageBitmap) {
+    public void register(User user, final String imageBitmap, final double longitude, final double latitude) {
 
-        registerInteractor.registerProcess(user, imageBitmap, new OnRetrofitImageFinished() {
+        registerInteractor.registerProcess(user, imageBitmap, new OnRetrofitFinishedRegister() {
             @Override
             public void onNext(RegisterResponse registerResponse) {
-                handleResponse(registerResponse);
+                insertLocation(registerResponse.getMessage(), longitude, latitude);
             }
 
             @Override
@@ -39,39 +43,36 @@ class RegisterPresenter implements IRegisterPresenter {
 
             @Override
             public void onError(Throwable e) {
+                Log.e(RegisterPresenter.class.getSimpleName(), "ERROR INSERTING REGISTER");
                 handleError(e);
             }
         });
     }
 
-
-    /*
     @Override
-    public void uploadImage(String bitmap) {
+    public void insertLocation(final int userID, final double longitude, final double latitude) {
 
-        registerInteractor.uploadImage(bitmap, new OnImageResponse() {
+        registerInteractor.insertLocation(userID, longitude, latitude, new OnRetrofitFinished() {
             @Override
-            public void onComplete() {
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onNext(Response response) {
+                handleResponse(userID, latitude, longitude);
             }
 
             @Override
             public void onError(Throwable e) {
-               System.out.println("ERROR");
-
-            }
-
-            @Override
-            public void onNext(ImageResponse imageResponse) {
-                System.out.println(imageResponse.getURL());
-
+                Log.e(RegisterPresenter.class.getSimpleName(), "ERROR INSERTING LOCATION");
             }
         });
-    }*/
+    }
 
-    private void handleResponse(RegisterResponse registerResponse) {
+    private void handleResponse(int userID, double latitude, double longitude) {
 
         iRegisterView.hideProgressbar();
-        iRegisterView.storeUser(registerResponse.getMessage()); // pass back userid
+        iRegisterView.storeUser(userID, latitude, longitude); // pass back userid
         iRegisterView.startProfileActivity();
     }
 

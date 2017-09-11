@@ -36,9 +36,13 @@ import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.mainpage.MainActivity;
 import ravtrix.foodybuddy.fragments.login.LoginFragment;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.location.OnLocationReceived;
+import ravtrix.foodybuddy.location.UserLocation;
 import ravtrix.foodybuddy.model.LoggedInUser;
 import ravtrix.foodybuddy.model.User;
 import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.LocationUtil;
+import rx.subscriptions.CompositeSubscription;
 
 import static android.app.Activity.RESULT_OK;
 import static ravtrix.foodybuddy.utils.Validation.validateEmail;
@@ -67,6 +71,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
     private boolean isPhotoUploaed = false;
     private String bitmapImageBase64;
     private UserLocalStore userLocalStore;
+    private CompositeSubscription mSubscriptions;
 
     @Nullable
     @Override
@@ -76,7 +81,12 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
         context = getActivity();
         ButterKnife.bind(this, view);
         initListeners();
+        mSubscriptions = new CompositeSubscription();
 
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // only for gingerbread and newer versions
+            LocationUtil.checkLocationPermission(getContext());
+        }
         this.registerPresenter = new RegisterPresenter(this);
         this.userLocalStore = new UserLocalStore(getActivity());
 
@@ -116,9 +126,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
+
     @Override
-    public void storeUser(int userID) {
-        userLocalStore.storeUserData(new LoggedInUser("", userID, mEtEmail.getText().toString().trim())); // token, id, email
+    public void storeUser(int userID, double latitude, double longitude) {
+        userLocalStore.storeUserData(new LoggedInUser("", userID, mEtEmail.getText().toString().trim()), latitude, longitude); // token, id, email
     }
 
     @Override
@@ -127,7 +138,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
     }
 
     private void register() {
-
         setError();
 
         String name = mEtName.getText().toString();
@@ -162,15 +172,20 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
 
         if (err == 0) {
 
-            User user = new User();
+            final User user = new User();
             user.setName(name);
             user.setEmail(email);
             user.setPassword(password);
             user.setBase64Image(Helpers.getBase64ProfileImage(profilePic));
 
             mProgressbar.setVisibility(View.VISIBLE);
-            this.registerPresenter.register(user, Helpers.getBase64ProfileImage(profilePic));
 
+            new UserLocation(getActivity()).startLocationListener(new OnLocationReceived() {
+                @Override
+                public void onLocationReceived(double latitude, double longitude) {
+                    registerPresenter.register(user, Helpers.getBase64ProfileImage(profilePic), longitude, latitude);
+                }
+            });
         } else {
             showSnackbar("Enter Valid Details !");
         }

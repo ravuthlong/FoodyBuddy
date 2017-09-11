@@ -48,7 +48,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private UserLocalStore userLocalStore;
     private String eventID;
 
-    private static class MessageViewHolder extends RecyclerView.ViewHolder {
+    public static class MessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageTextView;
         CircleImageView messengerImageView;
 
@@ -80,7 +80,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         bSendMessage.setOnClickListener(this);
 
         // New child entries
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
+        new Runnable() {
+            @Override
+            public void run() {
+                mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+            }
+        }.run();
         mFirebaseAdapter = new FirebaseRecyclerAdapter<MessageModel,
                 MessageViewHolder>(
                 MessageModel.class,
@@ -135,7 +141,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         mMessageRecyclerView.setLayoutManager(mLinearLayoutManager);
-        mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+
+        new Runnable() {
+            @Override
+            public void run() {
+                mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+            }
+        }.run();
     }
 
     @Override

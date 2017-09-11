@@ -17,7 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
-import ravtrix.foodybuddy.activities.EventMapActivity;
+import ravtrix.foodybuddy.activities.eventmap.EventMapActivity;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
 import ravtrix.foodybuddy.fragactivityinterfaces.OnEventJoined;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.adapter.EventAdapter;
@@ -146,7 +146,7 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
 
         mSubscriptions.add(RetrofitEventSingleton.getInstance()
                 .joinEvent()
-                .joinEvenet(new EventParam(userLocalStore.getLoggedInUser().getUserID(), eventID, restID))
+                .joinEvent(new EventParam(userLocalStore.getLoggedInUser().getUserID(), eventID, restID))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<Response>() {
@@ -159,7 +159,13 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
 
                     @Override
                     public void onNext(Response response) {
-                        joinEventChatRetrofit(eventID);
+
+                        Helpers.displayToast(getActivity(), response.getMessage());
+                        onEventJoinedInterface.onEventJoined(); // refresh drawer in main
+
+                        if (!response.getMessage().equals("Event already joined")) {
+                            joinEventChatRetrofit(eventID);
+                        }
                     }
                 }));
 
@@ -186,11 +192,8 @@ public class MainEventFrag extends Fragment implements IOnDistanceSettingSelecte
 
                     @Override
                     public void onNext(Response response) {
-                        Helpers.displayToast(getActivity(), response.getMessage());
-                        onEventJoinedInterface.onEventJoined(); // refresh drawer in main
                     }
                 }));
-
     }
 
     /**

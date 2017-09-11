@@ -37,6 +37,7 @@ import ravtrix.foodybuddy.fragments.maineventfrag.IOnDistanceSettingSelected;
 import ravtrix.foodybuddy.fragments.maineventfrag.MainEventFrag;
 import ravtrix.foodybuddy.fragments.userprofilefrag.UserProfileFrag;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.utils.HelperEvent;
 import ravtrix.foodybuddy.utils.Helpers;
 import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
 import rx.Observer;
@@ -52,18 +53,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.activity_main_drawer_layout) protected DrawerLayout drawerLayout;
     @BindView(R.id.acitivty_main_nav_view) protected NavigationView navigationView;
     @BindView(R.id.activity_main_recyclerView) protected RecyclerView recyclerViewMain;
+    @BindView(R.id.activity_main_recyclerView_past) protected RecyclerView recyclerViewMainPast;
     @BindView(R.id.activity_main_tvUpcoming) protected TextView tvUpcomingEvents;
     @BindView(R.id.activity_main_layoutEdit) protected LinearLayout layoutEdit;
+    @BindView(R.id.activity_main_tvNoUpcoming) protected TextView tvNoUpcomingEvents;
+    @BindView(R.id.activity_main_tvNoPast) protected  TextView tvNoPastEvents;
+
     private ImageView imageSetting, imageNavigation;
     private ViewPagerAdapter adapter;
-    private List<DrawerModel> drawerModels;
     private DrawerRecyclerAdapter drawerRecyclerAdapter;
+    private DrawerRecyclerAdapter drawerRecyclerAdapterPast;
+
     private boolean isEventEditClicked = false;
     private UserLocalStore userLocalStore;
     private IOnDistanceSettingSelected iOnDistanceSettingSelected;
     private CompositeSubscription mSubscriptions;
-    private List<EventJoined> eventModels;
-
+    private List<EventJoined> eventPresent;
+    private List<EventJoined> eventPast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,10 +136,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.activity_main_layoutEdit:
                 if (!isEventEditClicked) {
                     drawerRecyclerAdapter.setEditEventClicked(true);
+                    drawerRecyclerAdapterPast.setEditEventClicked(true);
                     isEventEditClicked = true;
                 } else {
                     // User already clicked edit before, if they click again, it means they want to cancel edit
                     drawerRecyclerAdapter.setEditEventClicked(false);
+                    drawerRecyclerAdapterPast.setEditEventClicked(false);
                     isEventEditClicked = false;
                 }
                 break;
@@ -164,11 +172,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     @Override
                     public void onNext(List<EventJoined> events) {
+
+                        splitEventsPastPresent(events);
+
                         // Fetch events joined
-                        eventModels = events;
-                        drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventModels);
-                        recyclerViewMain.setAdapter(drawerRecyclerAdapter);
-                        recyclerViewMain.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+                        if (eventPresent.size() > 0) {
+                            hideTvNoUpcomingEvents();
+                            drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventPresent);
+                            recyclerViewMain.setAdapter(drawerRecyclerAdapter);
+                            recyclerViewMain.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                        } else {
+                            showTvNoUpcomingEvents();
+                        }
+
+                        if (eventPresent.size() > 0) {
+                            hideTvNoPastEvents();
+                            drawerRecyclerAdapterPast = new DrawerRecyclerAdapter(MainActivity.this, eventPast);
+                            recyclerViewMainPast.setAdapter(drawerRecyclerAdapterPast);
+                            recyclerViewMainPast.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                        } else {
+                            showTvNoPastEvents();
+                        }
                     }
                 }));
     }
@@ -190,15 +215,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onNext(List<EventJoined> events) {
                         // Fetch events joined
-                        eventModels = events;
+                        splitEventsPastPresent(events);
+
                         if (drawerRecyclerAdapter == null) {
-                            drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventModels);
+                            drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventPresent);
                             recyclerViewMain.setAdapter(drawerRecyclerAdapter);
                             recyclerViewMain.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                         }
-                        drawerRecyclerAdapter.swap(eventModels);
+                        drawerRecyclerAdapter.swap(eventPresent);
+
+                        if (eventPresent.size() > 0) {
+                            hideTvNoUpcomingEvents();
+                        } else {
+                            showTvNoUpcomingEvents();
+                        }
+
+                        if (drawerRecyclerAdapterPast == null) {
+                            drawerRecyclerAdapterPast = new DrawerRecyclerAdapter(MainActivity.this, eventPast);
+                            recyclerViewMainPast.setAdapter(drawerRecyclerAdapterPast);
+                            recyclerViewMainPast.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                        }
+                        drawerRecyclerAdapterPast.swap(eventPast);
+
+                        if (eventPast.size() > 0) {
+                            hideTvNoPastEvents();
+                        } else {
+                            showTvNoPastEvents();
+                        }
                     }
                 }));
+    }
+
+    private void splitEventsPastPresent(List<EventJoined> events) {
+        eventPresent = new ArrayList<>();
+        eventPast = new ArrayList<>();
+
+        for (int i = 0; i < events.size(); i++) {
+            if (events.get(i).getEvent_time() > System.currentTimeMillis() / 1000L) {
+                eventPresent.add(events.get(i));
+            } else {
+                eventPast.add(events.get(i));
+            }
+        }
+        HelperEvent.sortJoinedEvents(eventPresent);
+        HelperEvent.sortJoinedEvents(eventPast);
     }
 
     private void lockDrawerLayoutScroll() {
@@ -337,6 +397,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Fragment getFragmentAtPosition(int position) {
             return mFragmentList.get(position);
+        }
+    }
+
+    private void hideTvNoUpcomingEvents() {
+        if (tvNoUpcomingEvents != null) {
+            tvNoPastEvents.setVisibility(View.GONE);
+        }
+    }
+
+    private void showTvNoUpcomingEvents() {
+        if (tvNoUpcomingEvents != null) {
+            tvNoPastEvents.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideTvNoPastEvents() {
+        if (tvNoPastEvents != null) {
+            tvNoPastEvents.setVisibility(View.GONE);
+        }
+    }
+
+    private void showTvNoPastEvents() {
+        if (tvNoPastEvents != null) {
+            tvNoPastEvents.setVisibility(View.VISIBLE);
         }
     }
 

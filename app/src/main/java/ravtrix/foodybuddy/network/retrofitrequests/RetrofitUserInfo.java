@@ -23,4 +23,10 @@ public class RetrofitUserInfo {
     public RetrofitUserInfoInterface.InsertUserImage insertUserImage() {
         return retrofit.create(RetrofitUserInfoInterface.InsertUserImage.class);
     }
+    public RetrofitUserInfoInterface.InsertUserLocation insertUserLocation() {
+        return retrofit.create(RetrofitUserInfoInterface.InsertUserLocation.class);
+    }
+    public RetrofitUserInfoInterface.UpdateUserLocation updateUserLocation() {
+        return retrofit.create(RetrofitUserInfoInterface.UpdateUserLocation.class);
+    }
 }

@@ -85,6 +85,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_create_event);
         ButterKnife.bind(this);
 
+
+
         initBooleans();
 
         Helpers.setToolbar(this, toolbar);

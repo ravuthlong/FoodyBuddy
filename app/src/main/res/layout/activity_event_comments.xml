@@ -20,6 +20,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/activity_event_comment_tvNoComments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No comments"
+            android:textColor="@color/black" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,12 +43,12 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/activity_event_comment_linearRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/activity_event_comment_relativeComment"
             android:layout_alignParentTop="true"
-            android:background="@color/whiteDark"
-            android:id="@+id/activity_event_comment_linearRecycler">
+            android:background="@color/whiteDark">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/activity_event_comment_recyclerView"
