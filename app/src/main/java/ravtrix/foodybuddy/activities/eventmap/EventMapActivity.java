@@ -1,10 +1,15 @@
 package ravtrix.foodybuddy.activities.eventmap;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,13 +25,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.CustomInfoWindowAdapter;
+import ravtrix.foodybuddy.activitymonitorDB.DatabaseOperations;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.network.networkmodel.EventParam;
+import ravtrix.foodybuddy.network.networkmodel.NewChatParam;
 import ravtrix.foodybuddy.network.networkresponse.Response;
+import ravtrix.foodybuddy.utils.HelperEvent;
+import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.RetrofitChatSingleton;
 import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -39,19 +53,19 @@ import static android.widget.Toast.makeText;
  * Created by Ravinder on 5/12/17.
  */
 
-public class EventMapActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class EventMapActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback,
         GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnInfoWindowClickListener {
+
+    @BindView(R.id.toolbar) protected Toolbar toolbar;
+
+    private ImageView imageRefresh;
 
     private GoogleMap googleMap;
     private List<Event> eventList;
     private CompositeSubscription mSubscriptions;
     private HashMap<Marker, Event> eventMarkerMap;
     private static final int ZOOM_LEVEL = 11;
-
-
-    // lat and lng of san jose
-    double lat = 37.279518;
-    double lng = -121.867905;
+    private HashMap<String, String> restaurantImages;
 
     // marker display range
     double range = 0.5;
@@ -61,12 +75,41 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_event_map);
+
+        ButterKnife.bind(this);
+        restaurantImages = new HashMap<>();
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Event Map");
+
+        imageRefresh = (ImageView) toolbar.findViewById(R.id.activity_event_map_imageRefresh);
+        imageRefresh.setOnClickListener(this);
+
         mSubscriptions = new CompositeSubscription();
         userLocalStore = new UserLocalStore(this);
+        //setMap();
 
-        Log.e("testLog", "testtest");
-        setContentView(R.layout.activity_event_map);
-        setMap();
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO: Refresh without setting the zoom to because user might be looking around
+                new Timer().scheduleAtFixedRate(new MapRefreshTask(), 0, 30000); // time in milliseconds 30000 = 30 seconds
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.activity_event_map_imageRefresh:
+                setMap(); // Call set map again to refresh the map
+
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -83,19 +126,12 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onInfoWindowClick(final Marker marker) {
         int eventId = eventMarkerMap.get(marker).getEvent_id();
-        String dateString = new SimpleDateFormat("mm/dd/yyyy").format(new Date(eventMarkerMap.get(marker).getEvent_time()));
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(eventMarkerMap.get(marker).getRest_name());
-        dialog.setMessage(eventMarkerMap.get(marker).getAddress() + "\n" + dateString);
+        dialog.setMessage(eventMarkerMap.get(marker).getAddress() + "\n" + HelperEvent.getDate(eventMarkerMap.get(marker).getEvent_time() * 1000));
 
         dialog.setPositiveButton("JOIN",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Toast toast = Toast.makeText(getApplicationContext(), "Click join", Toast.LENGTH_SHORT);
-
-                if (toast != null) {
-                    toast.show();
-                }
-
                 if (mSubscriptions != null) {
                     // Join an event
 
@@ -118,6 +154,32 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                                 @Override
                                 public void onNext(Response response) {
 
+                                    Helpers.displayToast(EventMapActivity.this, response.getMessage());
+                                    //onEventJoinedInterface.onEventJoined(); // refresh drawer in main
+
+                                    if (!response.getMessage().equals("Event already joined")) {
+                                        mSubscriptions.add(RetrofitChatSingleton.getInstance()
+                                                .insertChat()
+                                                .insertChat(new NewChatParam(userLocalStore.getLoggedInUser().getUserID(), eventMarkerMap.get(marker).getEvent_id()))
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribeOn(Schedulers.io())
+                                                .subscribe(new Observer<Response>() {
+                                                    @Override
+                                                    public void onCompleted() {
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Throwable e) {}
+
+                                                    @Override
+                                                    public void onNext(Response response) {
+                                                        // ask user to set event on their calender
+                                                        //showAddToCalendarDialog();
+                                                        DatabaseOperations databaseOperations = new DatabaseOperations(EventMapActivity.this);
+                                                        databaseOperations.insertActivity(databaseOperations, Long.toString(System.currentTimeMillis()), "You joined a new event.");
+                                                    }
+                                                }));
+                                    }
                                 }
                             }));
                 }
@@ -127,31 +189,33 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
         dialog.setNeutralButton("NAVIGATE",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                makeText(getApplicationContext(), "Click navigate", Toast.LENGTH_SHORT).show();
-
-
+                String addressURL = "http://maps.google.com/maps?daddr=" +  eventMarkerMap.get(marker).getLat() + "," + eventMarkerMap.get(marker).getLng();
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse(addressURL));
+                startActivity(intent);
             }
         });
         dialog.setNegativeButton("CANCEL",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                makeText(getApplicationContext(), "Click Cancel", Toast.LENGTH_SHORT).show();
-
             }
         });
 
         dialog.show();
-
-        makeText(this, eventMarkerMap.get(marker).getRest_name() + " event id: "+ eventId,
-                Toast.LENGTH_SHORT).show();
     }
 
 
 
     private void setMap() {
         // Set map fragment on the layout
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.activity_user_map_mapFrag);
-        mapFragment.getMapAsync(this);
+
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mapFragment.getMapAsync(EventMapActivity.this);
+            }
+        });
       //  googleMap.setOnMarkerClickListener(this);
     }
 
@@ -198,26 +262,38 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         if (eventList.get(0).getEvent_id() != 0) {
 
             for (Event event : eventList) {
-                if(event.getLng() <= lng + range && event.getLng() >= lng - range && event.getLat() <= lat + range && event.getLat() >= lat - range) {
+                MarkerOptions markerOpt = new MarkerOptions();
+                //System.out.println("name = " + event.getRest_name() + ", url = " + event.getRest_image());
 
-                    MarkerOptions markerOpt = new MarkerOptions();
+                markerOpt.position(new LatLng(event.getLat(), event.getLng()))
+                        .title(event.getRest_name())
+                        .snippet(event.getAddress() + "\n" + HelperEvent.getDate(event.getEvent_time() * 1000))
+                        .alpha(0.7f);
 
-                    markerOpt.position(new LatLng(event.getLat(), event.getLng()))
-                            .title(event.getRest_name())
-                            .snippet(event.getAddress() + "\n" + new SimpleDateFormat("mm/dd/yyyy").format(new Date(event.getEvent_time())))
-                            .alpha(0.7f);
+                //Set Custom InfoWindow Adapter
+                Log.e(EventMapActivity.class.getSimpleName(), "URL: " + event.getRestaurantImage());
+                eventMarkerMap.put(googleMap.addMarker(markerOpt), event);
 
-                    //Set Custom InfoWindow Adapter
-                    CustomInfoWindowAdapter adapter = new CustomInfoWindowAdapter(this);
-                    googleMap.setInfoWindowAdapter(adapter);
-
-                    eventMarkerMap.put(googleMap.addMarker(markerOpt), event);
-                }
+                restaurantImages.put(event.getRest_name(), event.getRestaurantImage()); // name associate with image
             }
 
+            CustomInfoWindowAdapter adapter = new CustomInfoWindowAdapter(this);
+            googleMap.setInfoWindowAdapter(adapter);
+
             // Make the map zoom focus to the first location. This will show the surrounding events also
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(eventList.get(0).getLat(),
-                    eventList.get(0).getLng()), ZOOM_LEVEL));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(userLocalStore.getLatitude(),
+                    userLocalStore.getLongitude()), ZOOM_LEVEL));
+        }
+    }
+
+    public HashMap<String, String> getRestaurantImages() {
+        return this.restaurantImages;
+    }
+
+    public class MapRefreshTask extends TimerTask {
+        @Override
+        public void run() {
+            setMap();
         }
     }
 

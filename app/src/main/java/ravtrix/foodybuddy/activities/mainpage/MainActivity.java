@@ -15,9 +15,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import ravtrix.foodybuddy.fragments.maineventfrag.IOnDistanceSettingSelected;
 import ravtrix.foodybuddy.fragments.maineventfrag.MainEventFrag;
 import ravtrix.foodybuddy.fragments.userprofilefrag.UserProfileFrag;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.model.LoggedInUser;
 import ravtrix.foodybuddy.utils.HelperEvent;
 import ravtrix.foodybuddy.utils.Helpers;
 import ravtrix.foodybuddy.utils.RetrofitEventSingleton;
@@ -46,6 +49,8 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnEventJoined {
+
+    private static final String TAG = "MainActivity";
 
     @BindView(R.id.viewpager) protected ViewPager viewPager;
     @BindView(R.id.tabs) protected TabLayout tabLayout;
@@ -57,7 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.activity_main_tvUpcoming) protected TextView tvUpcomingEvents;
     @BindView(R.id.activity_main_layoutEdit) protected LinearLayout layoutEdit;
     @BindView(R.id.activity_main_tvNoUpcoming) protected TextView tvNoUpcomingEvents;
-    @BindView(R.id.activity_main_tvNoPast) protected  TextView tvNoPastEvents;
+    @BindView(R.id.activity_main_tvNoPast) protected TextView tvNoPastEvents;
+    @BindView(R.id.activity_main_refresh) protected ImageView imgRefresh;
 
     private ImageView imageSetting, imageNavigation;
     private ViewPagerAdapter adapter;
@@ -100,11 +106,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageNavigation.setOnClickListener(this);
         imageSetting.setOnClickListener(this);
         layoutEdit.setOnClickListener(this);
+        imgRefresh.setOnClickListener(this);
         userLocalStore = new UserLocalStore(this);
+        mSubscriptions = new CompositeSubscription();
+
+        Log.d(TAG, "STORED USER ID: " + userLocalStore.getLoggedInUser().getUserID());
+        Log.d(TAG, "STORED USER URL: " + userLocalStore.getLoggedInUser().getImageURL());
+        Log.d(TAG, "STORED USER LATITUDE: " + userLocalStore.getLatitude());
+        Log.d(TAG, "STORED USER LONGITUDE: " + userLocalStore.getLongitude());
 
         RecyclerView.ItemDecoration dividerDecorator = new DividerDecoration(this, R.drawable.line_divider_drawer);
         recyclerViewMain.addItemDecoration(dividerDecorator);
-        mSubscriptions = new CompositeSubscription();
 
         drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, null);
         fetchDrawerModelsRetrofit();
@@ -145,6 +157,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     isEventEditClicked = false;
                 }
                 break;
+            case R.id.activity_main_refresh:
+                fetchDrawerModelsRetrofitRefresh();
+                break;
             default:
                 break;
         }
@@ -153,7 +168,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onEventJoined() {
         // Called by main event fragment when user joined a new event
-        fetchDrawerModelsRetrofitRefresh();
+        fetchDrawerModelsRetrofit();
+        Log.d(TAG, "Refreshing drawer list for new item");
     }
 
     private void fetchDrawerModelsRetrofit() {
@@ -168,7 +184,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onCompleted() {}
 
                     @Override
-                    public void onError(Throwable e) {}
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "Error fetching event joined");
+                    }
 
                     @Override
                     public void onNext(List<EventJoined> events) {
@@ -178,27 +196,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // Fetch events joined
 
                         if (eventPresent.size() > 0) {
+                            Log.e(TAG, "Non empty even present");
                             hideTvNoUpcomingEvents();
                             drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventPresent);
                             recyclerViewMain.setAdapter(drawerRecyclerAdapter);
                             recyclerViewMain.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                         } else {
+                            Log.e(TAG, "No event present");
                             showTvNoUpcomingEvents();
                         }
 
-                        if (eventPresent.size() > 0) {
+                        if (eventPast.size() > 0) {
+                            Log.e(TAG, "None empty event past");
                             hideTvNoPastEvents();
                             drawerRecyclerAdapterPast = new DrawerRecyclerAdapter(MainActivity.this, eventPast);
                             recyclerViewMainPast.setAdapter(drawerRecyclerAdapterPast);
                             recyclerViewMainPast.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                         } else {
+                            Log.e(TAG, "No event past");
                             showTvNoPastEvents();
                         }
                     }
                 }));
     }
 
-    private void fetchDrawerModelsRetrofitRefresh() {
+    public void fetchDrawerModelsRetrofitRefresh() {
+
+        Log.e(TAG, "Refreshing drawer");
+        if (mSubscriptions == null) {
+            mSubscriptions = new CompositeSubscription();
+        }
 
         mSubscriptions.add(RetrofitEventSingleton.getInstance()
                 .getEventJoined()
@@ -207,16 +234,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<List<EventJoined>>() {
                     @Override
-                    public void onCompleted() {}
+                    public void onCompleted() {
+                        Log.e(TAG, "Refresh oncomplete()");
+                    }
 
                     @Override
-                    public void onError(Throwable e) {}
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "Error fetching joined events");
+                    }
 
                     @Override
                     public void onNext(List<EventJoined> events) {
                         // Fetch events joined
                         splitEventsPastPresent(events);
-
                         if (drawerRecyclerAdapter == null) {
                             drawerRecyclerAdapter = new DrawerRecyclerAdapter(MainActivity.this, eventPresent);
                             recyclerViewMain.setAdapter(drawerRecyclerAdapter);
@@ -225,8 +255,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         drawerRecyclerAdapter.swap(eventPresent);
 
                         if (eventPresent.size() > 0) {
+                            Log.e(TAG, "Present model size > 0");
                             hideTvNoUpcomingEvents();
                         } else {
+                            Log.e(TAG, "Empty present model");
                             showTvNoUpcomingEvents();
                         }
 
@@ -238,8 +270,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         drawerRecyclerAdapterPast.swap(eventPast);
 
                         if (eventPast.size() > 0) {
+                            Log.e(TAG, "Past model size > 0");
                             hideTvNoPastEvents();
                         } else {
+                            Log.e(TAG, "Empty past model");
                             showTvNoPastEvents();
                         }
                     }
@@ -402,13 +436,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void hideTvNoUpcomingEvents() {
         if (tvNoUpcomingEvents != null) {
-            tvNoPastEvents.setVisibility(View.GONE);
+            tvNoUpcomingEvents.setVisibility(View.GONE);
         }
     }
 
     private void showTvNoUpcomingEvents() {
         if (tvNoUpcomingEvents != null) {
-            tvNoPastEvents.setVisibility(View.VISIBLE);
+            tvNoUpcomingEvents.setVisibility(View.VISIBLE);
         }
     }
 

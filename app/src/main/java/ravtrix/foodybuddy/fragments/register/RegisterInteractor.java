@@ -81,7 +81,7 @@ class RegisterInteractor implements IRegisterInteractor {
 
     }
 
-    private void insertImage(int userID, String url, final OnRetrofitFinishedRegister onRetrofitFinishedRegister) {
+    private void insertImage(int userID, final String url, final OnRetrofitFinishedRegister onRetrofitFinishedRegister) {
 
         mSubscriptions.add(RetrofitUserInfoSingleton.getInstance()
                 .insertUserImage()
@@ -103,7 +103,7 @@ class RegisterInteractor implements IRegisterInteractor {
                     @Override
                     public void onNext(Void aVoid) {
                         Log.d(CLASS_NAME, "Successfully inserted image");
-                        onRetrofitFinishedRegister.onNext(registerResponseObj);
+                        onRetrofitFinishedRegister.onNext(registerResponseObj, url);
                     }
                 }));
     }

@@ -85,6 +85,8 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
 
     compile 'com.android.support:multidex:1.0.1'
+    compile 'com.github.vipulasri:timelineview:1.0.5'
+
 
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'

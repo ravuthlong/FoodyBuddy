@@ -1,16 +1,22 @@
 package ravtrix.foodybuddy.fragments.login;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -38,7 +44,13 @@ import ravtrix.foodybuddy.fragments.ResetPasswordDialog;
 import ravtrix.foodybuddy.fragments.register.RegisterFragment;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.model.LoggedInUser;
+import ravtrix.foodybuddy.network.networkresponse.UserResponse;
 import ravtrix.foodybuddy.utils.LocationUtil;
+import ravtrix.foodybuddy.utils.NetworkUtil;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static ravtrix.foodybuddy.utils.Validation.validateEmail;
 import static ravtrix.foodybuddy.utils.Validation.validateFields;
@@ -55,25 +67,31 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
     @BindView(R.id.ti_email) protected TextInputLayout mTiEmail;
     @BindView(R.id.ti_password) protected TextInputLayout mTiPassword;
     @BindView(R.id.progress) protected ProgressBar mProgressBar;
-    @BindView(R.id.fragment_login_bFacebook) protected LoginButton bFacebook;
+    //@BindView(R.id.fragment_login_bFacebook) protected LoginButton bFacebook;
+    @BindView(R.id.fragment_login_logo) protected TextView tvLogo;
     private UserLocalStore userLocalStore;
     private LoginPresenter loginPresenter;
     private CallbackManager callbackManager;
     private ProgressDialog progressDialog;
+    private CompositeSubscription mSubscriptions;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login,container,false);
         ButterKnife.bind(this, view);
+        // Set font
+        tvLogo.setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "toolbar2.ttf"));
+
         callbackManager = CallbackManager.Factory.create();
 
         initListeners();
         initSharedPreference();
 
+        mSubscriptions = new CompositeSubscription();
         loginPresenter = new LoginPresenter(this, getActivity());
 
-        bFacebook.setFragment(this);
+        /*bFacebook.setFragment(this);
         bFacebook.setReadPermissions(Arrays.asList("public_profile", "email"));
         bFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -88,7 +106,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
             @Override
             public void onError(FacebookException error) {
             }
-        });
+        });*/
 
         LocationUtil.checkLocationPermission(getActivity());
 
@@ -114,9 +132,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
             case R.id.tv_forgot_password:
                 showDialog();
                 break;
-            case R.id.fragment_login_bFacebook:
+            //case R.id.fragment_login_bFacebook:
 
-                break;
+                //break;
         }
     }
 
@@ -151,6 +169,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
         }
 
         if (err == 0) {
+            // hide soft keyboard
+            InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            if (getActivity().getCurrentFocus() != null) {
+                inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+            }
+
             loginPresenter.checkUserExist(email,password);
             mProgressBar.setVisibility(View.VISIBLE);
 
@@ -212,11 +236,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
     }
 
     @Override
-    public void storeUser(LoggedInUser loggedInUser, double latitude, double longitude) {
-        userLocalStore.storeUserData(loggedInUser, latitude, longitude); // token, name, email
-    }
-
-    @Override
     public void setEtEmailEmpty() {
         mEtEmail.getText().clear();
     }
@@ -226,9 +245,39 @@ public class LoginFragment extends Fragment implements View.OnClickListener, ILo
         mEtPassword.getText().clear();
     }
 
+
+    @Override
+    public void storeUser(LoggedInUser loggedInUser, double latitude, double longitude) {
+        userLocalStore.storeUserData(loggedInUser, latitude, longitude); // token, name, email
+    }
+
     @Override
     public void startProfileActivity() {
-        startActivity(new Intent(getActivity(), MainActivity.class));
+        // fetch user profile pic first
+
+        mSubscriptions.add(NetworkUtil.getRetrofit().getUserInfo(userLocalStore.getLoggedInUser().getUserID())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<UserResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "Fetch profile completed");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "Error fetching profile");
+                    }
+
+                    @Override
+                    public void onNext(UserResponse userResponse) {
+                        if (userLocalStore != null) {
+                            userLocalStore.setUserImageURL(userResponse.getProfile_pic_url());
+                        }
+                        startActivity(new Intent(getActivity(), MainActivity.class));
+                    }
+                }));
+
     }
 
     @Override

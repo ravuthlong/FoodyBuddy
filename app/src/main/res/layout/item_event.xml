@@ -31,11 +31,11 @@
 
                 <TextView
                     android:id="@+id/item_event_tvRestaurantName"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="-5dp"
-                    android:layout_weight="1"
+                    android:maxLines="1"
                     android:text="The Eastside Restaurant"
                     android:textColor="@color/toolbar"
                     android:textSize="17sp"
@@ -43,13 +43,14 @@
 
                 <TextView
                     android:id="@+id/item_event_tvPostTime"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/linearlayout2"
-                    android:gravity="end"
-
+                    android:layout_gravity="right"
                     android:layout_marginStart="5dp"
+
                     android:layout_marginTop="-5dp"
+                    android:layout_toEndOf="@+id/item_event_tvRestaurantName"
+                    android:gravity="end"
                     android:text="Jan 09, 2017" />
             </LinearLayout>
 
@@ -114,31 +115,14 @@
         android:layout_height="wrap_content"
         android:gravity="center">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_event_otherUser1"
-            android:layout_width="35dp"
-            android:layout_height="35dp"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_event_otherUser2"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_toEndOf="@id/item_event_otherUser1"
-            android:layout_marginStart="-10dp" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_event_otherUser3"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_toEndOf="@id/item_event_otherUser2"
-            android:layout_marginStart="-10dp" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/item_event_otherUser4"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_toEndOf="@id/item_event_otherUser3"
-            android:layout_marginStart="-10dp" />
+        <TextView
+            android:id="@+id/item_event_timeLeft"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_16ssp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="5 DAYS TO GO"/>
     </RelativeLayout>
 
     <RelativeLayout

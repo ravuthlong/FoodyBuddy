@@ -7,12 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -21,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,16 +49,25 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseRecyclerAdapter<MessageModel, MessageViewHolder> mFirebaseAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private UserLocalStore userLocalStore;
-    private String eventID;
+    private String eventID, eventName;
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
-        TextView messageTextView;
-        CircleImageView messengerImageView;
+        TextView messageTextView1, messageTextView2;
+        TextView timeTextView;
+        CircleImageView messengerImageView1, messengerImageView2;
+        RelativeLayout layoutMessage1, layoutMessage2;
 
         public MessageViewHolder(View v) {
             super(v);
-            messageTextView = (TextView) itemView.findViewById(R.id.messageTextView);
-            messengerImageView = (CircleImageView) itemView.findViewById(R.id.messengerImageView);
+            messageTextView1 = (TextView) itemView.findViewById(R.id.item_message_message);
+            timeTextView = (TextView) itemView.findViewById(R.id.item_time);
+            messengerImageView1 = (CircleImageView) itemView.findViewById(R.id.item_countryFeed_profileImage);
+            layoutMessage1 = (RelativeLayout) itemView.findViewById(R.id.layout_message);
+
+            messageTextView2 = (TextView) itemView.findViewById(R.id.item_message_message2);
+            messengerImageView2 = (CircleImageView) itemView.findViewById(R.id.item_inboxFeed_profileImage2);
+            layoutMessage2 = (RelativeLayout) itemView.findViewById(R.id.layout_message2);
+
         }
     }
 
@@ -68,9 +80,12 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Helpers.setToolbar(this, toolbar);
         Helpers.overrideFonts(this, etMessage);
         Helpers.overrideFonts(this, bSendMessage);
-        setTitle("Event Chat");
-        chatProgressbar.setVisibility(View.VISIBLE);
         getBundleData();
+
+        if (!TextUtils.isEmpty(eventName)) {
+            setTitle(eventName);
+        }
+        chatProgressbar.setVisibility(View.VISIBLE);
 
         userLocalStore = new UserLocalStore(this);
         mLinearLayoutManager = new LinearLayoutManager(this);
@@ -96,32 +111,49 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             protected void populateViewHolder(MessageViewHolder viewHolder, MessageModel model, int position) {
                 chatProgressbar.setVisibility(View.GONE);
-                Helpers.overrideFonts(ChatActivity.this, viewHolder.messageTextView);
+                Helpers.overrideFonts(ChatActivity.this, viewHolder.messageTextView1);
+                Helpers.overrideFonts(ChatActivity.this, viewHolder.messageTextView2);
 
                 if (model.getUserID() == userLocalStore.getLoggedInUser().getUserID()) {
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.FILL_PARENT);
-                    params.weight = 1.0f;
-                    params.gravity = Gravity.END;
+                    viewHolder.layoutMessage2.setVisibility(View.VISIBLE);
+                    viewHolder.layoutMessage1.setVisibility(View.GONE);
+                    TextView messageTextView2 = viewHolder.messageTextView2;
+                    messageTextView2.setText(model.getText());
 
-                    viewHolder.messengerImageView.setLayoutParams(params);
-                    viewHolder.messageTextView.setLayoutParams(params);
-                    viewHolder.messageTextView.setBackground(ContextCompat.getDrawable(ChatActivity.this, R.drawable.bubright));
+                    if (TextUtils.isEmpty(model.getImageURL())) {
+                        Picasso.with(ChatActivity.this)
+                                .load("http://ahdzbook.com/data/out/115/hdwp693950189.jpg")
+                                .fit()
+                                .centerCrop()
+                                .into(viewHolder.messengerImageView2);
+                    } else {
+                        Picasso.with(ChatActivity.this)
+                                .load(model.getImageURL())
+                                .fit()
+                                .centerCrop()
+                                .into(viewHolder.messengerImageView2);
+                    }
 
                 } else {
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.FILL_PARENT);
-                    params.weight = 1.0f;
-                    params.gravity = Gravity.START;
+                    viewHolder.layoutMessage1.setVisibility(View.VISIBLE);
+                    viewHolder.layoutMessage2.setVisibility(View.GONE);
+                    TextView messageTextView1 = viewHolder.messageTextView1;
+                    messageTextView1.setText(model.getText());
 
-                    viewHolder.messengerImageView.setLayoutParams(params);
-                    viewHolder.messageTextView.setGravity(Gravity.START);
-                    viewHolder.messageTextView.setBackground(ContextCompat.getDrawable(ChatActivity.this, R.drawable.bubleft));
+                    if (TextUtils.isEmpty(model.getImageURL())) {
+                        Picasso.with(ChatActivity.this)
+                                .load("http://ahdzbook.com/data/out/115/hdwp693950189.jpg")
+                                .fit()
+                                .centerCrop()
+                                .into(viewHolder.messengerImageView1);
+                    } else {
+                        Picasso.with(ChatActivity.this)
+                                .load(model.getImageURL())
+                                .fit()
+                                .centerCrop()
+                                .into(viewHolder.messengerImageView1);
+                    }
                 }
-
-                if (model.getText() != null) {
-                    viewHolder.messageTextView.setText(model.getText());
-                    viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
-                }
-                //Picasso.with(ChatActivity.this).load(model.getImageUrl()).into(viewHolder.messengerImageView);
             }
         };
 
@@ -166,6 +198,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         Bundle bundle = getIntent().getExtras();
         if (null != bundle) {
             this.eventID = Integer.toString(bundle.getInt("eventID"));
+            this.eventName = bundle.getString("eventName");
         }
     }
 
@@ -196,7 +229,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sendMessageFirebase(String chatName, String userMessage, Long time) {
-        MessageModel message = new MessageModel(userLocalStore.getLoggedInUser().getUserID(), userMessage, time);
+        MessageModel message = new MessageModel(userLocalStore.getLoggedInUser().getUserID(), userMessage, time,
+                userLocalStore.getLoggedInUser().getImageURL(), eventName);
         mFirebaseDatabaseReference.child(chatName).push().setValue(message);
         etMessage.setText("");
     }

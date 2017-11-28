@@ -71,7 +71,7 @@
 
                 <TextView
                     android:id="@+id/textView4"
-                    android:text="22"
+                    android:text="0"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -121,7 +121,7 @@
 
                 <TextView
                     android:id="@+id/textView324"
-                    android:text="21"
+                    android:text="0"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -169,8 +169,7 @@
                     android:id="@+id/imageView22" />
 
                 <TextView
-                    android:id="@+id/textView34"
-                    android:text="2"
+                    android:id="@+id/frag_userprofile_numJoined"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -219,8 +218,7 @@
                     android:id="@+id/imageView222" />
 
                 <TextView
-                    android:id="@+id/textView343"
-                    android:text="2"
+                    android:id="@+id/frag_userprofile_numCreated"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
@@ -241,9 +239,9 @@
         android:background="@color/lightBrown">
 
         <android.support.v4.app.FragmentTabHost
+            android:id="@+id/tabhost"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/frag_userprofile_tabhost">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"

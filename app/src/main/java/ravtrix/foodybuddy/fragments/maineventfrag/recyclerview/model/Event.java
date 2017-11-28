@@ -16,42 +16,26 @@ public class Event {
     private double lng;
     private long create_time;
     private long event_time;
+    //private int profile_pic_id;
+    private String creator_image_url;
     private String rest_image;
-    private int profile_pic_id;
-    private String url;
-    private String restUrl;
     private int count;
 
-    public String getRest_image() {
+
+    public String getRestaurantImage(){
         return rest_image;
     }
 
-    public void setRest_image(String rest_image) {
-        this.rest_image = rest_image;
-    }
-
-    public int getProfile_pic_id() {
-        return profile_pic_id;
-    }
-
-    public void setProfile_pic_id(int profile_pic_id) {
-        this.profile_pic_id = profile_pic_id;
-    }
-
-    public String getRestaurantImage(){
-        return restUrl;
-    }
-
     public void setRestaurantImage(String url) {
-        this.restUrl = url;
+        this.rest_image = url;
     }
 
     public String getUrl() {
-        return url;
+        return creator_image_url;
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.creator_image_url = url;
     }
 
     public int getCount() {

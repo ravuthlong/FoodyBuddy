@@ -33,8 +33,8 @@ class RegisterPresenter implements IRegisterPresenter {
 
         registerInteractor.registerProcess(user, imageBitmap, new OnRetrofitFinishedRegister() {
             @Override
-            public void onNext(RegisterResponse registerResponse) {
-                insertLocation(registerResponse.getMessage(), longitude, latitude);
+            public void onNext(RegisterResponse registerResponse, String imageURL) {
+                insertLocation(registerResponse.getMessage(), longitude, latitude, imageURL);
             }
 
             @Override
@@ -50,7 +50,7 @@ class RegisterPresenter implements IRegisterPresenter {
     }
 
     @Override
-    public void insertLocation(final int userID, final double longitude, final double latitude) {
+    public void insertLocation(final int userID, final double longitude, final double latitude, final String imageURL) {
 
         registerInteractor.insertLocation(userID, longitude, latitude, new OnRetrofitFinished() {
             @Override
@@ -59,7 +59,7 @@ class RegisterPresenter implements IRegisterPresenter {
 
             @Override
             public void onNext(Response response) {
-                handleResponse(userID, latitude, longitude);
+                handleResponse(userID, latitude, longitude, imageURL);
             }
 
             @Override
@@ -69,10 +69,10 @@ class RegisterPresenter implements IRegisterPresenter {
         });
     }
 
-    private void handleResponse(int userID, double latitude, double longitude) {
+    private void handleResponse(int userID, double latitude, double longitude, String imageURL) {
 
         iRegisterView.hideProgressbar();
-        iRegisterView.storeUser(userID, latitude, longitude); // pass back userid
+        iRegisterView.storeUser(userID, latitude, longitude, imageURL); // pass back userid
         iRegisterView.startProfileActivity();
     }
 

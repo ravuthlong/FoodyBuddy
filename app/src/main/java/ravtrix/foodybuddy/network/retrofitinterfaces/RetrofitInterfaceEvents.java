@@ -4,6 +4,7 @@ import java.util.List;
 
 import ravtrix.foodybuddy.activities.mainpage.model.EventJoined;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
+import ravtrix.foodybuddy.network.networkmodel.NearbyEventsParam;
 import ravtrix.foodybuddy.network.networkresponse.CreateEventResponse;
 import ravtrix.foodybuddy.network.networkresponse.Response;
 import ravtrix.foodybuddy.network.networkmodel.EventParam;
@@ -22,6 +23,16 @@ public class RetrofitInterfaceEvents {
     public interface  GetEvents {
         @GET("event")
         Observable<List<Event>> getEvents();
+    }
+
+    public interface GetNearbyEvents {
+        @POST("event/distance")
+        Observable<List<Event>> getNearbyEvents(@Body NearbyEventsParam nearbyEventsParam);
+    }
+
+    public interface  GetEventByID {
+        @GET("event/{eventID}")
+        Observable<Event> getEventByID();
     }
 
     public interface PostEvent {

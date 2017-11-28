@@ -63,7 +63,8 @@
         </activity>
         <activity
             android:name=".activities.eventcomments.EventCommentsActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity
             android:name=".activities.restaurantfilter.RestaurantFilterActivity"
             android:screenOrientation="portrait" />
@@ -75,9 +76,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.chat.ChatActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
         <activity
             android:name=".activities.eventmap.EventMapActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:noHistory="true"/>
     </application>
 </manifest>

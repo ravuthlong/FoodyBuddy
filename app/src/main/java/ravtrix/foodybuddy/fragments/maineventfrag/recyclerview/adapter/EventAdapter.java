@@ -1,11 +1,16 @@
 package ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.adapter;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.location.Location;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +32,11 @@ import ravtrix.foodybuddy.activities.eventcomments.EventCommentsActivity;
 import ravtrix.foodybuddy.activities.otheruserprofile.OtherUserProfileActivity;
 import ravtrix.foodybuddy.fragments.maineventfrag.MainEventFrag;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.utils.Constants;
+import ravtrix.foodybuddy.utils.HelperEvent;
 import ravtrix.foodybuddy.utils.Helpers;
+import static java.lang.Math.toIntExact;
 
 /**
  * Created by Ravinder on 1/28/17.
@@ -39,11 +47,14 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<Event> eventModelList;
     private LayoutInflater inflater;
     private Fragment fragment;
+    private UserLocalStore userLocalStore;
     private boolean firstOfList = true;
+    private static final String TAG = EventAdapter.class.getSimpleName();
 
-    public EventAdapter(Fragment fragment, List<Event> eventModels) {
+    public EventAdapter(Fragment fragment, List<Event> eventModels, UserLocalStore userLocalStore) {
         this.fragment = fragment;
         this.eventModelList = eventModels;
+        this.userLocalStore = userLocalStore;
         inflater = LayoutInflater.from(fragment.getActivity());
     }
 
@@ -65,7 +76,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case 0:
                 ViewHolder1 viewHolder1 = (ViewHolder1) holder;
                 Picasso.with(fragment.getActivity())
-                        .load("http://orig11.deviantart.net/7bbd/f/2013/331/2/c/team_crafted_style_profile_picture__shadowvenom718_by_shadowvenom718-d6vuqot.png")
+                        .load("http://androidsummit.org/2015/img/icon_food.png")
                         .centerCrop()
                         .fit()
                         .into(viewHolder1.profileImage);
@@ -92,77 +103,41 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
 
                 viewHolder2.postDate.setText(timeAgo);
-                viewHolder2.eventDate.setText(getDate(currentItem.getEvent_time() * 1000));
+                viewHolder2.eventDate.setText(HelperEvent.getDate(currentItem.getEvent_time() * 1000));
                 viewHolder2.description.setText(currentItem.getEvent_des());
                 viewHolder2.address.setText(currentItem.getAddress());
                 viewHolder2.numComment.setText(Integer.toString(currentItem.getCount())); // total comment count
 
-                if (!currentItem.getUrl().isEmpty()) {
+                int dayLeft = (int) HelperEvent.getDayLeft(currentItem.getEvent_time() * 1000);
+
+                if (dayLeft == 1) {
+                    viewHolder2.timeLeft.setTextColor(ContextCompat.getColor(fragment.getActivity(), R.color.colorPrimaryDark));
+                    viewHolder2.timeLeft.setText(Long.toString(HelperEvent.getDayLeft(currentItem.getEvent_time() * 1000)) + " DAY LEFT");
+                } else if (dayLeft > 1) {
+                    viewHolder2.timeLeft.setTextColor(ContextCompat.getColor(fragment.getActivity(), R.color.colorPrimaryDark));
+                    viewHolder2.timeLeft.setText(Long.toString(HelperEvent.getDayLeft(currentItem.getEvent_time() * 1000)) + " DAYS LEFT");
+                } else {
+                    viewHolder2.timeLeft.setTextColor(ContextCompat.getColor(fragment.getActivity(), R.color.orangeRed));
+                    viewHolder2.timeLeft.setText(Long.toString(HelperEvent.getDayLeft(currentItem.getEvent_time() * 1000)) + " DAY LEFT");
+                }
+
+                Location locationUser = new Location("Location1");
+                locationUser.setLatitude(userLocalStore.getLatitude());
+                locationUser.setLongitude(userLocalStore.getLongitude());
+
+                Location locationRestaurant = new Location("Location2");
+                locationRestaurant.setLatitude(currentItem.getLat());
+                locationRestaurant.setLongitude(currentItem.getLng());
+
+                viewHolder2.distance.setText(HelperEvent.distanceBetweenTwoPoints(locationUser, locationRestaurant) + " miles");
+
+                if (!TextUtils.isEmpty(currentItem.getUrl())) {
                     Picasso.with(fragment.getActivity())
                             .load(currentItem.getUrl())
                             .centerCrop()
                             .fit()
                             .into(viewHolder2.profileImage);
-                }/*
-                if (!currentItem.getUserImage1().isEmpty()) {
-                    Picasso.with(context)
-                            .load(currentItem.getUserImage1())
-                            .centerCrop()
-                            .fit()
-                            .into(viewHolder2.otherUser1);
-                } else {
-                    viewHolder2.otherUser1.setVisibility(View.GONE);
                 }
-                if (!currentItem.getUserImage2().isEmpty()) {
-
-                    Picasso.with(context)
-                            .load(currentItem.getUserImage2())
-                            .centerCrop()
-                            .fit()
-                            .into(viewHolder2.otherUser2);
-                } else {
-                    viewHolder2.otherUser2.setVisibility(View.GONE);
-                }
-                if (!currentItem.getUserImage3().isEmpty()) {
-
-                    Picasso.with(context)
-                            .load(currentItem.getUserImage3())
-                            .centerCrop()
-                            .fit()
-                            .into(viewHolder2.otherUser3);
-                } else {
-                    viewHolder2.otherUser3.setVisibility(View.GONE);
-                }
-                if (!currentItem.getUserImage4().isEmpty()) {
-
-                    Picasso.with(context)
-                            .load(currentItem.getUserImage4())
-                            .centerCrop()
-                            .fit()
-                            .into(viewHolder2.otherUser4);
-                } else {
-                    viewHolder2.otherUser4.setVisibility(View.GONE);
-                }*/
-                Picasso.with(fragment.getActivity())
-                        .load("https://viralplots.com/wp-content/uploads/2015/12/angelina.jpeg")
-                        .centerCrop()
-                        .fit()
-                        .into(viewHolder2.otherUser1);
-                Picasso.with(fragment.getActivity())
-                        .load("http://cdn.hanoitimes.com.vn/mfiles/data/2014/04/81E07AB1/yeojingoo-photo-3-400x600.jpg")
-                        .centerCrop()
-                        .fit()
-                        .into(viewHolder2.otherUser2);
-                Picasso.with(fragment.getActivity())
-                        .load("https://www.cdc.gov/features/dog-bite-prevention/dog-bite-prevention_456px.jpg")
-                        .centerCrop()
-                        .fit()
-                        .into(viewHolder2.otherUser3);
-                Picasso.with(fragment.getActivity())
-                        .load("https://s-media-cache-ak0.pinimg.com/236x/75/bd/b9/75bdb9bf23175ec74f86cec6554791b5.jpg")
-                        .centerCrop()
-                        .fit()
-                        .into(viewHolder2.otherUser4);
                 break;
             default:
                 break;
@@ -219,15 +194,15 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      */
     private class ViewHolder2 extends RecyclerView.ViewHolder {
 
-        private TextView restaurantName, postDate, eventDate, description, address, numComment;
+        private TextView restaurantName, postDate, eventDate, description, address, numComment, distance, timeLeft;
         private LinearLayout layoutComment, layoutJoin, layoutMore, layoutDrive;
         private RelativeLayout relativeAll;
-        private CircleImageView otherUser1, otherUser2, otherUser3, otherUser4;
         private ImageView profileImage;
 
         ViewHolder2(View itemView) {
             super(itemView);
 
+            distance = (TextView) itemView.findViewById(R.id.item_event_tvDistance);
             restaurantName = (TextView) itemView.findViewById(R.id.item_event_tvRestaurantName);
             postDate = (TextView) itemView.findViewById(R.id.item_event_tvPostTime);
             eventDate = (TextView) itemView.findViewById(R.id.item_event_eventTime);
@@ -240,16 +215,16 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             layoutMore = (LinearLayout) itemView.findViewById(R.id.item_event_layoutMore);
             profileImage = (ImageView) itemView.findViewById(R.id.item_event_profileImage);
             relativeAll = (RelativeLayout) itemView.findViewById(R.id.item_event_relativeAll);
-            otherUser1 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser1);
-            otherUser2 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser2);
-            otherUser3 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser3);
-            otherUser4 = (CircleImageView) itemView.findViewById(R.id.item_event_otherUser4);
+            timeLeft = (TextView) itemView.findViewById(R.id.item_event_timeLeft);
+
 
             Helpers.overrideFonts(fragment.getActivity(), relativeAll);
 
             layoutJoin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    if (fragment instanceof MainEventFrag) ((MainEventFrag) fragment).showProgressbar();
 
                     int position = getAdapterPosition();
                     Event clickedItem = eventModelList.get(position - 1);
@@ -258,19 +233,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         // Invoke main fragment to invoke event insert
                         ((MainEventFrag) fragment).joinEventRetrofit(clickedItem.getEvent_id(), clickedItem.getRest_id());
                     }
-
-                    /*
-                    Snackbar snackbar = Snackbar
-                            .make(relativeAll, "Joined. Owner has been notified.", Snackbar.LENGTH_SHORT);
-                    View mView = snackbar.getView();
-                    TextView mTextView = (TextView) mView.findViewById(android.support.design.R.id.snackbar_text);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        mTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                    } else {
-                        mTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-                    }
-                    snackbar.show();*/
-
                 }
             });
 
@@ -285,7 +247,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             profileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    fragment.startActivity(new Intent(fragment.getActivity(), OtherUserProfileActivity.class));
+                    //fragment.startActivity(new Intent(fragment.getActivity(), OtherUserProfileActivity.class));
                 }
             });
 
@@ -304,9 +266,14 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             layoutDrive.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Helpers.displayToast(fragment.getActivity(), "Clicked on drive");
+                    int position = getAdapterPosition();
+                    Event clickedItem = eventModelList.get(position - 1);
+
+                    String addressURL = "http://maps.google.com/maps?daddr=" +  clickedItem.getLat() + "," + clickedItem.getLng();
+                    Log.d(TAG, "Address URL: " + addressURL);
+
                     Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                            Uri.parse("http://maps.google.com/maps?daddr=37.416936,-121.890564"));
+                            Uri.parse(addressURL));
                     fragment.startActivity(intent);
                 }
             });
@@ -322,15 +289,11 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    private String getDate(long time) {
-        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-        cal.setTimeInMillis(time);
-        return DateFormat.format("MM-dd-yyyy hh:mm a", cal).toString();
-    }
-
     public void swap(List<Event> models) {
         this.eventModelList.clear();
         this.eventModelList.addAll(models);
         this.notifyDataSetChanged();
     }
+
+
 }

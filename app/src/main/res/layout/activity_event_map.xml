@@ -6,9 +6,34 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <fragment
-        android:id="@+id/activity_user_map_mapFrag"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <LinearLayout
+        android:id="@+id/activity_event_map_ll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/AppToolbar"
+            android:background="@color/toolbar">
+
+            <ImageView
+                android:id="@+id/activity_event_map_imageRefresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/ic_refresh" />
+
+        </android.support.v7.widget.Toolbar>
+
+        <fragment
+            android:id="@+id/activity_user_map_mapFrag"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
 </android.support.design.widget.CoordinatorLayout>

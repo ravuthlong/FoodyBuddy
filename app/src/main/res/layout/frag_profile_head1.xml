@@ -42,10 +42,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/frag_userprofile_profileImage"
-            android:text="Ortemis"
+            android:gravity="center_horizontal"
             android:textColor="@color/white"
-            android:textSize="@dimen/_16ssp"
-            android:gravity="center_horizontal" />
+            android:textSize="@dimen/_16ssp" />
 
         <ImageView
             android:id="@+id/frag_profile_head1_bSetting"

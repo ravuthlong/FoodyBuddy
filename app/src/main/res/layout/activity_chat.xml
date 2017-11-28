@@ -30,14 +30,15 @@
             <EditText
                 android:id="@+id/activity_chat_textMessage"
                 android:layout_width="match_parent"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_toLeftOf="@+id/activity_chat_sendMessageButton"
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:hint="Type message here"
                 android:inputType="textMultiLine|textCapSentences"
                 android:maxLines="5"
-                android:layout_height="@dimen/_60sdp"
-                android:paddingStart="@dimen/_10sdp"
                 android:paddingEnd="0dp"
+                android:paddingStart="@dimen/_10sdp"
                 android:scrollbars="vertical"
                 android:textSize="@dimen/_11ssp" />
 

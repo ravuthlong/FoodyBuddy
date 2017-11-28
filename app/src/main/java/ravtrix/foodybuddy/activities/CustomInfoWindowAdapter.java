@@ -1,6 +1,7 @@
 package ravtrix.foodybuddy.activities;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,19 +11,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.squareup.picasso.Picasso;
 
 import ravtrix.foodybuddy.R;
+import ravtrix.foodybuddy.activities.eventmap.EventMapActivity;
 
 /**
  * Created by Emily on 6/10/17.
  */
 
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-    private Activity context;
-    private String image_url = "http://basera-dfw.com/wp-content/uploads/2016/03/restaurant.jpeg";
-    boolean not_first_time_showing_info_window;
+    private EventMapActivity activity;
 
-
-    public CustomInfoWindowAdapter(Activity context){
-        this.context = context;
+    public CustomInfoWindowAdapter(EventMapActivity activity){
+        this.activity = activity;
     }
 
     @Override
@@ -31,29 +30,21 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     }
 
     @Override
-    public View getInfoContents(Marker marker) {
-        View view = context.getLayoutInflater().inflate(R.layout.custom_info_window, null);
+    public View getInfoContents(final Marker marker) {
+        View view = activity.getLayoutInflater().inflate(R.layout.custom_info_window, null);
 
         TextView tvTitle = (TextView) view.findViewById(R.id.tv_title);
         TextView snippet = (TextView) view.findViewById(R.id.snippet);
-        ImageView image = (ImageView) view.findViewById(R.id.iv_image);
-        if (not_first_time_showing_info_window) {
-            Picasso.with(context)
-                    .load(image_url)
-                    .into(image);
-        } else {
-            not_first_time_showing_info_window = true;
-            Picasso.with(context).load(image_url).into(image, new InfoWindowRefresher(marker));
-         //   Picasso.with(MainActivity.this).load("image_URL.png").into(image, new InfoWindowRefresher(marker));
-        }
-        Picasso.with(context)
-                .load(image_url)
-                .into(image);
+        final ImageView image = (ImageView) view.findViewById(R.id.iv_image);
 
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Picasso.with(activity).load(activity.getRestaurantImages().get(marker.getTitle())).into(image);
+            }
+        });
         tvTitle.setText(marker.getTitle());
         snippet.setText(marker.getSnippet());
-     //   image.set
-
 
         return view;
     }

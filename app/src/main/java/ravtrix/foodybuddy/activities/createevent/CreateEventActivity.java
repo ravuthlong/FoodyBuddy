@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -38,8 +39,11 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.findresturant.FindRestaurant;
+import ravtrix.foodybuddy.activitymonitorDB.DatabaseOperations;
 import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.Event;
+import ravtrix.foodybuddy.fragments.maineventfrag.recyclerview.model.EventModel;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.network.networkmodel.EventParam;
 import ravtrix.foodybuddy.network.networkmodel.NewChatParam;
 import ravtrix.foodybuddy.network.networkresponse.CreateEventResponse;
 import ravtrix.foodybuddy.network.networkresponse.Response;
@@ -54,6 +58,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "CreateEventActivity";
     @BindView(R.id.activity_create_event_restaurant) protected LinearLayout setRestaurantLinear;
     @BindView(R.id.activity_create_event_setTimeLinear) protected LinearLayout setTimeLinear;
     @BindView(R.id.activity_create_event_setDateLinear) protected LinearLayout setDateLinear;
@@ -78,6 +83,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     private int dayChosen, monthChosen, yearChosen, hourChosen, minuteChosen;
     private boolean isRestaurantPicked, isDatePicked, isTimePicked;
     private DatabaseReference mFirebaseDatabaseReference;
+    private int eventID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,12 +103,6 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         setTitle("New Event");
         editTextPost.setGravity(Gravity.CENTER);
 
-        Picasso.with(this)
-                .load("http://media.tumblr.com/tumblr_md3hy6rBJ31ruz87d.png")
-                .fit()
-                .centerCrop()
-                .into(profileImage);
-
         setTimeLinear.setOnClickListener(this);
         setDateLinear.setOnClickListener(this);
         setRestaurantLinear.setOnClickListener(this);
@@ -111,6 +111,13 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         userLocalStore = new UserLocalStore(this);
         mSubscriptions = new CompositeSubscription();
 
+        if (!TextUtils.isEmpty(userLocalStore.getLoggedInUser().getImageURL())) {
+            Picasso.with(this)
+                    .load(userLocalStore.getLoggedInUser().getImageURL())
+                    .fit()
+                    .centerCrop()
+                    .into(profileImage);
+        }
     }
 
     @Override
@@ -135,7 +142,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 // Create new event object based on user's selection
                 Event event = new Event();
                 event.setUser_id(userLocalStore.getLoggedInUser().getUserID());
-                event.setRest_id(this.restaurantID); // TO-DO, change database type to string because ID is string
+                event.setRest_id(this.restaurantID);
                 event.setAddress(this.restaurantAddress);
                 event.setRest_name(this.restaurantName);
                 event.setEvent_des(this.eventDescription);
@@ -144,6 +151,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 event.setCreate_time(System.currentTimeMillis() / 1000L);
                 event.setEvent_time(timeUnix);
                 event.setRestaurantImage(this.image);
+
                 Log.e("res Image", "image: " + this.image );
 
                 mSubscriptions.add(RetrofitEventSingleton.getInstance()
@@ -154,17 +162,26 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                         .subscribe(new Observer<CreateEventResponse>() {
 
                             @Override
-                            public void onCompleted() {}
+                            public void onCompleted() {
+                                Log.i(TAG, "onCompleted");
+
+                            }
+
 
                             @Override
-                            public void onError(Throwable e) {}
+                            public void onError(Throwable e) {
+                                Log.i(TAG, "onError");
+                            }
 
                             @Override
                             public void onNext(final CreateEventResponse response) {
 
+                                eventID = response.getMessage(); // eventID
+
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        Log.i(TAG, "Inserting chat firebase");
                                         insertChatFirebase(Integer.toString(response.getMessage()));
                                     }
                                 }).start();
@@ -177,7 +194,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                                 .subscribe(new Observer<Response>() {
                                     @Override
                                     public void onCompleted() {
-
+                                        Log.i(TAG, "OnCompleted Inserted chat");
                                     }
 
                                     @Override
@@ -187,6 +204,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 
                                     @Override
                                     public void onNext(Response response) {
+
+                                        joinEventOwner(eventID, restaurantID);
+                                        DatabaseOperations databaseOperations = new DatabaseOperations(CreateEventActivity.this);
+                                        databaseOperations.insertActivity(databaseOperations, Long.toString(System.currentTimeMillis()), "Created a new event at " + restaurantName);
                                         Helpers.displayToast(CreateEventActivity.this, "Event created");
                                         setResult(Constants.EVENT_INSERTED_RESULT_CODE);
                                         finish();
@@ -198,6 +219,28 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 break;
 
         }
+    }
+
+    private void joinEventOwner(int eventID, String restID) {
+        mSubscriptions.add(RetrofitEventSingleton.getInstance()
+                .joinEvent()
+                .joinEvent(new EventParam(userLocalStore.getLoggedInUser().getUserID(), eventID, restID))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Response>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(Response response) {
+                        //onEventJoinedInterface.onEventJoined(); // refresh drawer in main
+                    }
+                }));
     }
 
     @Override
@@ -215,7 +258,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             this.restaurantAddress = data.getStringExtra("address");
             this.restaurantLatitude = data.getDoubleExtra("latitude", 0.0);
             this.restaurantLongitude = data.getDoubleExtra("longitude", 0.0);
-            this.image = data.getStringExtra("image");
+            this.image = data.getStringExtra("rest_image");
 
         }
     }
@@ -382,6 +425,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 newChat.put("text", "New event chat");
                 newChat.put("time", System.currentTimeMillis());
                 newChat.put("userID", userLocalStore.getLoggedInUser().getUserID());
+                newChat.put("eventName", restaurantName);
 
                 mFirebaseDatabaseReference.child(eventID).push().setValue(newChat);
 

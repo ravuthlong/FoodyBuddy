@@ -128,6 +128,17 @@ public class EventCommentsActivity extends AppCompatActivity implements View.OnC
 
                     @Override
                     public void onNext(List<EventCommentModel> eventCommentModels) {
+                        Log.e(EventCommentsActivity.class.getSimpleName(), "REFRESHING MODEL");
+                        if (eventCommentModels.size() > 0) {
+                            linearRecyclerView.setVisibility(View.VISIBLE);
+                            tvNoComments.setVisibility(View.GONE);
+                            setAdapter();
+                        } else {
+                            // no comments
+                            linearRecyclerView.setVisibility(View.GONE);
+                            tvNoComments.setVisibility(View.VISIBLE);
+                        }
+
                         if (eventCommentAdapter != null) { eventCommentAdapter.swap(eventCommentModels); }
                     }
                 }));
@@ -167,7 +178,6 @@ public class EventCommentsActivity extends AppCompatActivity implements View.OnC
 
                     @Override
                     public void onNext(Response response) {
-                        Helpers.displayToast(EventCommentsActivity.this, response.getMessage());
                         etComment.getText().clear();
                         fetchCommentsRefresh(); // update list 
                     }

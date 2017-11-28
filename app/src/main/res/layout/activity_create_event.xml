@@ -44,8 +44,8 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/activity_create_profileImage"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp" />
+                    android:layout_width="@dimen/_70sdp"
+                    android:layout_height="@dimen/_70sdp" />
 
                 <TextView
                     android:id="@+id/activity_create_tvUsername"

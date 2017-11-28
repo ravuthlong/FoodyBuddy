@@ -25,6 +25,7 @@ import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
 import ravtrix.foodybuddy.fragments.deals.recyclerview.adapter.DealsAdapter;
 import ravtrix.foodybuddy.fragments.deals.recyclerview.model.DealsModel;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
 import retrofit2.Call;
 
 /**
@@ -49,6 +50,7 @@ public class DealsFragment extends Fragment {
     private ArrayList<String> deals = new ArrayList<>();
     private ArrayList<String> urlList = new ArrayList<>();
     private boolean isViewShown = false;
+    private UserLocalStore userLocalStore;
 
     private void addParams() {
         params.put("category_filter", "restaurants");
@@ -74,6 +76,7 @@ public class DealsFragment extends Fragment {
 
         ButterKnife.setDebug(true);
         ButterKnife.bind(this, view);
+        userLocalStore = new UserLocalStore(getActivity());
 
         RecyclerView.ItemDecoration dividerDecorator = new DividerDecoration(getActivity(), R.drawable.line_divider_main);
         recyclerviewDeals.addItemDecoration(dividerDecorator);
@@ -90,7 +93,7 @@ public class DealsFragment extends Fragment {
         YelpAPIFactory apiFactory = new YelpAPIFactory(CONSUMER_KEY, CONSUMER_SECRET, TOKEN, TOKEN_SECRET);
         YelpAPI yelpAPI = apiFactory.createAPI();
         addParams();
-        call = yelpAPI.search("San Francisco", params);
+        call = yelpAPI.search(userLocalStore.getLatitude() + "," + userLocalStore.getLongitude(), params);
         new getBusinesses().execute();
 
     }
@@ -120,19 +123,23 @@ public class DealsFragment extends Fragment {
                 addr = addr.replaceAll("[\\[\\](){}]","");
                 businessAddressList.add(addr);
                 urlList.add(businesses.get(i).mobileUrl());
-                for (int j = 0; j < businesses.get(i).deals().size(); j++) {
 
-                    dealsTitle.add(businesses.get(i).deals().get(j).title());
-                    String deal = businesses.get(i).deals().get(j).whatYouGet();
-                    String[] newStr = deal.split("Print");
-                    deals.add(newStr[0]);
+                if (businesses.get(i).deals() != null) {
+                    for (int j = 0; j < businesses.get(i).deals().size(); j++) {
+
+                        dealsTitle.add(businesses.get(i).deals().get(j).title());
+                        String deal = businesses.get(i).deals().get(j).whatYouGet();
+                        String[] newStr = deal.split("Print");
+                        deals.add(newStr[0]);
+                    }
                 }
             }
 
-            for (int k = 0; k < businessNameList.size(); k++){
+            for (int k = 0; k < deals.size(); k++){
                 DealsModel dealsModel = new DealsModel(businessNameList.get(k), deals.get(k),
                         businessAddressList.get(k), urlList.get(k), businessImageList.get(k), dealsTitle.get(k));
                 dealsModels.add(dealsModel);
+
             }
             setRecyclerView();
         }

@@ -9,8 +9,8 @@
         android:id="@+id/iv_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginRight="5dp"
-        android:adjustViewBounds="true"></ImageView>
+        android:layout_marginRight="5dp">
+    </ImageView>
 
     <LinearLayout
         android:layout_width="wrap_content"

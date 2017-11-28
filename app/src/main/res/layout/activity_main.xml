@@ -106,5 +106,12 @@
                 android:layout_height="match_parent" />
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/activity_main_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:srcCompat="@drawable/ic_refresh" />
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>
