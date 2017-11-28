@@ -9,11 +9,13 @@ public class LoggedInUser {
     private String token;
     private int user_id;
     private String email;
+    private String imageURL;
 
-    public LoggedInUser(String token, int userID, String email) {
+    public LoggedInUser(String token, int userID, String email, String imageURL) {
         this.token = token;
         this.user_id = userID;
         this.email = email;
+        this.imageURL = imageURL;
     }
 
     public String getToken() {
@@ -38,5 +40,13 @@ public class LoggedInUser {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 }

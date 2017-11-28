@@ -13,12 +13,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.mainpage.MainActivity;
+import ravtrix.foodybuddy.activitymonitorDB.DatabaseOperations;
 import ravtrix.foodybuddy.fragments.login.LoginFragment;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.location.OnLocationReceived;
@@ -63,6 +66,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
     @BindView(R.id.ti_password) protected TextInputLayout mTiPassword;
     @BindView(R.id.progress) protected ProgressBar mProgressbar;
     @BindView(R.id.frag_register_imgProfileImage) protected ImageView profilePic;
+    @BindView(R.id.toolbar) protected Toolbar toolbar;
 
     protected static final int REQUEST_STORAGE_READ_ACCESS_PERMISSION = 101;
     private static final int RESULT_LOAD_IMAGE = 1;
@@ -80,6 +84,14 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
         View view = inflater.inflate(R.layout.fragment_register,container,false);
         context = getActivity();
         ButterKnife.bind(this, view);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
+
         initListeners();
         mSubscriptions = new CompositeSubscription();
 
@@ -128,12 +140,14 @@ public class RegisterFragment extends Fragment implements View.OnClickListener, 
 
 
     @Override
-    public void storeUser(int userID, double latitude, double longitude) {
-        userLocalStore.storeUserData(new LoggedInUser("", userID, mEtEmail.getText().toString().trim()), latitude, longitude); // token, id, email
+    public void storeUser(int userID, double latitude, double longitude, String imageURL) {
+        userLocalStore.storeUserData(new LoggedInUser("", userID, mEtEmail.getText().toString().trim(), imageURL), latitude, longitude); // token, id, email
     }
 
     @Override
     public void startProfileActivity() {
+        DatabaseOperations databaseOperations = new DatabaseOperations(getActivity());
+        databaseOperations.insertActivity(databaseOperations, Long.toString(System.currentTimeMillis()), "You signed up for Foody Buddy.");
         startActivity(new Intent(getActivity(), MainActivity.class));
     }
 

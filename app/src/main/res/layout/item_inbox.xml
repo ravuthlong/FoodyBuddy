@@ -1,48 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_inboxFeed_linearLayout"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:padding="@dimen/_12sdp">
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/item_inboxFeed_profileImage"
-        android:layout_width="@dimen/_70sdp"
-        android:layout_height="@dimen/_70sdp"
-        android:src="@drawable/ic_home" />
+    android:orientation="horizontal"
+    android:padding="@dimen/_5sdp">
 
     <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/item_inboxFeed_restImage"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp" />
+
+        <ImageView
+            android:id="@+id/item_inboxFeed_profileImage"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:src="@drawable/ic_home" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/item_inbox_relative"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/item_inbox_relative">
+        android:layout_margin="@dimen/_7sdp">
 
-        <TextView
-            android:id="@+id/item_inboxFeed_username"
-            android:text="Username"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/item_inbox_linear"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="@dimen/_20sdp"
-            android:textSize="@dimen/_14ssp"
-            android:textColor="@color/toolbar" />
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/item_inboxFeed_username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.65"
+                android:maxLines="1"
+                android:text="Username"
+                android:textColor="@color/toolbar"
+                android:textSize="@dimen/_13ssp" />
+
+
+            <TextView
+                android:id="@+id/item_inboxFeed_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="false"
+                android:layout_weight="0.35"
+                android:gravity="right"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_9ssp" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/item_inboxFeed_lastMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/item_inboxFeed_username"
-            android:layout_below="@+id/item_inboxFeed_username"
+            android:layout_below="@+id/item_inbox_linear"
+            android:layout_alignStart="@id/item_inbox_linear"
             android:textSize="@dimen/_11ssp" />
 
-        <TextView
-            android:id="@+id/item_inboxFeed_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:textColor="@color/black" />
     </RelativeLayout>
 </LinearLayout>

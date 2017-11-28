@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,9 @@ import ravtrix.foodybuddy.R;
 import ravtrix.foodybuddy.activities.editprofileimage.EditProfileImageActivity;
 import ravtrix.foodybuddy.activities.editprofileimage.model.ProfileImageModel;
 import ravtrix.foodybuddy.localstore.UserLocalStore;
+import ravtrix.foodybuddy.network.networkresponse.UserResponse;
 import ravtrix.foodybuddy.utils.Helpers;
+import ravtrix.foodybuddy.utils.NetworkUtil;
 import ravtrix.foodybuddy.utils.RetrofitUserInfoSingleton;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,8 +63,6 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
 
             }
         });
-        tvUsername.setText("Temp Username");
-
         userLocalStore = new UserLocalStore(getActivity());
         mSubscriptions = new CompositeSubscription();
 
@@ -80,45 +81,44 @@ public class UserProfileHeadOneFrag extends Fragment implements View.OnClickList
 
     public void loadViewWithData() {
 
-        mSubscriptions.add(RetrofitUserInfoSingleton.getInstance()
-                    .getAUserPhoto()
-                    .getAUserPhoto(userLocalStore.getLoggedInUser().getUserID())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new Observer<ProfileImageModel>() {
+        mSubscriptions.add(NetworkUtil.getRetrofit().getUserInfo(userLocalStore.getLoggedInUser().getUserID())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .subscribe(new Observer<UserResponse>() {
+            @Override
+            public void onCompleted() {
+                Log.d(CLASS_NAME, "Fetch profile completed");
+            }
 
-                        @Override
-                        public void onCompleted() {
-                            Log.d(CLASS_NAME, "Fetch profile image completed");
-                        }
+            @Override
+            public void onError(Throwable e) {
+                Log.e(CLASS_NAME, "Error fetching profile");
+            }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.e(CLASS_NAME, "Error fetching image");
-                        }
+            @Override
+            public void onNext(UserResponse userResponse) {
+                if (profileImage != null && !TextUtils.isEmpty(userResponse.getProfile_pic_url())) {
+                    Picasso.with(getContext())
+                            .load(userResponse.getProfile_pic_url())
+                            .fit()
+                            .centerCrop()
+                            .into(profileImage);
+                }
 
-                        @Override
-                        public void onNext(ProfileImageModel profileImageModel) {
+                if (backgroundImage != null && !TextUtils.isEmpty(userResponse.getProfile_pic_url())) {
+                    Picasso.with(getContext())
+                            .load(userResponse.getProfile_pic_url())
+                            .transform(new BlurTransformation(getContext()))
+                            .fit()
+                            .centerCrop()
+                            .into(backgroundImage);
+                }
 
-                            if (profileImage != null) {
-                                Picasso.with(getContext())
-                                        .load(profileImageModel.getUrl())
-                                        .fit()
-                                        .centerCrop()
-                                        .into(profileImage);
-                            }
-
-                            if (backgroundImage != null) {
-                                Picasso.with(getContext())
-                                        .load(profileImageModel.getUrl())
-                                        .transform(new BlurTransformation(getContext()))
-                                        .fit()
-                                        .centerCrop()
-                                        .into(backgroundImage);
-                            }
-                        }
-                    }));
-
+                if (!TextUtils.isEmpty(userResponse.getUsername())) {
+                    tvUsername.setText(userResponse.getUsername());
+                }
+            }
+        }));
     }
 
     @Override

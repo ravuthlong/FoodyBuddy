@@ -8,6 +8,7 @@ import ravtrix.foodybuddy.model.LoggedInUser;
 import ravtrix.foodybuddy.network.networkresponse.LogInResponse;
 import ravtrix.foodybuddy.network.networkresponse.RegisterResponse;
 import ravtrix.foodybuddy.model.User;
+import ravtrix.foodybuddy.network.networkresponse.UserResponse;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -34,4 +35,7 @@ public interface RetrofitInterface {
 
     @POST("users/{email}/password")
     Observable<LogInResponse> resetPasswordFinish(@Path("email") String email, @Body User user);
+
+    @GET("user/profile/{userID}")
+    Observable<UserResponse> getUserInfo(@Path("userID") int userID);
 }

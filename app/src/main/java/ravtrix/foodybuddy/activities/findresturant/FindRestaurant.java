@@ -28,6 +28,7 @@ import ravtrix.foodybuddy.activities.findresturant.adapter.FindRestaurantAdapter
 import ravtrix.foodybuddy.activities.findresturant.model.RestaurantModel;
 import ravtrix.foodybuddy.activities.restaurantfilter.RestaurantFilterActivity;
 import ravtrix.foodybuddy.decorator.DividerDecoration;
+import ravtrix.foodybuddy.localstore.UserLocalStore;
 import ravtrix.foodybuddy.utils.Helpers;
 import ravtrix.foodybuddy.utils.RetrofitYelpSingleton;
 import retrofit2.Call;
@@ -53,6 +54,7 @@ public class FindRestaurant extends AppCompatActivity implements View.OnClickLis
     private String receivedSort = "";
     private String receivedKeyword = "";
     private String currentSearchTerm = "restaurants";
+    private UserLocalStore userLocalStore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class FindRestaurant extends AppCompatActivity implements View.OnClickLis
         ButterKnife.bind(this);
         Helpers.setToolbar(this, toolbar);
         setTitle("Restaurant Selection");
+        userLocalStore = new UserLocalStore(this);
 
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -72,7 +75,8 @@ public class FindRestaurant extends AppCompatActivity implements View.OnClickLis
                     etSearch.clearFocus();
 
                     HashMap<String, String> hashMap = new HashMap<>();
-                    hashMap.put("location", "San Jose");
+                    hashMap.put("latitude", "" + userLocalStore.getLatitude());
+                    hashMap.put("longitude", "" + userLocalStore.getLongitude());
 
                     hashMap.put("term", etSearch.getText().toString().trim());
                     fetchRestaurantWithFilter(hashMap);
@@ -90,7 +94,8 @@ public class FindRestaurant extends AppCompatActivity implements View.OnClickLis
 
 
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("location", "San Jose");
+        hashMap.put("latitude", "" + userLocalStore.getLatitude());
+        hashMap.put("longitude", "" + userLocalStore.getLongitude());
         hashMap.put("term", "restaurants");
         fetchRestaurantWithFilter(hashMap);
 
@@ -176,8 +181,14 @@ public class FindRestaurant extends AppCompatActivity implements View.OnClickLis
 
         retrofit.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                setData(response);
+            public void onResponse(Call<JsonObject> call, final Response<JsonObject> response) {
+
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        setData(response);
+                    }
+                }.run();
             }
 
             @Override

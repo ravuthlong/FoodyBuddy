@@ -12,10 +12,11 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="ravtrix.foodybuddy.fragments.eventprofilefrag.EventProfileFrag">
 
-    <TextView
-        android:text="Event Activities"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView8"
-        android:layout_centerInParent="true" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/frag_event_profile_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

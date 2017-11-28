@@ -9,16 +9,18 @@ android {
     }
     defaultConfig {
         applicationId "ravtrix.foodybuddy"
-        minSdkVersion 17
+        minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -81,6 +83,10 @@ dependencies {
     // Firebase UI
     compile 'com.firebaseui:firebase-ui-database:0.4.0'
     compile 'com.android.support:multidex:1.0.1'
+
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.github.vipulasri:timelineview:1.0.5'
+
 
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'

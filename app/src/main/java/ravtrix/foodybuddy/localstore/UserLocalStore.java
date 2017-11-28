@@ -2,6 +2,7 @@ package ravtrix.foodybuddy.localstore;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import ravtrix.foodybuddy.model.LoggedInUser;
 
@@ -19,24 +20,14 @@ public class UserLocalStore {
         userLocalDataStore = context.getSharedPreferences(SP_NAME, 0);
     }
 
-    // TODO .. ADD latitude and longitude for log in user too
-    public void storeUserData(LoggedInUser loggedInUser) {
-        SharedPreferences.Editor spEditor = userLocalDataStore.edit();
-        spEditor.putString("token", loggedInUser.getToken());
-        spEditor.putInt("userID", loggedInUser.getUserID());
-        spEditor.putString("email", loggedInUser.getEmail());
-
-        spEditor.putBoolean("isLogin", true);
-        spEditor.apply();
-    }
-
     public void storeUserData(LoggedInUser loggedInUser, double latitude, double longitude) {
         SharedPreferences.Editor spEditor = userLocalDataStore.edit();
         spEditor.putString("token", loggedInUser.getToken());
         spEditor.putInt("userID", loggedInUser.getUserID());
         spEditor.putString("email", loggedInUser.getEmail());
-        spEditor.putLong("latitude", (long) latitude);
-        spEditor.putLong("longitude", (long) longitude);
+        spEditor.putString("imageURL", loggedInUser.getImageURL());
+        spEditor.putFloat("latitude", (float) latitude);
+        spEditor.putFloat("longitude", (float) longitude);
 
         spEditor.putBoolean("isLogin", true);
         spEditor.apply();
@@ -47,15 +38,23 @@ public class UserLocalStore {
         String token = userLocalDataStore.getString("token", "");
         int userID = userLocalDataStore.getInt("userID", 0);
         String email = userLocalDataStore.getString("email", "");
-        return new LoggedInUser(token, userID, email);
+        String imageURL = userLocalDataStore.getString("imageURL", "");
+
+        return new LoggedInUser(token, userID, email, imageURL);
     }
 
-    public long getLatitude() {
-        return userLocalDataStore.getLong("latitude", 0);
+    public void setUserImageURL(String imageURL) {
+        SharedPreferences.Editor spEditor = userLocalDataStore.edit();
+        spEditor.putString("imageURL", imageURL);
+        spEditor.apply();
     }
 
-    public long getLongitude() {
-        return userLocalDataStore.getLong("longitude", 0);
+    public float getLatitude() {
+        return userLocalDataStore.getFloat("latitude", 0);
+    }
+
+    public float getLongitude() {
+        return userLocalDataStore.getFloat("longitude", 0);
     }
 
     // Check if user is logged in or not

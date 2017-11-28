@@ -20,6 +20,14 @@ public class RetrofitEvent {
         return retrofit.create(RetrofitInterfaceEvents.GetEvents.class);
     }
 
+    public RetrofitInterfaceEvents.GetNearbyEvents getNearbyEvents() {
+        return retrofit.create(RetrofitInterfaceEvents.GetNearbyEvents.class);
+    }
+
+    public RetrofitInterfaceEvents.GetEventByID getEventByID() {
+        return retrofit.create(RetrofitInterfaceEvents.GetEventByID.class);
+    }
+
     public RetrofitInterfaceEvents.PostEvent postEvent() {
         return retrofit.create(RetrofitInterfaceEvents.PostEvent.class);
     }

@@ -9,5 +9,5 @@ import ravtrix.foodybuddy.network.networkresponse.RegisterResponse;
 public interface OnRetrofitFinishedRegister {
     void onCompleted();
     void onError(Throwable e);
-    void onNext(RegisterResponse registerResponse);
+    void onNext(RegisterResponse registerResponse, String imageURL);
 }
