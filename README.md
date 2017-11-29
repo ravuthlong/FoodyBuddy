@@ -52,5 +52,7 @@ In the main dir, execute the following command to starts the server and make it 
 
 # Developers
 Ravuth Long [Github](https://github.com/ravuthlong) 
+
 Linh Phan [Github](https://github.com/paulphoenix01) 
+
 Lingyan Xie [Github](https://github.com/emilylxie)
