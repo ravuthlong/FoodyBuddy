@@ -1,9 +1,11 @@
 Video demo: https://www.youtube.com/watch?v=cx1P8BzFGpY
+
 Android APK file: https://www.dropbox.com/s/wlvj9tfekwdyfgx/Foody_Buddy.apk?dl=0
 
 Android repo: https://github.com/ravuthlong/FoodyBuddy
 
 REST-API repo: Please refer to the foody-buddy-server/ dir contains in the zip file.
+
 *Authors' note: We do not publish the REST-API server repo on github due to the reason it contains our Database credentials and URL.
 
 # Background
